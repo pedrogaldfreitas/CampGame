@@ -1,0 +1,78 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Projectile
+  - NPC
+  - UI
+  - Enemy
+  - Shadow
+  - Slope
+  - Platform
+  - PickupObject
+  - bodypart
+  - bodypart(arm)
+  - InteractObject
+  - Squirrel
+  - Acorn
+  - Edge
+  - Raccoon
+  - base
+  - solid
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - Obstacle
+  - Enemy
+  - DialogueDriven
+  - VerticalSlope
+  - HorizontalSlope
+  - Edge
+  - Player
+  - Wall
+  - Platform
+  - Base
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Hillmapping
+    uniqueID: 1176785797
+    locked: 0
+  - name: Background
+    uniqueID: 3906743727
+    locked: 0
+  - name: Shadow
+    uniqueID: 858140581
+    locked: 0
+  - name: Object
+    uniqueID: 3804475569
+    locked: 0
+  - name: UI
+    uniqueID: 1340355329
+    locked: 0
+  - name: Body Parts
+    uniqueID: 2378228685
+    locked: 0

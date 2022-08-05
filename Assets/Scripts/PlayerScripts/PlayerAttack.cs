@@ -26,14 +26,14 @@ public class PlayerAttack : MonoBehaviour
     public int damage;
 
     int swingNum;
-    public bool currentlySwinging;
+    public bool blockSwinging;
     public float dashForwardSpeed;
     IEnumerator currentSwingStickCoroutine;
 
     private void Start()
     {
         timeBtwAttack = 0;
-        currentlySwinging = false;
+        blockSwinging = false;
         attackPos = GameObject.Find("AttackPos");
         stickObj = transform.Find("Stick");
         PlayerFacing = GetComponent<PlayerFacing>();
@@ -48,21 +48,20 @@ public class PlayerAttack : MonoBehaviour
     {
         if (playerInventory.activePrimary == "STICK")
         {
-            if ((Input.GetKeyDown(KeyCode.Z) == true) && !currentlySwinging)
+            if ((Input.GetKeyDown(KeyCode.Z) == true) && !blockSwinging)
             {
-                Debug.Log("SWUNG!");
+                blockSwinging = true;
                 if (currentSwingStickCoroutine != null)
                 {
                     StopCoroutine(currentSwingStickCoroutine);
                 }
                 StartCoroutine(swingStick());
-                //currentlySwinging = true;
                 timeBtwAttack = startTimeBtwAttack;
             }
 
            //if (!attackAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Attack"))
             //{
-                //currentlySwinging = false;
+                //blockSwinging = false;
            // }
 
             if (timeBtwAttack > 0)
@@ -72,7 +71,7 @@ public class PlayerAttack : MonoBehaviour
             else if (timeBtwAttack <= 0)
             {
                 timeBtwAttack = 0;
-                currentlySwinging = false;
+               // blockSwinging = false;
             }
         }
     }
@@ -81,7 +80,7 @@ public class PlayerAttack : MonoBehaviour
     {
         transform.parent.GetComponent<PlayerController>().disableMovement();
         float step = dashForwardSpeed * Time.deltaTime;
-        currentlySwinging = true;
+        //blockSwinging = true;
 
         switch (swingNum)
         {
@@ -93,7 +92,7 @@ public class PlayerAttack : MonoBehaviour
                     transform.parent.position = Vector2.MoveTowards(transform.parent.position, positionToMoveTo, step*1.5f);
                     yield return new WaitForSeconds(0.01f / attackAnimator.GetCurrentAnimatorStateInfo(0).speed);
                 }
-                currentlySwinging = false;
+                //blockSwinging = false;
                 //for (int i = 0; i < 6; i) //CONTINUE HERE TMR: HAVE LERP EFFECT FOR LAST 0.06 SECONDS
                 break;
         }

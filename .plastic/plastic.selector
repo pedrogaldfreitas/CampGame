@@ -1,0 +1,3 @@
+rep "RPGudlr@pedrocaroks_gmail_com@cloud"
+  path "/"
+    smartbranch "/main"

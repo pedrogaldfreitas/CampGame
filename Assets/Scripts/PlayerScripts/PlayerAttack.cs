@@ -33,7 +33,6 @@ public class PlayerAttack : MonoBehaviour
     private void Start()
     {
         timeBtwAttack = 0;
-        blockSwinging = false;
         attackPos = GameObject.Find("AttackPos");
         stickObj = transform.Find("Stick");
         PlayerFacing = GetComponent<PlayerFacing>();
@@ -50,7 +49,7 @@ public class PlayerAttack : MonoBehaviour
         {
             if ((Input.GetKeyDown(KeyCode.Z) == true) && !blockSwinging)
             {
-                blockSwinging = true;
+                attackAnimator.SetTrigger("Zkey");
                 if (currentSwingStickCoroutine != null)
                 {
                     StopCoroutine(currentSwingStickCoroutine);
@@ -59,11 +58,6 @@ public class PlayerAttack : MonoBehaviour
                 timeBtwAttack = startTimeBtwAttack;
             }
 
-           //if (!attackAnimator.GetCurrentAnimatorStateInfo(0).IsTag("Attack"))
-            //{
-                //blockSwinging = false;
-           // }
-
             if (timeBtwAttack > 0)
             {
                 timeBtwAttack -= Time.deltaTime;
@@ -71,16 +65,21 @@ public class PlayerAttack : MonoBehaviour
             else if (timeBtwAttack <= 0)
             {
                 timeBtwAttack = 0;
-               // blockSwinging = false;
             }
         }
+    }
+
+    public void BlockSwinging(int blockOrNot)
+    {
+        Debug.Log("BlockSwinging runs. with value " + blockOrNot);
+        blockSwinging = blockOrNot == 1 ? true : false;
+        return;
     }
 
     IEnumerator swingStickPlayerMovement(Vector2 dirOfMovement)
     {
         transform.parent.GetComponent<PlayerController>().disableMovement();
         float step = dashForwardSpeed * Time.deltaTime;
-        //blockSwinging = true;
 
         switch (swingNum)
         {
@@ -92,7 +91,6 @@ public class PlayerAttack : MonoBehaviour
                     transform.parent.position = Vector2.MoveTowards(transform.parent.position, positionToMoveTo, step*1.5f);
                     yield return new WaitForSeconds(0.01f / attackAnimator.GetCurrentAnimatorStateInfo(0).speed);
                 }
-                //blockSwinging = false;
                 //for (int i = 0; i < 6; i) //CONTINUE HERE TMR: HAVE LERP EFFECT FOR LAST 0.06 SECONDS
                 break;
         }
@@ -105,7 +103,6 @@ public class PlayerAttack : MonoBehaviour
     {
         swingNum++;
         attackAnimator.SetFloat("SwingNum", swingNum);
-
 
         Vector2 directionOfMovement = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
@@ -143,7 +140,7 @@ public class PlayerAttack : MonoBehaviour
         adjustStickTransform();
         currentSwingStickCoroutine = swingStickPlayerMovement(directionOfMovement);
         StartCoroutine(currentSwingStickCoroutine);
-        attackAnimator.SetTrigger("Zkey");
+        
 
         //The actual attack code.
 

@@ -12,6 +12,7 @@ public class PlayerAttack : MonoBehaviour
     private GameObject attackPos;
     private Transform stickObj;
     public Transform attackCirclePos;
+    private Transform playerParent;
     public float attackRange;
 
     public Animator attackAnimator;
@@ -25,9 +26,13 @@ public class PlayerAttack : MonoBehaviour
 
     public int damage;
 
-    int swingNum;
+    public int swingNum;
+    public float swingNumTimeBeforeReset;
+    private Coroutine swingNumResetCoroutine;
+
     public bool blockSwinging;
     public float dashForwardSpeed;
+    public float dashForwardSpeedDecreaseRate;
     IEnumerator currentSwingStickCoroutine;
 
     private void Start()
@@ -36,6 +41,7 @@ public class PlayerAttack : MonoBehaviour
         attackPos = GameObject.Find("AttackPos");
         stickObj = transform.Find("Stick");
         PlayerFacing = GetComponent<PlayerFacing>();
+        playerParent = this.transform.parent;
 
         playerInventory = this.GetComponent<playerInventory>();
         swingNum = 0;
@@ -49,7 +55,6 @@ public class PlayerAttack : MonoBehaviour
         {
             if ((Input.GetKeyDown(KeyCode.Z) == true) && !blockSwinging)
             {
-                attackAnimator.SetTrigger("Zkey");
                 if (currentSwingStickCoroutine != null)
                 {
                     StopCoroutine(currentSwingStickCoroutine);
@@ -71,38 +76,62 @@ public class PlayerAttack : MonoBehaviour
 
     public void BlockSwinging(int blockOrNot)
     {
-        Debug.Log("BlockSwinging runs. with value " + blockOrNot);
         blockSwinging = blockOrNot == 1 ? true : false;
         return;
     }
 
-    IEnumerator swingStickPlayerMovement(Vector2 dirOfMovement)
+    public void ToggleEnablePlayerMovement(int enableOrNot)
     {
-        transform.parent.GetComponent<PlayerController>().disableMovement();
-        float step = dashForwardSpeed * Time.deltaTime;
-
-        switch (swingNum)
-        {
-            default:
-                //Movement based on time instead of position.
-                for (int i = 0; i < (14/ attackAnimator.GetCurrentAnimatorStateInfo(0).speed); i++)
-                {
-                    Vector2 positionToMoveTo = (Vector2)transform.parent.position + dirOfMovement * 15;
-                    transform.parent.position = Vector2.MoveTowards(transform.parent.position, positionToMoveTo, step*1.5f);
-                    yield return new WaitForSeconds(0.01f / attackAnimator.GetCurrentAnimatorStateInfo(0).speed);
-                }
-                //for (int i = 0; i < 6; i) //CONTINUE HERE TMR: HAVE LERP EFFECT FOR LAST 0.06 SECONDS
+        switch (enableOrNot) {
+            case 0:
+                transform.parent.GetComponent<PlayerController>().disableMovement();
+                break;
+            case 1:
+                transform.parent.GetComponent<PlayerController>().enableMovement();
                 break;
         }
+        return;
+    }
 
-        transform.parent.GetComponent<PlayerController>().enableMovement();
+    public void ResetSwingNum()
+    {
+        swingNum = 0;
+        return;
+    }
+
+    IEnumerator swingNumResetTimer()
+    {
+        yield return new WaitForSeconds(swingNumTimeBeforeReset);
+        swingNum = 0;
+    }
+
+    IEnumerator swingStickPlayerMovement(Vector2 dirOfMovement)
+    {
+        float speed = swingNum != 2 ? dashForwardSpeed : dashForwardSpeed * 1.4f;
+        float speedDecreaseRate = swingNum != 2 ? dashForwardSpeedDecreaseRate : dashForwardSpeedDecreaseRate * 0.7f;
+
+        while (speed > 0)
+        {
+            float step = speed * Time.deltaTime;
+            Vector2 positionToMoveTo = (Vector2)playerParent.position + dirOfMovement * 15;
+            transform.parent.position = Vector2.MoveTowards(transform.parent.position, positionToMoveTo, step * 2f);
+            speed -= speedDecreaseRate;
+            yield return new WaitForEndOfFrame();
+        }
+
         currentSwingStickCoroutine = null;
     }
 
     IEnumerator swingStick()
     {
-        swingNum++;
         attackAnimator.SetFloat("SwingNum", swingNum);
+        attackAnimator.SetTrigger("Zkey");
+
+        if (swingNumResetCoroutine != null)
+        {
+            StopCoroutine(swingNumResetCoroutine);
+        }
+        swingNumResetCoroutine = StartCoroutine(swingNumResetTimer());
 
         Vector2 directionOfMovement = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
@@ -132,6 +161,7 @@ public class PlayerAttack : MonoBehaviour
 
         //Animation
 
+        
         if (currentSwingStickCoroutine != null)
         {
             StopCoroutine(currentSwingStickCoroutine);
@@ -211,11 +241,12 @@ public class PlayerAttack : MonoBehaviour
             }
         }
 
-        if (swingNum == 3)
+        if (swingNum == 2)
         {
             swingNum = 0;
         }
 
+        swingNum++;
     }
 
     void adjustStickTransform()

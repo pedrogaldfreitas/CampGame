@@ -93,6 +93,12 @@ public class PlayerAttack : MonoBehaviour
         return;
     }
 
+    public void SetSwingAnimationSpeed(float speed)
+    {
+        attackAnimator.SetFloat("AttackSpeed", speed);
+        return;
+    }
+
     public void ResetSwingNum()
     {
         swingNum = 0;

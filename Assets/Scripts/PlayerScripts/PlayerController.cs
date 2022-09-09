@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
     Vector2 walkingDir;
 
     private bool isGrounded;
-    private bool movementEnabled;
+    public bool movementEnabled;
 
     //Animation variables
     [SerializeField]

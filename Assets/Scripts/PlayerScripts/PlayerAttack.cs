@@ -33,6 +33,8 @@ public class PlayerAttack : MonoBehaviour
     public bool blockSwinging;
     public float dashForwardSpeed;
     public float dashForwardSpeedDecreaseRate;
+    public float finalSwingSpeedStill;
+    public float finalSwingSpeedDash;
     IEnumerator currentSwingStickCoroutine;
 
     private void Start()
@@ -99,6 +101,11 @@ public class PlayerAttack : MonoBehaviour
         return;
     }
 
+    public void HitEnemiesInSwingZone()
+    {
+
+    }
+
     public void ResetSwingNum()
     {
         swingNum = 0;
@@ -108,10 +115,10 @@ public class PlayerAttack : MonoBehaviour
     IEnumerator swingNumResetTimer()
     {
         yield return new WaitForSeconds(swingNumTimeBeforeReset);
-        swingNum = 0;
+        ResetSwingNum();
     }
 
-    IEnumerator swingStickPlayerMovement(Vector2 dirOfMovement)
+    IEnumerator swingStickPlayerMovement(Vector2 dirOfMovement, int swingNum)
     {
         float speed = swingNum != 2 ? dashForwardSpeed : dashForwardSpeed * 1.4f;
         float speedDecreaseRate = swingNum != 2 ? dashForwardSpeedDecreaseRate : dashForwardSpeedDecreaseRate * 0.7f;
@@ -131,7 +138,24 @@ public class PlayerAttack : MonoBehaviour
     IEnumerator swingStick()
     {
         attackAnimator.SetFloat("SwingNum", swingNum);
-        attackAnimator.SetTrigger("Zkey");
+        attackAnimator.SetTrigger("Zkey");        
+        
+        Vector2 directionOfMovement = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+
+        if (swingNum == 2)
+        {
+            if (directionOfMovement == new Vector2(0, 0))
+            {
+                SetSwingAnimationSpeed(finalSwingSpeedStill);
+            }
+            else
+            {
+                SetSwingAnimationSpeed(finalSwingSpeedDash);
+            }
+        } else if (swingNum < 2)
+        {
+            SetSwingAnimationSpeed(1);
+        }
 
         if (swingNumResetCoroutine != null)
         {
@@ -139,50 +163,32 @@ public class PlayerAttack : MonoBehaviour
         }
         swingNumResetCoroutine = StartCoroutine(swingNumResetTimer());
 
-        Vector2 directionOfMovement = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
         yield return new WaitForSeconds(0.08f);
-        //If player is facing forwards, move the attack position to the proper position.
-        if (PlayerFacing.playerFacingDir == PlayerFacing.facingDir.DOWN)
-        {
-            Debug.Log("Attacked Down.");
-            attackPos.transform.position = new Vector3(transform.position.x + 0.1f, transform.position.y + 0.78f, transform.position.z);
-        }
-        else if (PlayerFacing.playerFacingDir == PlayerFacing.facingDir.UP)
-        {
-            Debug.Log("Attacked Up.");
-            attackPos.transform.position = new Vector3(transform.position.x, transform.position.y + 0.19f, transform.position.z);
-        }
-        else if (PlayerFacing.playerFacingDir == PlayerFacing.facingDir.LEFT)
-        {
-            Debug.Log("Attacked Left.");
-            attackPos.transform.position = new Vector3(transform.position.x - 0.06f, transform.position.y, transform.position.z);
-        }
-        else if (PlayerFacing.playerFacingDir == PlayerFacing.facingDir.RIGHT)
-        {
-            Debug.Log("Attacked Right.");
-            attackPos.transform.position = new Vector3(transform.position.x + 0.06f, transform.position.y, transform.position.z);
-        }
 
 
         //Animation
 
-        
         if (currentSwingStickCoroutine != null)
         {
             StopCoroutine(currentSwingStickCoroutine);
         }
 
         adjustStickTransform();
-        currentSwingStickCoroutine = swingStickPlayerMovement(directionOfMovement);
+        currentSwingStickCoroutine = swingStickPlayerMovement(directionOfMovement, swingNum);
         StartCoroutine(currentSwingStickCoroutine);
-        
+
 
         //The actual attack code.
 
-        Collider2D[] enemiesToDamage = Physics2D.OverlapCircleAll(attackCirclePos.position, attackRange, whatIsEnemies);
+        ContactFilter2D contactFilter = new ContactFilter2D();
+        contactFilter.SetLayerMask(LayerMask.GetMask("Enemy"));
+        contactFilter.useLayerMask = true;
+        contactFilter.useTriggers = true;
+        List<Collider2D> enemiesToDamage = new List<Collider2D>(); 
+        Physics2D.OverlapCollider(attackCirclePos.GetComponent<PolygonCollider2D>(), contactFilter, enemiesToDamage);
 
-        for (int i = 0; i < enemiesToDamage.Length; i++)
+        for (int i = 0; i < enemiesToDamage.Count; i++)
         {
             if (PlayerFacing.playerFacingDir == PlayerFacing.facingDir.DOWN)
             {
@@ -284,8 +290,8 @@ public class PlayerAttack : MonoBehaviour
     {
         Debug.Log("hitEnemy works.");
 
-        float hitForce = swingNum == 3 ? 2 : 0.7f;
-        damage = swingNum == 3 ? damage * 2 : damage;
+        float hitForce = swingNum == 2 ? 2 : 0.7f;
+        damage = swingNum == 2 ? damage * 2 : damage;
 
         enemy.GetComponent<Enemy>().TakeDamage(damage);
         if (enemy.gameObject.GetComponent<Enemy>().lightEnemy)
@@ -317,7 +323,7 @@ public class PlayerAttack : MonoBehaviour
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(attackCirclePos.position, attackRange);
+        //Gizmos.DrawWireSphere(attackCirclePos.position, attackRange);
         //Gizmos.DrawWireSphere(new Vector3(transform.position.x + xPosCircle, transform.position.y + yPosCircle), attackRange);
 
     }

@@ -48,7 +48,7 @@ public class RaccoonAI : MonoBehaviour
                 parent.position = moveSpot;
                 if (Vector2.Distance(transform.position, player.transform.position) < 15)
                 {
-                    raccoonState = State.JUMPATTACK;
+                    //raccoonState = State.JUMPATTACK;
                 }
             }
         }

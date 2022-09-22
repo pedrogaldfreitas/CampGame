@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class newShadowScript : MonoBehaviour
@@ -13,8 +14,12 @@ public class newShadowScript : MonoBehaviour
     private float prevXVal;
     private float prevYVal;
     public bool onHorizontalSlope;
+    private bool wasPrevOnHorizontalSlope;
     public bool onVerticalSlope;
+    private bool wasPrevOnVerticalSlope;
     float slopeFH;
+
+    private float totalAmountRisenOrSunk;
 
     private Renderer thisRenderer;
 
@@ -31,28 +36,26 @@ public class newShadowScript : MonoBehaviour
     private void Start()
     {
         thisRenderer = GetComponent<Renderer>();
+        wasPrevOnHorizontalSlope = false;
+        wasPrevOnVerticalSlope = false;
+        totalAmountRisenOrSunk = 0;
     }
 
     void Update()
     {
         RaycastHit2D horizontalSlopeCheckRay = Physics2D.Raycast(transform.position + Vector3.down * raycastDistanceMultiplier, Vector2.down, 0.3f, (1 << 12));
         RaycastHit2D verticalSlopeCheckRay = Physics2D.Raycast(transform.position + Vector3.down * raycastDistanceMultiplier, Vector2.down, 0.3f, (1 << 11));
-        //RaycastHit2D cliffsideCheckRay1 = Physics2D.Raycast(transform.position + Vector3.down * raycastDistanceMultiplier, Vector2.down, 0.3f, (1 << 15));//Middle
-        //RaycastHit2D cliffsideCheckRay2 = Physics2D.Raycast(transform.position + Vector3.down * raycastDistanceMultiplier + Vector3.left*mult, Vector2.down, 0.3f, (1 << 15));//left
-        //RaycastHit2D cliffsideCheckRay3 = Physics2D.Raycast(transform.position + Vector3.down * raycastDistanceMultiplier + Vector3.right*mult, Vector2.down, 0.3f, (1 << 15));//right
 
         RaycastHit2D[] platformBaseCheckRay = Physics2D.RaycastAll(transform.position + Vector3.down * raycastDistanceMultiplier, Vector2.down, 0.3f, (1 << 17));
 
         checkFloorHeight();
         sortingOrderAdjust();
-
-        //The cliffside check rays, visualized.
+        Debug.Log("PEDROLOG: horizontalSlopeCheckRay location = " + (transform.position + Vector3.down * raycastDistanceMultiplier));
         Debug.DrawRay(transform.position + Vector3.down * raycastDistanceMultiplier, Vector2.down*0.3f, Color.blue);
-        //Debug.DrawRay(transform.position + Vector3.down * raycastDistanceMultiplier + Vector3.left * mult, Vector2.down * 0.3f, Color.green);
-        //Debug.DrawRay(transform.position + Vector3.down * raycastDistanceMultiplier + Vector3.right * mult, Vector2.down * 0.3f, Color.green);
-
+        //Debug.Log("PEDROLOG: ray origin point = " + (transform.position * raycastDistanceMultiplier));
         if (horizontalSlopeCheckRay)
         {
+            Debug.Log("PEDROLOG: horizontal slope check ray = " + horizontalSlopeCheckRay.transform);
             SlopeCheck(horizontalSlopeCheckRay.collider.gameObject);
         } else
         {
@@ -61,17 +64,12 @@ public class newShadowScript : MonoBehaviour
 
         if (verticalSlopeCheckRay)
         {
+            Debug.Log("PEDROLOG: vertical slope check ray = " + verticalSlopeCheckRay.transform);
             SlopeCheck(verticalSlopeCheckRay.collider.gameObject);
         } else
         {
             onVerticalSlope = false;
         }
-
-        /*if (cliffsideCheckRay1)
-        {
-            //NOTE: Make sure the parameter is the height of the cliff.
-            cliffDetect(cliffsideCheckRay1, cliffsideCheckRay1.transform.localScale.y*((BoxCollider2D)cliffsideCheckRay1.collider).size.y); 
-        }*/
 
         if (platformBaseCheckRay.Length > 0)
         {
@@ -85,6 +83,14 @@ public class newShadowScript : MonoBehaviour
 
     public void platformBaseDetect(RaycastHit2D[] platformBaseCheckRay)
     {
+        if (wasPrevOnHorizontalSlope)
+        {
+            if (totalAmountRisenOrSunk != 0)
+            {
+                Debug.Log("PEDROLOG: went up a total of " + totalAmountRisenOrSunk);
+            }
+            totalAmountRisenOrSunk = 0;
+        }
         //Goal: Raise shadow position if the object is above the platform.
         float platformHeight = platformBaseCheckRay[0].transform.parent.Find("top").GetComponent<platformScript>().floorHeight;
         if ((floorHeight + parentObj.GetComponent<FakeHeightObject>().height > platformHeight)&&(floorHeight != platformBaseCheckRay[0].transform.parent.Find("top").GetComponent<platformScript>().floorHeight))
@@ -93,41 +99,42 @@ public class newShadowScript : MonoBehaviour
         }
     }
 
-    //This function is called when the object falls off a cliff.
-    /*private void cliffDetect(RaycastHit2D cliff, float fallHeight)
-    {
-        Debug.Log("cliffDetect ran.");
-        if (floorHeight >= cliff.transform.GetComponent<wallScript>().upperPlatform.GetComponent<platformScript>().floorHeight)
-        {
-            Physics2D.IgnoreCollision(mainObj.GetComponents<BoxCollider2D>()[0], cliff.collider, true);
-        } else
-        {
-            if (parentObj.GetComponent<FakeHeightObject>().isGrounded)
-            {
-                Physics2D.IgnoreCollision(mainObj.GetComponents<BoxCollider2D>()[0], cliff.collider, false);
-            }
-        }
-    }*/
-
-
     //SOURCE OF PROBLEM: Janky jumping likely happens because of this function.
     private void SlopeCheck(GameObject slope)
     {
         onHorizontalSlope = slope.GetComponent<newSlopeScript>().isHorizontalSlope;
         onVerticalSlope = slope.GetComponent<newSlopeScript>().isVerticalSlope;
+        Debug.Log("PEDROLOG: onHorizontalSlope = " + onHorizontalSlope);
 
-        if (onHorizontalSlope)
+        if (onHorizontalSlope || wasPrevOnHorizontalSlope)
         {
             float slopeValue = slope.GetComponent<newSlopeScript>().horizontalFloorHeightThreshold;
 
             if ((this.transform.position.x != prevXVal)&&(Mathf.Abs(FindSlopeFloorh(slope.transform) - floorHeight) < 2))
             {
-                if (parentObj.GetComponent<FakeHeightObject>().isGrounded)
+                totalAmountRisenOrSunk += 35 * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime;
+                if (!onHorizontalSlope && wasPrevOnHorizontalSlope)
                 {
-                    parentObj.transform.position += Vector3.up * 35 * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime;
+                    float[] twoPlatformHeights = new float[2] { slope.GetComponent<newSlopeScript>().h1, slope.GetComponent<newSlopeScript>().h2 };
+                    float platformBeingSteppedOn = twoPlatformHeights.Aggregate((x, y) => Mathf.Abs(x - totalAmountRisenOrSunk) < Mathf.Abs(y - totalAmountRisenOrSunk) ? x : y);
+                    Debug.Log("PEDROLOG: The last bit of height needed to be added = " + (platformBeingSteppedOn - totalAmountRisenOrSunk));
+                    if (parentObj.GetComponent<FakeHeightObject>().isGrounded)
+                    {
+                        parentObj.transform.position += Vector3.up * (platformBeingSteppedOn - totalAmountRisenOrSunk);
+                    }
+                    else
+                    {
+                        this.transform.position += Vector3.up * (platformBeingSteppedOn - totalAmountRisenOrSunk);
+                    }
                 } else
                 {
-                    this.transform.position += Vector3.up * 35 * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime;
+                    if (parentObj.GetComponent<FakeHeightObject>().isGrounded)
+                    {
+                        parentObj.transform.position += Vector3.up * 35 * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime;
+                    } else
+                    {
+                        this.transform.position += Vector3.up * 35 * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime;
+                    }
                 }
             }
         }
@@ -139,14 +146,17 @@ public class newShadowScript : MonoBehaviour
                 //floorHeight += slopeValue;
                 if (parentObj.GetComponent<FakeHeightObject>().isGrounded)
                 {
-                    parentObj.transform.position -= Vector3.down * 6 * (transform.position.y - prevYVal) * slopeValue * Time.deltaTime;
+                    parentObj.transform.position += Vector3.up * 35 * (transform.position.y - prevYVal) * slopeValue * Time.deltaTime;
+                    //parentObj.transform.position -= Vector3.down * 6 * (transform.position.y - prevYVal) * slopeValue * Time.deltaTime;
                 } else
                 {
-                    this.transform.position -= Vector3.down * 6 * (transform.position.y - prevYVal) * slopeValue * Time.deltaTime;
+                    this.transform.position += Vector3.up * 35 * (transform.position.y - prevYVal) * slopeValue * Time.deltaTime;
+                    //this.transform.position -= Vector3.down * 6 * (transform.position.y - prevYVal) * slopeValue * Time.deltaTime;
                 }
             }
         }
-
+        wasPrevOnHorizontalSlope = onHorizontalSlope;
+        wasPrevOnVerticalSlope = onVerticalSlope;
 
     }
 
@@ -245,9 +255,9 @@ public class newShadowScript : MonoBehaviour
             float slopeLeftSide = slope.transform.position.x - slope.transform.GetComponent<PolygonCollider2D>().bounds.extents.x;
             float slopeRightSide = slope.transform.position.x + slope.transform.GetComponent<PolygonCollider2D>().bounds.extents.x;
 
-            float plat1FH = slope.GetComponent<newSlopeScript>().platform1.GetComponent<platformScript>().floorHeight;
-            float plat2FH = slope.GetComponent<newSlopeScript>().platform2.GetComponent<platformScript>().floorHeight;
-
+            float plat1FH = slope.GetComponent<newSlopeScript>().platform1.transform.Find("top").GetComponent<platformScript>().floorHeight;
+            float plat2FH = slope.GetComponent<newSlopeScript>().platform2.transform.Find("top").GetComponent<platformScript>().floorHeight;
+            Debug.Log("PEDROLOG: plat1FH = " + plat1FH + ", plat2FH = " + plat2FH);
             //float objRelativeXPos = slopeLeftSide + this.transform.position.x;
             horizontalFH = ((transform.position.x - slopeLeftSide) / (slopeRightSide - slopeLeftSide)); //This should be the % of the way up the slope.
 
@@ -256,14 +266,14 @@ public class newShadowScript : MonoBehaviour
                 horizontalFH = (1 - horizontalFH);
             }
 
-            horizontalFH = horizontalFH * Mathf.Abs((slope.GetComponent<newSlopeScript>().platform2.GetComponent<platformScript>().floorHeight) - (slope.GetComponent<newSlopeScript>().platform1.GetComponent<platformScript>().floorHeight));
+            horizontalFH = horizontalFH * Mathf.Abs((slope.GetComponent<newSlopeScript>().platform2.transform.Find("top").GetComponent<platformScript>().floorHeight) - (slope.GetComponent<newSlopeScript>().platform1.transform.Find("top").GetComponent<platformScript>().floorHeight));
 
             if (plat1FH < plat2FH)
             {
-                horizontalFH = horizontalFH + slope.GetComponent<newSlopeScript>().platform1.GetComponent<platformScript>().floorHeight;
+                horizontalFH = horizontalFH + slope.GetComponent<newSlopeScript>().platform1.transform.Find("top").GetComponent<platformScript>().floorHeight;
             } else
             {
-                horizontalFH = horizontalFH + slope.GetComponent<newSlopeScript>().platform2.GetComponent<platformScript>().floorHeight;
+                horizontalFH = horizontalFH + slope.GetComponent<newSlopeScript>().platform2.transform.Find("top").GetComponent<platformScript>().floorHeight;
             }
         }
         if (slope.GetComponent<newSlopeScript>().isVerticalSlope)
@@ -271,8 +281,8 @@ public class newShadowScript : MonoBehaviour
             float slopeTopSide = slope.transform.position.y + slope.transform.GetComponent<PolygonCollider2D>().bounds.extents.y;
             float slopeBottomSide = slope.transform.position.y - slope.transform.GetComponent<PolygonCollider2D>().bounds.extents.y;
 
-            float plat1FH = slope.GetComponent<newSlopeScript>().platform1.GetComponent<platformScript>().floorHeight;
-            float plat2FH = slope.GetComponent<newSlopeScript>().platform2.GetComponent<platformScript>().floorHeight;
+            float plat1FH = slope.GetComponent<newSlopeScript>().platform1.transform.Find("top").GetComponent<platformScript>().floorHeight;
+            float plat2FH = slope.GetComponent<newSlopeScript>().platform2.transform.Find("top").GetComponent<platformScript>().floorHeight;
             
             if (parentObj.name == "PlayerParent")
             {
@@ -302,11 +312,11 @@ public class newShadowScript : MonoBehaviour
 
             if (plat1FH < plat2FH)
             {
-                verticalFH = verticalFH + slope.GetComponent<newSlopeScript>().platform1.GetComponent<platformScript>().floorHeight;
+                verticalFH = verticalFH + slope.GetComponent<newSlopeScript>().platform1.transform.Find("top").GetComponent<platformScript>().floorHeight;
             }
             else
             {
-                verticalFH = verticalFH + slope.GetComponent<newSlopeScript>().platform2.GetComponent<platformScript>().floorHeight;
+                verticalFH = verticalFH + slope.GetComponent<newSlopeScript>().platform2.transform.Find("top").GetComponent<platformScript>().floorHeight;
             }
 
             if (parentObj.name == "PlayerParent")

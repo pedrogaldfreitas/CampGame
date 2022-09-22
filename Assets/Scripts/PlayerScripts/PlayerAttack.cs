@@ -103,7 +103,77 @@ public class PlayerAttack : MonoBehaviour
 
     public void HitEnemiesInSwingZone()
     {
+        ContactFilter2D contactFilter = new ContactFilter2D();
+        contactFilter.SetLayerMask(LayerMask.GetMask("Enemy"));
+        contactFilter.useLayerMask = true;
+        contactFilter.useTriggers = true;
+        List<Collider2D> enemiesToDamage = new List<Collider2D>();
+        Physics2D.OverlapCollider(attackCirclePos.GetComponent<PolygonCollider2D>(), contactFilter, enemiesToDamage);
 
+        for (int i = 0; i < enemiesToDamage.Count; i++)
+        {
+            if (PlayerFacing.playerFacingDir == PlayerFacing.facingDir.DOWN)
+            {
+
+                if (enemiesToDamage[i].transform.position.y <= attackCirclePos.position.y)
+                {
+                    if (enemiesToDamage[i].tag == "InteractObject")
+                    {
+                        enemiesToDamage[i].GetComponent<breakableObjectScript>().TakeDamage(damage, true);
+                    }
+                    else
+                    {
+                        hitEnemy(enemiesToDamage[i]);
+                        //enemiesToDamage[i].GetComponent<Enemy>().TakeDamage(damage);
+                    }
+                }
+            }
+            else if (PlayerFacing.playerFacingDir == PlayerFacing.facingDir.UP)
+            {
+                if (enemiesToDamage[i].transform.position.y >= attackCirclePos.position.y)
+                {
+                    if (enemiesToDamage[i].tag == "InteractObject")
+                    {
+                        enemiesToDamage[i].GetComponent<breakableObjectScript>().TakeDamage(damage, true);
+                    }
+                    else
+                    {
+                        hitEnemy(enemiesToDamage[i]);
+                        // enemiesToDamage[i].GetComponent<Enemy>().TakeDamage(damage);
+                    }
+                }
+            }
+            else if (PlayerFacing.playerFacingDir == PlayerFacing.facingDir.LEFT)
+            {
+                if (enemiesToDamage[i].transform.position.x <= attackCirclePos.position.x)
+                {
+                    if (enemiesToDamage[i].tag == "InteractObject")
+                    {
+                        enemiesToDamage[i].GetComponent<breakableObjectScript>().TakeDamage(damage, true);
+                    }
+                    else
+                    {
+                        hitEnemy(enemiesToDamage[i]);
+                        //enemiesToDamage[i].GetComponent<Enemy>().TakeDamage(damage);
+                    }
+                }
+            }
+            else if (PlayerFacing.playerFacingDir == PlayerFacing.facingDir.RIGHT)
+            {
+                if (enemiesToDamage[i].transform.position.x >= attackCirclePos.position.x)
+                {
+                    if (enemiesToDamage[i].tag == "InteractObject")
+                    {
+                        enemiesToDamage[i].GetComponent<breakableObjectScript>().TakeDamage(damage, true);
+                    }
+                    else
+                    {
+                        hitEnemy(enemiesToDamage[i]);
+                        //enemiesToDamage[i].GetComponent<Enemy>().TakeDamage(damage);
+                    }
+                }
+            }
+        }
     }
 
     public void ResetSwingNum()
@@ -178,81 +248,6 @@ public class PlayerAttack : MonoBehaviour
         currentSwingStickCoroutine = swingStickPlayerMovement(directionOfMovement, swingNum);
         StartCoroutine(currentSwingStickCoroutine);
 
-
-        //The actual attack code.
-
-        ContactFilter2D contactFilter = new ContactFilter2D();
-        contactFilter.SetLayerMask(LayerMask.GetMask("Enemy"));
-        contactFilter.useLayerMask = true;
-        contactFilter.useTriggers = true;
-        List<Collider2D> enemiesToDamage = new List<Collider2D>(); 
-        Physics2D.OverlapCollider(attackCirclePos.GetComponent<PolygonCollider2D>(), contactFilter, enemiesToDamage);
-
-        for (int i = 0; i < enemiesToDamage.Count; i++)
-        {
-            if (PlayerFacing.playerFacingDir == PlayerFacing.facingDir.DOWN)
-            {
-
-                if (enemiesToDamage[i].transform.position.y <= attackCirclePos.position.y)
-                {
-                    if (enemiesToDamage[i].tag == "InteractObject")
-                    {
-                        enemiesToDamage[i].GetComponent<breakableObjectScript>().TakeDamage(damage, true);
-                    }
-                    else
-                    {
-                        hitEnemy(enemiesToDamage[i]);
-                        //enemiesToDamage[i].GetComponent<Enemy>().TakeDamage(damage);
-                    }
-                }
-            }
-            else if (PlayerFacing.playerFacingDir == PlayerFacing.facingDir.UP)
-            {
-                if (enemiesToDamage[i].transform.position.y >= attackCirclePos.position.y)
-                {
-                    if (enemiesToDamage[i].tag == "InteractObject")
-                    {
-                        enemiesToDamage[i].GetComponent<breakableObjectScript>().TakeDamage(damage, true);
-                    }
-                    else
-                    {
-                        hitEnemy(enemiesToDamage[i]);
-                        // enemiesToDamage[i].GetComponent<Enemy>().TakeDamage(damage);
-                    }
-                }
-            }
-            else if (PlayerFacing.playerFacingDir == PlayerFacing.facingDir.LEFT)
-            {
-                if (enemiesToDamage[i].transform.position.x <= attackCirclePos.position.x)
-                {
-                    if (enemiesToDamage[i].tag == "InteractObject")
-                    {
-                        enemiesToDamage[i].GetComponent<breakableObjectScript>().TakeDamage(damage, true);
-                    }
-                    else
-                    {
-                        hitEnemy(enemiesToDamage[i]);
-                        //enemiesToDamage[i].GetComponent<Enemy>().TakeDamage(damage);
-                    }
-                }
-            }
-            else if (PlayerFacing.playerFacingDir == PlayerFacing.facingDir.RIGHT)
-            {
-                if (enemiesToDamage[i].transform.position.x >= attackCirclePos.position.x)
-                {
-                    if (enemiesToDamage[i].tag == "InteractObject")
-                    {
-                        enemiesToDamage[i].GetComponent<breakableObjectScript>().TakeDamage(damage, true);
-                    }
-                    else
-                    {
-                        hitEnemy(enemiesToDamage[i]);
-                        //enemiesToDamage[i].GetComponent<Enemy>().TakeDamage(damage);
-                    }
-                }
-            }
-        }
-
         if (swingNum == 2)
         {
             swingNum = 0;
@@ -266,18 +261,14 @@ public class PlayerAttack : MonoBehaviour
         switch (swingNum)
         {
             case 1:
-                Debug.Log("Case 1");
                 stickObj.localPosition = new Vector3(0.41f, 1.39f, -0.5f);
                 stickObj.GetComponent<SpriteRenderer>().flipX = false;
                 break;
             case 2:
-                Debug.Log("Case 2 P1 - " + stickObj.localPosition);
                 stickObj.localPosition = new Vector3(-0.36f, 1.28f, -0.5f);
-                Debug.Log("Case 2 P2 - " + stickObj.localPosition);
                 stickObj.GetComponent<SpriteRenderer>().flipX = true;
                 break;
             case 3:
-                Debug.Log("Case 3 P1 - " + stickObj.localPosition);
                 stickObj.localPosition = new Vector3(0.41f, 1.39f, -0.5f);
                 stickObj.GetComponent<SpriteRenderer>().flipX = false;
                 break;
@@ -318,14 +309,6 @@ public class PlayerAttack : MonoBehaviour
         enemy.transform.parent.GetComponent<FakeHeightObject>().verticalVelocity = hitForce*30f;
 
         StartCoroutine(enemy.GetComponent<Enemy>().Whacked(hitForce));
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.red;
-        //Gizmos.DrawWireSphere(attackCirclePos.position, attackRange);
-        //Gizmos.DrawWireSphere(new Vector3(transform.position.x + xPosCircle, transform.position.y + yPosCircle), attackRange);
-
     }
 
 }

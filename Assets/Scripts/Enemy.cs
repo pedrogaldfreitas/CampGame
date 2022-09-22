@@ -8,6 +8,9 @@ public class Enemy : MonoBehaviour
     public int touchDamage;
     public int enemyHealth;
 
+    //Player damage variables
+    public float knockbackPower;
+
     Transform parent;
 
     //A light enemy can be launched back by being wacked with a stick. (Raccoon is light, bear is not)
@@ -16,6 +19,7 @@ public class Enemy : MonoBehaviour
     private void Start()
     {
         parent = transform.parent;
+        Physics2D.IgnoreCollision(transform.parent.Find("Shadow").GetComponent<BoxCollider2D>(), GameObject.Find("PlayerParent").transform.Find("Shadow").GetComponent<BoxCollider2D>(), true);
     }
 
     void Update()
@@ -49,7 +53,7 @@ public class Enemy : MonoBehaviour
     {
         if ((other.name == "Player") && (other.GetComponent<ObjectProperties>().invincible == false))
         {
-            other.GetComponent<PlayerHealth>().damageHealth(dmg);
+            other.GetComponent<PlayerHealth>().DamagePlayer(dmg, transform.position, knockbackPower);
             other.GetComponent<ObjectProperties>().invincible = true;
         }
         return;

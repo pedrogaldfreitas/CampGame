@@ -380,7 +380,16 @@ AnimationClip:
     path: stickReference
     classID: 212
     script: {fileID: 0}
-  m_PPtrCurves: []
+  m_PPtrCurves:
+  - curve:
+    - time: 0
+      value: {fileID: 21300000, guid: 6621ec12ae719bf48919d7df8a5c6851, type: 3}
+    - time: 1
+      value: {fileID: 21300000, guid: 6621ec12ae719bf48919d7df8a5c6851, type: 3}
+    attribute: m_Sprite
+    path: stickReference
+    classID: 212
+    script: {fileID: 0}
   m_SampleRate: 60
   m_WrapMode: 0
   m_Bounds:
@@ -425,6 +434,13 @@ AnimationClip:
       isPPtrCurve: 0
     - serializedVersion: 2
       path: 2724822898
+      attribute: 0
+      script: {fileID: 0}
+      typeID: 212
+      customType: 23
+      isPPtrCurve: 1
+    - serializedVersion: 2
+      path: 2724822898
       attribute: 3
       script: {fileID: 0}
       typeID: 4
@@ -451,13 +467,15 @@ AnimationClip:
       typeID: 212
       customType: 0
       isPPtrCurve: 0
-    pptrCurveMapping: []
+    pptrCurveMapping:
+    - {fileID: 21300000, guid: 6621ec12ae719bf48919d7df8a5c6851, type: 3}
+    - {fileID: 21300000, guid: 6621ec12ae719bf48919d7df8a5c6851, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 1
+    m_StopTime: 1.0166667
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -1306,6 +1324,13 @@ AnimationClip:
     messageOptions: 0
   - time: 0
     functionName: ToggleEnablePlayerMovement
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 0
+    messageOptions: 0
+  - time: 0.4
+    functionName: HitEnemiesInSwingZone
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

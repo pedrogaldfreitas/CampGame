@@ -2600,14 +2600,21 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0
-    functionName: BlockSwinging
+    functionName: ToggleEnablePlayerMovement
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
-    intParameter: 1
+    intParameter: 0
     messageOptions: 0
   - time: 0
-    functionName: ToggleEnablePlayerMovement
+    functionName: BlockSwinging
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 1
+    messageOptions: 0
+  - time: 0.41666666
+    functionName: HitEnemiesInSwingZone
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
@@ -2619,13 +2626,6 @@ AnimationClip:
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
-    messageOptions: 0
-  - time: 1
-    functionName: ToggleEnablePlayerMovement
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 1
     messageOptions: 0
   - time: 1
     functionName: SetSwingAnimationSpeed
@@ -2633,4 +2633,11 @@ AnimationClip:
     objectReferenceParameter: {fileID: 0}
     floatParameter: 1
     intParameter: 0
+    messageOptions: 0
+  - time: 1
+    functionName: ToggleEnablePlayerMovement
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 1
     messageOptions: 0

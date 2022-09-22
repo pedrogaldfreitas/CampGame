@@ -7,11 +7,17 @@ public class PlayerHealth : MonoBehaviour
 {
     public int health;
     public int heartSlots;
+    public Transform playerParentTransform;
 
     public Image[] hearts;
     public Sprite fullHeart;
     public Sprite halfHeart;
     public Sprite emptyHeart;
+
+    private void Start()
+    {
+        playerParentTransform = transform.parent;
+    }
 
     private void Update()
     {
@@ -62,5 +68,26 @@ public class PlayerHealth : MonoBehaviour
     {
         health = health - dmg;
         return;
+    }
+
+    public IEnumerator KnockbackPlayer(Vector2 damageOriginPoint, float knockbackPower)
+    {
+        //Vector2 parentTransformPosition = playerParentTransform.position;
+        Vector2 playerToEnemyVector = (Vector2)playerParentTransform.Find("Shadow").position - damageOriginPoint;
+        playerToEnemyVector.Normalize();
+        for (int i = 0; i < 10; i++)
+        {
+            playerParentTransform.Translate(playerToEnemyVector*knockbackPower, Space.World);
+            yield return new WaitForSeconds(0.01f);
+        }
+    }
+
+    public void DamagePlayer(int dmg, Vector2 damageOriginPoint = new Vector2(), float knockbackPower = 0)
+    {
+        damageHealth(dmg);
+        if (damageOriginPoint != Vector2.zero && knockbackPower != 0)
+        {
+            StartCoroutine(KnockbackPlayer(damageOriginPoint, knockbackPower));
+        }
     }
 }

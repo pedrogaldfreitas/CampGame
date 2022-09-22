@@ -49,17 +49,15 @@ public class solidScript : MonoBehaviour
     //Take any shadow collided with this object and put them in the IgnoredCollisions array if the floorHeight is above the solid's.
     private void OnCollisionStay2D(Collision2D collision)
     {
-        if (collision.transform.name == "PlayerParent")
+        if (collision.transform.name == "PlayerParent" || collision.transform.name.StartsWith("RaccoonParent"))
         {
             newShadowScript shadow = collision.transform.Find("Shadow").GetComponent<newShadowScript>();
             FakeHeightObject fakeHeightObj = collision.transform.GetComponent<FakeHeightObject>();
-            Debug.Log("Shadow FH = " + shadow.floorHeight + ", Player Height w/ shadow offset = " + (fakeHeightObj.height + fakeHeightObj.shadowOffset) + ", Solid Base Height = " + solidHeight);
 
             if (shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset > solidHeight)
             {
                 Physics2D.IgnoreCollision(this.GetComponent<PolygonCollider2D>(), collision.transform.Find("Shadow").GetComponent<Collider2D>(), true);
                 ignoredCollisions.Add(collision);
-                Debug.Log("Now ignoring collisions with " + collision.transform.name);
             }
 
             if (!coroutineRunning)

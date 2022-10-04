@@ -49,7 +49,7 @@ public class DialogueManager : MonoBehaviour
 
         sentences = new Queue<string>();
 
-        StartCoroutine(DialogueOptions(4, 0.5f, "Poop", "Diag option 2", "Diag Option 3", "Diag Option 4"));
+        //StartCoroutine(DialogueOptions(4, 0.5f, "Poop", "Diag option 2", "Diag Option 3", "Diag Option 4"));
     }
 
     private void Update()

@@ -6,64 +6,28 @@ public class solidScript : MonoBehaviour
 {
     //This is the "clearance" height of the object (if other object is above this height, it ignores collisions with it. SET AUTOMATICALLY VIA Start()
     public float solidHeight;
-
-    public List<Collision2D> ignoredCollisions;
-    private int ignoredCollisionsCount;
-    private bool coroutineRunning;
-
-    public Collision2D[] onCollisionEnterBuffer;
-    private int collisionBuffer;
-
-    // Start is called before the first frame update
-    void Start()
+    
+    private void Start()
     {
-        ignoredCollisions = new List<Collision2D>();
-        onCollisionEnterBuffer = new Collision2D[20];
-        //Debug.Log("Length of ignoredCollisions: " + ignoredCollisions.Length);
-        coroutineRunning = false;
-        collisionBuffer = 0;
+        solidHeight = transform.parent.Find("top").GetComponent<platformScript>().floorHeight;
     }
 
-    private IEnumerator ignoredCollidersCheck()
+    private IEnumerator IgnoreCollisions(Collider2D collider1, Collider2D collider2)
     {
-        while (ignoredCollisions.Count > 0)
-        {
-            for (int i = 0; i < ignoredCollisions.Count; i++)
-            {
-                newShadowScript shadow = ignoredCollisions[i].transform.Find("Shadow").GetComponent<newShadowScript>();
-                FakeHeightObject fakeHeightObj = ignoredCollisions[i].transform.GetComponent<FakeHeightObject>();
-                //Debug.Log((shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset < solidHeight));
-
-                if (shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset < solidHeight)
-                {
-                    Physics2D.IgnoreCollision(this.GetComponent<PolygonCollider2D>(), ignoredCollisions[i].transform.Find("Shadow").GetComponent<Collider2D>(), false);
-                    ignoredCollisions.RemoveAt(i);
-                    i--;
-                }
-            }
-            yield return new WaitForSeconds(0.01f);
-        }
-        coroutineRunning = false;
+        Physics2D.IgnoreCollision(collider1, collider2, true);
+        while (Physics2D.Distance(collider1, collider2).isOverlapped) { yield return null; }
+        Physics2D.IgnoreCollision(collider1, collider2, false);
     }
 
-    //Take any shadow collided with this object and put them in the IgnoredCollisions array if the floorHeight is above the solid's.
     private void OnCollisionStay2D(Collision2D collision)
     {
         if (collision.transform.name == "PlayerParent" || collision.transform.name.StartsWith("RaccoonParent"))
         {
             newShadowScript shadow = collision.transform.Find("Shadow").GetComponent<newShadowScript>();
             FakeHeightObject fakeHeightObj = collision.transform.GetComponent<FakeHeightObject>();
-
             if (shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset > solidHeight)
             {
-                Physics2D.IgnoreCollision(this.GetComponent<PolygonCollider2D>(), collision.transform.Find("Shadow").GetComponent<Collider2D>(), true);
-                ignoredCollisions.Add(collision);
-            }
-
-            if (!coroutineRunning)
-            {
-                coroutineRunning = true;
-                StartCoroutine(ignoredCollidersCheck());
+                StartCoroutine(IgnoreCollisions(this.GetComponent<Collider2D>(), collision.collider));
             }
         }
     }

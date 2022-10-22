@@ -39,6 +39,11 @@ public class newSlopeScript : MonoBehaviour
     public float horizontalFloorHeightThreshold;
     public float verticalFloorHeightThreshold;
 
+    private void Start()
+    {
+        //platform1.transform.Find("solid").GetComponent<solidScript>().addSlopeToListOfSlopesInPlatform(this.gameObject);
+        //platform2.transform.Find("solid").GetComponent<solidScript>().addSlopeToListOfSlopesInPlatform(this.gameObject);
+    }
 
     // Start is called before the first frame update
     void Awake()

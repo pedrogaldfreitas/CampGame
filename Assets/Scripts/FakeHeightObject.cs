@@ -87,7 +87,6 @@ public class FakeHeightObject : MonoBehaviour
     //Increases floor height of the object.
     public void Rise(float height)
     {
-        
         if (!isGrounded)
         {
             transShadow.position = new Vector2(transShadow.position.x, transShadow.position.y + height);

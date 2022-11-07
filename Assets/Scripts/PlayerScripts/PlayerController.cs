@@ -18,6 +18,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     public Animator playerAnimator;
 
+    //For slope speeds:
+    public float hSlopeSlowdown;    //Should be proportional to slopeAngleInRad/(pi/2)
+    public float hSlopeSlowdownMultiplier;
+    public float vSlopeSlowdown;    //Should be proportional to slopeAngleInRad/(pi/2)
+    public float vSlopeSlowdownMultiplier;
+
     void Start()
     {
         movementEnabled = true;
@@ -42,7 +48,7 @@ public class PlayerController : MonoBehaviour
 
             if (GetComponent<FakeHeightObject>().isGrounded)
             {
-                transform.position += (Vector3)moveVelocity * runSpeedMultiplier * Time.deltaTime;
+                transform.position += new Vector3(moveVelocity.x*(1-hSlopeSlowdown), moveVelocity.y*(1-vSlopeSlowdown)) * runSpeedMultiplier * Time.deltaTime;
             }
 
             //ANIMATION COMPONENTS

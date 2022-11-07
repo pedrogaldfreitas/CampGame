@@ -23,9 +23,13 @@ public class newSlopeScript : MonoBehaviour
     public float x1;
     public float x2;
 
+    public float movementMultiplier;
+
     //The floorheights of the two platforms attached to this slope.
     public float h1;
     public float h2;
+
+    public float slopeAngle;
 
     //Distance between platform 1 and platform 2. (Horizontal slope)
     public float horizontalDistance;
@@ -41,36 +45,26 @@ public class newSlopeScript : MonoBehaviour
 
     private void Start()
     {
-        //platform1.transform.Find("solid").GetComponent<solidScript>().addSlopeToListOfSlopesInPlatform(this.gameObject);
-        //platform2.transform.Find("solid").GetComponent<solidScript>().addSlopeToListOfSlopesInPlatform(this.gameObject);
-    }
-
-    // Start is called before the first frame update
-    void Awake()
-    {
-        /*y1 = platform1.transform.position.y;
-        y2 = platform2.transform.position.y;
-        x1 = platform1.transform.position.x;
-        x2 = platform2.transform.position.x;
-
-        h1 = platform1.GetComponent<platformScript>().floorHeight;
-        //h2 = platform2.GetComponent<platformScript>().floorHeight;
-
-        //h3 = Mathf.Abs(y2-y1);
-        h3 = y2 - y1;
-        h2 = h1 + h3;
-
-        if (thisSlopeState == slopeFacing.HORIZONTAL)
+        //Gather important values
+        h1 = platform1.transform.Find("top").GetComponent<platformScript>().floorHeight;
+        h2 = platform2.transform.Find("top").GetComponent<platformScript>().floorHeight;
+        x1 = platform1.transform.Find("base").position.x;
+        x2 = platform2.transform.Find("base").position.x;
+        /*if (this.name == "slope")
         {
-            horizontalDistance = this.GetComponent<SpriteRenderer>().bounds.size.x;
-            horizontalFloorHeightThreshold = ((h2 - h1) / horizontalDistance)*multiplier;
-        } else if (thisSlopeState == slopeFacing.VERTICAL)
-        {
-            verticalDistance = this.GetComponent<SpriteRenderer>().bounds.size.y;
-            verticalFloorHeightThreshold = ((h2 - h1) / verticalDistance)*multiplier;
-        }*/ //TEMPORARY COMMENT OUT
+            Debug.Log("PEDROLOG: h1 = " + h1 + ", h2 = " + h2 + ", x1 = " + x1 + ", x2 = " + x2);
+        }*/
 
+        //Calculate movement multiplier
+        float H = Mathf.Abs(h2 - h1);
+        float L = Mathf.Abs(x2 - x1);
+        Debug.Log("PEDROLOG#1 H = " + H + ", L = " + L);
+        float S = Mathf.Sqrt(Mathf.Pow(H,2) + Mathf.Pow(L, 2));
+        Debug.Log("PEDROLOG#2 S = " + S );
+        movementMultiplier = 1 / S;
 
+        //Calculate angle of triangle
+        slopeAngle = Mathf.Atan2(H,L);
     }
 
 }

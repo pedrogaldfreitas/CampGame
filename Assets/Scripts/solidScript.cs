@@ -19,27 +19,13 @@ public class solidScript : MonoBehaviour
     private IEnumerator IgnoreCollisions(Collider2D otherCollider)
     {
         Collider2D solidCollider = this.GetComponent<Collider2D>();
+
         Physics2D.IgnoreCollision(solidCollider, otherCollider, true);
-        if (otherCollider.name == "Shadow" && this.transform.parent.name == "platformFloor2")
-        {
-            string hi = "";
-            for (int i = 0; i < collidersTouchingSlope.Count; i++)
-            {
-                hi = hi + collidersTouchingSlope[i].name + " ";
-            }
-            Debug.Log("PEDROLOG: collidersTouchingSlope = " + hi + ". Does this contain the Shadow collider? -> " + collidersTouchingSlope.Contains(otherCollider));
-        }
+
         while (Physics2D.Distance(solidCollider, otherCollider).isOverlapped || collidersTouchingSlope.Contains(otherCollider)) {
-            if (otherCollider.name == "Shadow" && this.transform.parent.name == "platformFloor2")
-            {
-                Debug.Log("PEDROLOG: This should be repeating for " + otherCollider.name);
-            }
             yield return null; 
         }
-        if (otherCollider.name == "Shadow" && this.transform.parent.name == "platformFloor2")
-        {
-            Debug.Log("PEDROLOG: no longer ignoring collisions between Shadow and " + this.transform.name);
-        }
+
         Physics2D.IgnoreCollision(solidCollider, otherCollider, false);
     }
 
@@ -47,12 +33,9 @@ public class solidScript : MonoBehaviour
     public void ToggleIgnoreObjectOnSlope(Collider2D otherCollider, bool ignoreOrNot)
     {
         if (ignoreOrNot) {
-            Debug.Log("PEDROLOG#1 - " + collidersTouchingSlope.Count);
             collidersTouchingSlope.Add(otherCollider);
-            Debug.Log("PEDROLOG: ToggleIgnoreObjectOnSlope ADDS the slope from the array.");
             StartCoroutine(IgnoreCollisions(otherCollider));
         } else {
-            Debug.Log("PEDROLOG: ToggleIgnoreObjectOnSlope REMOVES the slope from the array.");
             collidersTouchingSlope.Remove(otherCollider);
         }
         return;

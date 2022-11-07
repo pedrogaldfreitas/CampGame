@@ -56,7 +56,8 @@ public class newShadowScript : MonoBehaviour
 
         if (horizontalSlopeCheckRay)
         {
-            SlopeCheck(horizontalSlopeCheckRay.collider.gameObject);
+            SlopeCheck(horizontalSlopeCheckRay.collider.gameObject, "horizontal");
+            onHorizontalSlope = true;
         } else
         {
             onHorizontalSlope = false;
@@ -64,7 +65,7 @@ public class newShadowScript : MonoBehaviour
 
         if (verticalSlopeCheckRay)
         {
-            SlopeCheck(verticalSlopeCheckRay.collider.gameObject);
+            SlopeCheck(verticalSlopeCheckRay.collider.gameObject, "vertical");
         } else
         {
             onVerticalSlope = false;
@@ -90,11 +91,11 @@ public class newShadowScript : MonoBehaviour
             totalAmountRisenOrSunk = 0;
         }
 
-        //Goal: Raise shadow position if the object is above the platform. First, order the detected platforms from highest floorHeight to lowest.
+        //Goal: Raise shadow position if the object is above the platform.
         List<float> platformFloorHeightArray = new List<float>();
-        for(int i = 0; i < platformBaseCheckRay.Length; i++)
+        foreach(RaycastHit2D platformHit in platformBaseCheckRay)
         {
-            platformFloorHeightArray.Add(platformBaseCheckRay[i].transform.parent.Find("top").GetComponent<platformScript>().floorHeight);
+            platformFloorHeightArray.Add(platformHit.transform.parent.Find("top").GetComponent<platformScript>().floorHeight);
         }
 
         platformFloorHeightArray.Sort();
@@ -103,7 +104,7 @@ public class newShadowScript : MonoBehaviour
 
         bool stopFlag = false;
         int index = 0;
-        while (!stopFlag)
+        while (!stopFlag && index < platformFloorHeightArray.Count)
         {
             if ((floorHeight + (thisObjHeightInfo.height + thisObjHeightInfo.shadowOffset) > platformFloorHeightArray[index]) && (floorHeight != platformFloorHeightArray[index]))
             {
@@ -141,51 +142,56 @@ public class newShadowScript : MonoBehaviour
     }
 
     //SOURCE OF PROBLEM: Janky jumping likely happens because of this function.
-    private void SlopeCheck(GameObject slope)
+    private void SlopeCheck(GameObject slope, string horizontalOrVertical)
     {
-        onHorizontalSlope = slope.GetComponent<newSlopeScript>().isHorizontalSlope;
-        onVerticalSlope = slope.GetComponent<newSlopeScript>().isVerticalSlope;
+        newSlopeScript slopeScript = slope.GetComponent<newSlopeScript>();
+        //onHorizontalSlope = slopeScript.isHorizontalSlope;
+        //onVerticalSlope = slopeScript.isVerticalSlope;
 
-        if (!slopesAffectingMovement.Contains(slope))
+        float floorMovementMultiplier = slopeScript.movementMultiplier;
+        float slopeAngle = slopeScript.slopeAngle;
+
+        if (horizontalOrVertical == "horizontal" || wasPrevOnHorizontalSlope)
         {
-            slopesAffectingMovement.Add(slope);
-        }
-
-        if (onHorizontalSlope || wasPrevOnHorizontalSlope)
-        {
-            float slopeValue = slope.GetComponent<newSlopeScript>().horizontalFloorHeightThreshold;
-
-            if ((this.transform.position.x != prevXVal)&&(Mathf.Abs(FindSlopeFloorh(slope.transform) - floorHeight) < 2))
+            float slopeValue = slopeScript.horizontalFloorHeightThreshold;
+            float slopeFloorH = FindSlopeFloorh(slope.transform);
+            if (onHorizontalSlope)
             {
-                totalAmountRisenOrSunk += 35 * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime;
-                if (!onHorizontalSlope && wasPrevOnHorizontalSlope)
+                if ((this.transform.position.x != prevXVal)&&(Mathf.Abs(slopeFloorH - floorHeight) < 2))
                 {
-                    float[] twoPlatformHeights = new float[2] { slope.GetComponent<newSlopeScript>().h1, slope.GetComponent<newSlopeScript>().h2 };
-                    float platformBeingSteppedOn = twoPlatformHeights.Aggregate((x, y) => Mathf.Abs(x - totalAmountRisenOrSunk) < Mathf.Abs(y - totalAmountRisenOrSunk) ? x : y);
-                    Debug.Log("PEDROLOG: The last bit of height needed to be added = " + (platformBeingSteppedOn - totalAmountRisenOrSunk));
-                    if (parentObj.GetComponent<FakeHeightObject>().isGrounded)
+                    totalAmountRisenOrSunk += 35 * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime;
+                    //Debug.Log("PEDROLOG: totalAmountRisenOrSunk =" + totalAmountRisenOrSunk);
+                    if (!onHorizontalSlope && wasPrevOnHorizontalSlope)
                     {
-                        parentObj.transform.position += Vector3.up * (platformBeingSteppedOn - totalAmountRisenOrSunk);
-                    }
-                    else
-                    {
-                        this.transform.position += Vector3.up * (platformBeingSteppedOn - totalAmountRisenOrSunk);
-                    }
-                } else
-                {
-                    if (parentObj.GetComponent<FakeHeightObject>().isGrounded)
-                    {
-                        parentObj.transform.position += Vector3.up * 35 * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime;
+                        float[] twoPlatformHeights = new float[2] { slopeScript.h1, slopeScript.h2 };
+                        float platformBeingSteppedOn = twoPlatformHeights.Aggregate((x, y) => Mathf.Abs(x - totalAmountRisenOrSunk) < Mathf.Abs(y - totalAmountRisenOrSunk) ? x : y);
+                        Debug.Log("PEDROLOG: The last bit of height needed to be added = " + (platformBeingSteppedOn - totalAmountRisenOrSunk));
+                        if (parentObj.GetComponent<FakeHeightObject>().isGrounded)
+                        {
+                            parentObj.transform.position += (Vector3.up * (platformBeingSteppedOn - totalAmountRisenOrSunk)) * floorMovementMultiplier ;
+                        }
+                        else
+                        {
+                            this.transform.position += Vector3.up * (platformBeingSteppedOn - totalAmountRisenOrSunk);
+                        }
                     } else
                     {
-                        this.transform.position += Vector3.up * 35 * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime;
+                        if (parentObj.GetComponent<FakeHeightObject>().isGrounded)
+                        {
+                            //parentObj.transform.position = new Vector2(35 * (transform.position.x - prevXVal) * slopeValue, transform.position.x - prevXVal).normalized * Time.deltaTime;
+                            parentObj.transform.position += Vector3.up * 35 * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime;
+                        } else
+                        {
+                            this.transform.position += Vector3.up * 35 * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime;
+                        }
                     }
                 }
             }
         }
+        
         if (onVerticalSlope)
         {
-            float slopeValue = slope.GetComponent<newSlopeScript>().verticalFloorHeightThreshold;
+            float slopeValue = slopeScript.verticalFloorHeightThreshold;
             if ((this.transform.position.y != prevYVal) && (Mathf.Abs(FindSlopeFloorh(slope.transform) - floorHeight) < 2))
             {
                 //floorHeight += slopeValue;
@@ -202,7 +208,7 @@ public class newShadowScript : MonoBehaviour
         }
         wasPrevOnHorizontalSlope = onHorizontalSlope;
         wasPrevOnVerticalSlope = onVerticalSlope;
-
+       
     }
 
     //Updates every frame, checks the appropriate floor height of the object.
@@ -279,9 +285,6 @@ public class newShadowScript : MonoBehaviour
                         floorHeight = nearestFloorHeight;
                     } else
                     {
-                        //parentObj.GetComponent<FakeHeightObject>().Drop(new Vector2(0, 0), floorHeight - nearestFloorHeight); TEMPORARILY DISABLED FOR TESTING
-                        //THERE IS LIKELY A PROBLEM HERE
-                        //parentObj.GetComponent<FakeHeightObject>().Drop(((Vector2)transform.position-prevGroundVel)*30, floorHeight - nearestFloorHeight, GameObject.Find("bridgeLeftSide").transform.Find("solid").gameObject);
                         parentObj.GetComponent<FakeHeightObject>().Drop(((Vector2)transform.position - prevGroundVel) * 30, floorHeight - nearestFloorHeight);
                     }
                 }

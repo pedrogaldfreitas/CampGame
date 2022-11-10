@@ -18,7 +18,6 @@ public class newShadowScript : MonoBehaviour
     public bool onVerticalSlope;
     private bool wasPrevOnVerticalSlope;
     float slopeFH;
-    public List<GameObject> slopesAffectingMovement;
 
     private float totalAmountRisenOrSunk;
 
@@ -33,10 +32,10 @@ public class newShadowScript : MonoBehaviour
     public float mult;
 
     private Vector2 prevGroundVel;
+    public RaycastHit2D[] platformBaseCheckRayLower;
 
     private void Start()
     {
-        slopesAffectingMovement = new List<GameObject>();
         thisRenderer = GetComponent<Renderer>();
         wasPrevOnHorizontalSlope = false;
         wasPrevOnVerticalSlope = false;
@@ -49,10 +48,12 @@ public class newShadowScript : MonoBehaviour
         RaycastHit2D verticalSlopeCheckRay = Physics2D.Raycast(transform.position + Vector3.down * raycastDistanceMultiplier, Vector2.down, 0f, (1 << 11));
 
         RaycastHit2D[] platformBaseCheckRay = Physics2D.RaycastAll(transform.position + Vector3.down * raycastDistanceMultiplier, Vector2.down, 0f, (1 << 17));
+        platformBaseCheckRayLower = Physics2D.RaycastAll(transform.position + Vector3.down * raycastDistanceMultiplier + Vector3.down*floorHeight, Vector2.down, 0f, (1 << 17));
 
         checkFloorHeight();
         sortingOrderAdjust();
         Debug.DrawRay(transform.position + Vector3.down * raycastDistanceMultiplier, Vector2.down*0.3f, Color.blue);
+        Debug.DrawRay(transform.position + Vector3.down * raycastDistanceMultiplier + Vector3.down * floorHeight, Vector2.down * 0.3f, Color.red);
 
         if (horizontalSlopeCheckRay)
         {

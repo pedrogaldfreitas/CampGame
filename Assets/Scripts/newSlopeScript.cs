@@ -50,17 +50,11 @@ public class newSlopeScript : MonoBehaviour
         h2 = platform2.transform.Find("top").GetComponent<platformScript>().floorHeight;
         x1 = platform1.transform.Find("base").position.x;
         x2 = platform2.transform.Find("base").position.x;
-        /*if (this.name == "slope")
-        {
-            Debug.Log("PEDROLOG: h1 = " + h1 + ", h2 = " + h2 + ", x1 = " + x1 + ", x2 = " + x2);
-        }*/
 
         //Calculate movement multiplier
         float H = Mathf.Abs(h2 - h1);
         float L = Mathf.Abs(x2 - x1);
-        Debug.Log("PEDROLOG#1 H = " + H + ", L = " + L);
         float S = Mathf.Sqrt(Mathf.Pow(H,2) + Mathf.Pow(L, 2));
-        Debug.Log("PEDROLOG#2 S = " + S );
         movementMultiplier = 1 / S;
 
         //Calculate angle of triangle

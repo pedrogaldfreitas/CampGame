@@ -8,6 +8,7 @@ public class FakeHeightObject : MonoBehaviour
     public Transform transBody;
     public Transform transShadow;
     public float height;
+    public float heightOfObject;    //This is the height of the object from top to bottom, NOT height from the ground. This means the main object MUST have a trigger collider to measure from.
 
     public float gravity;
     public Vector2 prevGroundVelocity;
@@ -28,6 +29,12 @@ public class FakeHeightObject : MonoBehaviour
         height = transBody.position.y - transShadow.position.y;
         prevGroundVelocity = new Vector2(0, 0);
         shadowOffset = transShadow.transform.localPosition.y;
+
+        heightOfObject = transBody.GetComponent<Collider2D>().bounds.size.y; //Collider of object must be its first collider.
+        if (this.name == "PlayerParent")
+        {
+            Debug.Log("PEDROLOG: heightOfObject for player = " + heightOfObject);
+        }
     }
 
     private void Update()

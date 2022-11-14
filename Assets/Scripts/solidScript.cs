@@ -12,6 +12,7 @@ public class solidScript : MonoBehaviour
     public float solidHeightFromBase;
 
     public List<Collider2D> collidersTouchingSlope;
+    public List<Collider2D> collidersBeingIgnored;
     
     private void Start()
     {
@@ -22,14 +23,32 @@ public class solidScript : MonoBehaviour
 
     private IEnumerator IgnoreCollisions(Collider2D otherCollider)
     {
+        collidersBeingIgnored.Add(otherCollider);
         Collider2D solidCollider = this.GetComponent<Collider2D>();
+        Collider2D baseCollider = transform.parent.Find("base").GetComponent<Collider2D>();
+
+        newShadowScript shadow = otherCollider.transform.parent.Find("Shadow").GetComponent<newShadowScript>();
+        FakeHeightObject fakeHeightObj = otherCollider.transform.parent.GetComponent<FakeHeightObject>();
+
+        bool aboveWall = shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset > solidHeight;
+        bool belowWall = solidHeightFromBase > fakeHeightObj.heightOfObject + shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset;
 
         Physics2D.IgnoreCollision(solidCollider, otherCollider, true);
-
-        while (Physics2D.Distance(solidCollider, otherCollider).isOverlapped || collidersTouchingSlope.Contains(otherCollider)) {
+        if (transform.parent.name == "stairBlock" && otherCollider.name == "LandTarget")
+        {
+            Debug.Log("PEDROLOG#2: ignoring collisions with " + otherCollider.name + "(aboveWall = " + aboveWall + ", belowWall = " + belowWall + ", isOverlapped = " + Physics2D.Distance(baseCollider, otherCollider).isOverlapped + ")");
+        }
+        while (aboveWall || belowWall || Physics2D.Distance(baseCollider, otherCollider).isOverlapped || collidersTouchingSlope.Contains(otherCollider)) {
+            aboveWall = shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset > solidHeight;
+            belowWall = solidHeightFromBase > fakeHeightObj.heightOfObject + shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset;
+            if (transform.parent.name == "stairBlock" && otherCollider.name == "LandTarget")
+            {
+                Debug.Log("PEDROLOG#3: ignoring collisions with " + otherCollider.name + "(aboveWall = " + aboveWall + ", belowWall = " + belowWall + ", isOverlapped = " + Physics2D.Distance(baseCollider, otherCollider).isOverlapped + ")");
+            }
             yield return null; 
         }
 
+        collidersBeingIgnored.Remove(otherCollider);
         Physics2D.IgnoreCollision(solidCollider, otherCollider, false);
     }
 
@@ -47,18 +66,21 @@ public class solidScript : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.transform.name == "Shadow" || collision.transform.name.StartsWith("RaccoonParent"))
+        if ((collision.transform.name == "LandTarget" || collision.transform.name.StartsWith("RaccoonParent")) && !collidersBeingIgnored.Contains(collision.GetComponent<Collider2D>()))
         {
-            //newShadowScript shadow = collision.transform.parent.Find("Shadow").GetComponent<newShadowScript>();
-            newShadowScript shadow = collision.transform.GetComponent<newShadowScript>();
+            newShadowScript shadow = collision.transform.parent.Find("Shadow").GetComponent<newShadowScript>();
             FakeHeightObject fakeHeightObj = collision.transform.parent.GetComponent<FakeHeightObject>();
 
             //NOTE: Make sure we check if the collider already exists in the array before adding it in again. (Or not if the array isn't adding it again)
-            bool bumpingIntoWall = shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset > solidHeight;
+            bool aboveWall = shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset > solidHeight;
             bool belowWall = solidHeightFromBase > fakeHeightObj.heightOfObject + shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset;
-
-            if (bumpingIntoWall || belowWall)
+            if (transform.parent.name == "stairBlock" && collision.name == "LandTarget")
             {
+                Debug.Log("PEDROLOG#1: ignoring collisions with " + collision.name + "(aboveWall = " + aboveWall + ", belowWall = " + belowWall + ")");
+            }
+            if (aboveWall || belowWall)
+            {
+                Debug.Log("PEDROLOG: LandTarget being added to array.");
                 StartCoroutine(IgnoreCollisions(collision.GetComponent<Collider2D>()));
             }
         }

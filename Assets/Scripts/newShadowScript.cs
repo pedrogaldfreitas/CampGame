@@ -25,6 +25,7 @@ public class newShadowScript : MonoBehaviour
 
     public GameObject parentObj;
     public GameObject mainObj;
+    public Transform landTarget;
 
     [SerializeField]
     int offset;
@@ -37,6 +38,7 @@ public class newShadowScript : MonoBehaviour
     private void Start()
     {
         thisRenderer = GetComponent<Renderer>();
+        landTarget = transform.parent.Find("LandTarget");
         wasPrevOnHorizontalSlope = false;
         wasPrevOnVerticalSlope = false;
         totalAmountRisenOrSunk = 0;
@@ -118,6 +120,7 @@ public class newShadowScript : MonoBehaviour
         }
     }
 
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "Slope")
@@ -125,8 +128,8 @@ public class newShadowScript : MonoBehaviour
             newSlopeScript slopeScript = collision.transform.GetComponent<newSlopeScript>();
             solidScript platform1SolidScript = slopeScript.platform1.transform.Find("solid").GetComponent<solidScript>();
             solidScript platform2SolidScript = slopeScript.platform2.transform.Find("solid").GetComponent<solidScript>();
-            platform1SolidScript.ToggleIgnoreObjectOnSlope(this.GetComponent<Collider2D>(), true);
-            platform2SolidScript.ToggleIgnoreObjectOnSlope(this.GetComponent<Collider2D>(), true);
+            platform1SolidScript.ToggleIgnoreObjectOnSlope(landTarget.GetComponent<Collider2D>(), true);
+            platform2SolidScript.ToggleIgnoreObjectOnSlope(landTarget.GetComponent<Collider2D>(), true);
         }
     }
 
@@ -137,8 +140,8 @@ public class newShadowScript : MonoBehaviour
             newSlopeScript slopeScript = collision.transform.GetComponent<newSlopeScript>();
             solidScript platform1SolidScript = slopeScript.platform1.transform.Find("solid").GetComponent<solidScript>();
             solidScript platform2SolidScript = slopeScript.platform2.transform.Find("solid").GetComponent<solidScript>();
-            platform1SolidScript.ToggleIgnoreObjectOnSlope(this.GetComponent<Collider2D>(), false);
-            platform2SolidScript.ToggleIgnoreObjectOnSlope(this.GetComponent<Collider2D>(), false);
+            platform1SolidScript.ToggleIgnoreObjectOnSlope(landTarget.GetComponent<Collider2D>(), false);
+            platform2SolidScript.ToggleIgnoreObjectOnSlope(landTarget.GetComponent<Collider2D>(), false);
         }
     }
 

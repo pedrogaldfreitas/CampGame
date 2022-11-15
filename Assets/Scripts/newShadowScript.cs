@@ -25,18 +25,30 @@ public class newShadowScript : MonoBehaviour
 
     public GameObject parentObj;
     public GameObject mainObj;
+    public Transform landTarget;
 
     [SerializeField]
     int offset;
 
     public float mult;
 
+    //TEMPORARY FOR TESTING:
+    public float horizSlopeCheckRayXStart;
+    public float horizSlopeCheckRayYStart;
+    public float horizSlopeCheckRayLength;
+    public float vertiSlopeCheckRayXStart;
+    public float vertiSlopeCheckRayYStart;
+    public float vertiSlopeCheckRayLength;
+    public float platformCheckRayXStart;
+    public float platformCheckRayYStart;
+    public float platformCheckRayLength;
+
     private Vector2 prevGroundVel;
-    public RaycastHit2D[] platformBaseCheckRayLower;
 
     private void Start()
     {
         thisRenderer = GetComponent<Renderer>();
+        landTarget = transform.parent.Find("LandTarget");
         wasPrevOnHorizontalSlope = false;
         wasPrevOnVerticalSlope = false;
         totalAmountRisenOrSunk = 0;
@@ -46,14 +58,18 @@ public class newShadowScript : MonoBehaviour
     {
         RaycastHit2D horizontalSlopeCheckRay = Physics2D.Raycast(transform.position + Vector3.down * raycastDistanceMultiplier, Vector2.down, 0f, (1 << 12));
         RaycastHit2D verticalSlopeCheckRay = Physics2D.Raycast(transform.position + Vector3.down * raycastDistanceMultiplier, Vector2.down, 0f, (1 << 11));
+        //RaycastHit2D horizontalSlopeCheckRay = Physics2D.Raycast(transform.position + new Vector3(horizSlopeCheckRayXStart, horizSlopeCheckRayYStart), Vector2.down, horizSlopeCheckRayLength, (1 << 12));
+        //RaycastHit2D verticalSlopeCheckRay = Physics2D.Raycast(transform.position + new Vector3(vertiSlopeCheckRayXStart, vertiSlopeCheckRayYStart), Vector2.right, vertiSlopeCheckRayLength, (1 << 11));
 
         RaycastHit2D[] platformBaseCheckRay = Physics2D.RaycastAll(transform.position + Vector3.down * raycastDistanceMultiplier, Vector2.down, 0f, (1 << 17));
-        platformBaseCheckRayLower = Physics2D.RaycastAll(transform.position + Vector3.down * raycastDistanceMultiplier + Vector3.down*floorHeight, Vector2.down, 0f, (1 << 17));
+        //RaycastHit2D[] platformBaseCheckRay = Physics2D.RaycastAll(transform.position + new Vector3(platformCheckRayXStart, platformCheckRayYStart), Vector2.right, platformCheckRayLength, (1 << 17));
 
         checkFloorHeight();
         sortingOrderAdjust();
         Debug.DrawRay(transform.position + Vector3.down * raycastDistanceMultiplier, Vector2.down*0.3f, Color.blue);
-        Debug.DrawRay(transform.position + Vector3.down * raycastDistanceMultiplier + Vector3.down * floorHeight, Vector2.down * 0.3f, Color.red);
+        //Debug.DrawRay(transform.position + new Vector3(horizSlopeCheckRayXStart, horizSlopeCheckRayYStart), Vector2.down * horizSlopeCheckRayLength, Color.blue);
+        //Debug.DrawRay(transform.position + new Vector3(vertiSlopeCheckRayXStart, vertiSlopeCheckRayYStart), Vector2.right * vertiSlopeCheckRayLength, Color.red);
+        //Debug.DrawRay(transform.position + new Vector3(platformCheckRayXStart, platformCheckRayYStart), Vector2.right * platformCheckRayLength, Color.green);
 
         if (horizontalSlopeCheckRay)
         {
@@ -118,15 +134,16 @@ public class newShadowScript : MonoBehaviour
         }
     }
 
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "Slope")
         {
             newSlopeScript slopeScript = collision.transform.GetComponent<newSlopeScript>();
-            solidScript platform1SolidScript = slopeScript.platform1.transform.Find("solid").GetComponent<solidScript>();
-            solidScript platform2SolidScript = slopeScript.platform2.transform.Find("solid").GetComponent<solidScript>();
-            platform1SolidScript.ToggleIgnoreObjectOnSlope(this.GetComponent<Collider2D>(), true);
-            platform2SolidScript.ToggleIgnoreObjectOnSlope(this.GetComponent<Collider2D>(), true);
+            BaseScript platform1BaseScript = slopeScript.platform1.transform.Find("base").GetComponent<BaseScript>();
+            BaseScript platform2BaseScript = slopeScript.platform2.transform.Find("base").GetComponent<BaseScript>();
+            platform1BaseScript.ToggleIgnoreObjectOnSlope(landTarget.GetComponent<Collider2D>(), true);
+            platform2BaseScript.ToggleIgnoreObjectOnSlope(landTarget.GetComponent<Collider2D>(), true);
         }
     }
 
@@ -135,10 +152,10 @@ public class newShadowScript : MonoBehaviour
         if (collision.tag == "Slope")
         {
             newSlopeScript slopeScript = collision.transform.GetComponent<newSlopeScript>();
-            solidScript platform1SolidScript = slopeScript.platform1.transform.Find("solid").GetComponent<solidScript>();
-            solidScript platform2SolidScript = slopeScript.platform2.transform.Find("solid").GetComponent<solidScript>();
-            platform1SolidScript.ToggleIgnoreObjectOnSlope(this.GetComponent<Collider2D>(), false);
-            platform2SolidScript.ToggleIgnoreObjectOnSlope(this.GetComponent<Collider2D>(), false);
+            BaseScript platform1BaseScript = slopeScript.platform1.transform.Find("base").GetComponent<BaseScript>();
+            BaseScript platform2BaseScript = slopeScript.platform2.transform.Find("base").GetComponent<BaseScript>();
+            platform1BaseScript.ToggleIgnoreObjectOnSlope(landTarget.GetComponent<Collider2D>(), false);
+            platform2BaseScript.ToggleIgnoreObjectOnSlope(landTarget.GetComponent<Collider2D>(), false);
         }
     }
 

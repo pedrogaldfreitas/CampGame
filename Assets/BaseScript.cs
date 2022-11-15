@@ -1,9 +1,8 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
-public class solidScript : MonoBehaviour
+public class BaseScript : MonoBehaviour
 {
     //This is the "clearance" height of the object (if other object is above this height, it ignores collisions with it. SET AUTOMATICALLY VIA Start()
     public float solidHeight;
@@ -13,19 +12,20 @@ public class solidScript : MonoBehaviour
 
     public List<Collider2D> collidersTouchingSlope;
     public List<Collider2D> collidersBeingIgnored;
-    
+
     private void Start()
     {
         collidersTouchingSlope = new List<Collider2D>();
+        collidersBeingIgnored = new List<Collider2D>();
         solidHeight = transform.parent.Find("top").GetComponent<platformScript>().floorHeight;
-        solidHeightFromBase = transform.position.y - transform.parent.Find("base").position.y;
+        solidHeightFromBase = transform.parent.Find("solid").position.y - transform.position.y;
     }
 
     private IEnumerator IgnoreCollisions(Collider2D otherCollider)
     {
         collidersBeingIgnored.Add(otherCollider);
-        Collider2D solidCollider = this.GetComponent<Collider2D>();
-        Collider2D baseCollider = transform.parent.Find("base").GetComponent<Collider2D>();
+       // Collider2D solidCollider = transform.parent.Find("solid").GetComponent<Collider2D>();
+        Collider2D baseCollider = GetComponent<Collider2D>();
 
         newShadowScript shadow = otherCollider.transform.parent.Find("Shadow").GetComponent<newShadowScript>();
         FakeHeightObject fakeHeightObj = otherCollider.transform.parent.GetComponent<FakeHeightObject>();
@@ -33,32 +33,30 @@ public class solidScript : MonoBehaviour
         bool aboveWall = shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset > solidHeight;
         bool belowWall = solidHeightFromBase > fakeHeightObj.heightOfObject + shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset;
 
-        Physics2D.IgnoreCollision(solidCollider, otherCollider, true);
-        if (transform.parent.name == "stairBlock" && otherCollider.name == "LandTarget")
+        Physics2D.IgnoreCollision(baseCollider, otherCollider, true);
+
+        while (aboveWall || belowWall || Physics2D.Distance(baseCollider, otherCollider).isOverlapped || collidersTouchingSlope.Contains(otherCollider))
         {
-            Debug.Log("PEDROLOG#2: ignoring collisions with " + otherCollider.name + "(aboveWall = " + aboveWall + ", belowWall = " + belowWall + ", isOverlapped = " + Physics2D.Distance(baseCollider, otherCollider).isOverlapped + ")");
-        }
-        while (aboveWall || belowWall || Physics2D.Distance(baseCollider, otherCollider).isOverlapped || collidersTouchingSlope.Contains(otherCollider)) {
             aboveWall = shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset > solidHeight;
             belowWall = solidHeightFromBase > fakeHeightObj.heightOfObject + shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset;
-            if (transform.parent.name == "stairBlock" && otherCollider.name == "LandTarget")
-            {
-                Debug.Log("PEDROLOG#3: ignoring collisions with " + otherCollider.name + "(aboveWall = " + aboveWall + ", belowWall = " + belowWall + ", isOverlapped = " + Physics2D.Distance(baseCollider, otherCollider).isOverlapped + ")");
-            }
-            yield return null; 
+
+            yield return null;
         }
 
         collidersBeingIgnored.Remove(otherCollider);
-        Physics2D.IgnoreCollision(solidCollider, otherCollider, false);
+        Physics2D.IgnoreCollision(baseCollider, otherCollider, false);
     }
 
     //Use this function externally when an object is to be ignored by platforms' "solid" area as it is currently on their slope.
     public void ToggleIgnoreObjectOnSlope(Collider2D otherCollider, bool ignoreOrNot)
     {
-        if (ignoreOrNot) {
+        if (ignoreOrNot)
+        {
             collidersTouchingSlope.Add(otherCollider);
             StartCoroutine(IgnoreCollisions(otherCollider));
-        } else {
+        }
+        else
+        {
             collidersTouchingSlope.Remove(otherCollider);
         }
         return;
@@ -66,24 +64,24 @@ public class solidScript : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if ((collision.transform.name == "LandTarget" || collision.transform.name.StartsWith("RaccoonParent")) && !collidersBeingIgnored.Contains(collision.GetComponent<Collider2D>()))
+        if (collision.transform.name == "LandTarget" && !collidersBeingIgnored.Contains(collision.GetComponent<Collider2D>()))
         {
+            
             newShadowScript shadow = collision.transform.parent.Find("Shadow").GetComponent<newShadowScript>();
             FakeHeightObject fakeHeightObj = collision.transform.parent.GetComponent<FakeHeightObject>();
 
-            //NOTE: Make sure we check if the collider already exists in the array before adding it in again. (Or not if the array isn't adding it again)
             bool aboveWall = shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset > solidHeight;
             bool belowWall = solidHeightFromBase > fakeHeightObj.heightOfObject + shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset;
-            if (transform.parent.name == "stairBlock" && collision.name == "LandTarget")
+
+            if (this.transform.parent.name == "stairBlock (1)")
             {
-                Debug.Log("PEDROLOG#1: ignoring collisions with " + collision.name + "(aboveWall = " + aboveWall + ", belowWall = " + belowWall + ")");
+                Debug.Log("PEDROLOG: aboveWall = " + aboveWall + ", belowWall = " + belowWall + ", while colliding with LandTarget.");
             }
             if (aboveWall || belowWall)
             {
-                Debug.Log("PEDROLOG: LandTarget being added to array.");
                 StartCoroutine(IgnoreCollisions(collision.GetComponent<Collider2D>()));
             }
         }
-        
+
     }
 }

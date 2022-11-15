@@ -47,6 +47,21 @@ public class BaseScript : MonoBehaviour
         Physics2D.IgnoreCollision(baseCollider, otherCollider, false);
     }
 
+    //Use this function externally when an object is to be ignored by platforms' "solid" area as it is currently on their slope.
+    public void ToggleIgnoreObjectOnSlope(Collider2D otherCollider, bool ignoreOrNot)
+    {
+        if (ignoreOrNot)
+        {
+            collidersTouchingSlope.Add(otherCollider);
+            StartCoroutine(IgnoreCollisions(otherCollider));
+        }
+        else
+        {
+            collidersTouchingSlope.Remove(otherCollider);
+        }
+        return;
+    }
+
     private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.transform.name == "LandTarget" && !collidersBeingIgnored.Contains(collision.GetComponent<Collider2D>()))

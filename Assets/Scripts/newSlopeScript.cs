@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class newSlopeScript : MonoBehaviour
 {
-
     public enum slopeFacing { HORIZONTAL, VERTICAL };
     [SerializeField]
     public slopeFacing thisSlopeState;

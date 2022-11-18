@@ -15,6 +15,5 @@ public class showLeftArm : StateMachineBehaviour
 
         armVector = new Vector3(rightArmTrans.localPosition.x, rightArmTrans.localPosition.y, -0.6f);
         animator.transform.Find("PlayerArms").transform.Find("leftArmParent").localPosition = armVector;    
-        Debug.Log("Put left arm at " + animator.transform.Find("PlayerArms").transform.Find("leftArmParent").localPosition);
     }
 }

@@ -31,10 +31,6 @@ public class FakeHeightObject : MonoBehaviour
         shadowOffset = transShadow.transform.localPosition.y;
 
         heightOfObject = transBody.GetComponent<Collider2D>().bounds.size.y; //Collider of object must be its first collider.
-        if (this.name == "PlayerParent")
-        {
-            Debug.Log("PEDROLOG: heightOfObject for player = " + heightOfObject);
-        }
     }
 
     private void Update()

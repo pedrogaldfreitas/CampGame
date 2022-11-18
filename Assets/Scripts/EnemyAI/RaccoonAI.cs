@@ -19,20 +19,23 @@ public class RaccoonAI : MonoBehaviour
     public Vector2 currSpot;
     public Vector2 moveSpot;
 
+    private Transform landTarget;
+
     public enum State { WANDER, CHASE, JUMPATTACK, ALERT, RELOCATE };
     public State raccoonState;
 
     public bool raccoonAngry;
-    private GameObject player;
+    private Transform playerLandTarget;
     private Transform parent;
 
     // Start is called before the first frame update
     void Start()
     {
         moveSpot = new Vector2(0, 0);
-        player = GameObject.Find("Player");
+        playerLandTarget = GameObject.Find("PlayerParent").transform.Find("LandTarget");
         parent = transform.parent;
         raccoonAngry = false;
+        landTarget = transform.parent.Find("LandTarget");
     }
 
     // Update is called once per frame
@@ -43,10 +46,11 @@ public class RaccoonAI : MonoBehaviour
         {
             if (parent.GetComponent<FakeHeightObject>().isGrounded)
             {
-                currSpot = transform.position;
-                moveSpot = Vector2.MoveTowards(transform.position, player.transform.position, speed/15f);
+                currSpot = landTarget.position;
+                moveSpot = Vector2.MoveTowards(currSpot, playerLandTarget.transform.position, speed / 15f);
                 parent.position = moveSpot;
-                if (Vector2.Distance(transform.position, player.transform.position) < 15)
+
+                if (Vector2.Distance(transform.position, playerLandTarget.transform.position) < 15)
                 {
                     //raccoonState = State.JUMPATTACK;
                 }
@@ -56,8 +60,8 @@ public class RaccoonAI : MonoBehaviour
         {
             Debug.Log("JUMPATTACK!");
 
-            moveSpot = Vector2.MoveTowards(transform.position, player.transform.position, speed / 8f);
-            parent.gameObject.GetComponent<FakeHeightObject>().Jump((moveSpot - currSpot)*30f, 40);
+            //moveSpot = Vector2.MoveTowards(transform.position, player.transform.position, speed / 8f);
+            //parent.gameObject.GetComponent<FakeHeightObject>().Jump((moveSpot - currSpot)*30f, 40);
             // raccoonState = State.RELOCATE;
             raccoonState = State.CHASE;
         }

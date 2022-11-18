@@ -24,20 +24,19 @@ public class BaseScript : MonoBehaviour
     private IEnumerator IgnoreCollisions(Collider2D otherCollider)
     {
         collidersBeingIgnored.Add(otherCollider);
-       // Collider2D solidCollider = transform.parent.Find("solid").GetComponent<Collider2D>();
         Collider2D baseCollider = GetComponent<Collider2D>();
 
         newShadowScript shadow = otherCollider.transform.parent.Find("Shadow").GetComponent<newShadowScript>();
         FakeHeightObject fakeHeightObj = otherCollider.transform.parent.GetComponent<FakeHeightObject>();
 
-        bool aboveWall = shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset > solidHeight;
+        bool aboveWall = shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset >= solidHeight;
         bool belowWall = solidHeightFromBase > fakeHeightObj.heightOfObject + shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset;
 
         Physics2D.IgnoreCollision(baseCollider, otherCollider, true);
 
         while (aboveWall || belowWall || Physics2D.Distance(baseCollider, otherCollider).isOverlapped || collidersTouchingSlope.Contains(otherCollider))
         {
-            aboveWall = shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset > solidHeight;
+            aboveWall = shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset >= solidHeight;
             belowWall = solidHeightFromBase > fakeHeightObj.heightOfObject + shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset;
 
             yield return null;
@@ -65,18 +64,13 @@ public class BaseScript : MonoBehaviour
     private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.transform.name == "LandTarget" && !collidersBeingIgnored.Contains(collision.GetComponent<Collider2D>()))
-        {
-            
+        {      
             newShadowScript shadow = collision.transform.parent.Find("Shadow").GetComponent<newShadowScript>();
             FakeHeightObject fakeHeightObj = collision.transform.parent.GetComponent<FakeHeightObject>();
 
-            bool aboveWall = shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset > solidHeight;
+            bool aboveWall = shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset >= solidHeight;
             bool belowWall = solidHeightFromBase > fakeHeightObj.heightOfObject + shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset;
 
-            if (this.transform.parent.name == "stairBlock (1)")
-            {
-                Debug.Log("PEDROLOG: aboveWall = " + aboveWall + ", belowWall = " + belowWall + ", while colliding with LandTarget.");
-            }
             if (aboveWall || belowWall)
             {
                 StartCoroutine(IgnoreCollisions(collision.GetComponent<Collider2D>()));

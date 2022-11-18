@@ -39,8 +39,8 @@ public class DialogueManager : MonoBehaviour
     void Start()
     {
 
-        Debug.Log(animStartRegex);
-        Debug.Log(animEndRegex);
+        //Debug.Log(animStartRegex);
+        //Debug.Log(animEndRegex);
 
         diagOptionDivider.SetActive(false);
         diagArrow.SetActive(false);

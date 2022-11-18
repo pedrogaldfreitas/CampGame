@@ -13,7 +13,6 @@ public class hideRightArm : StateMachineBehaviour
         armTrans = animator.transform.Find("PlayerArms").transform.Find("rightArmParent");
         armTrans.position = new Vector3(armTrans.localPosition.x, armTrans.localPosition.y, 0f);
         armTrans.localPosition = armTrans.position;
-        Debug.Log("Put right arm at " + armTrans.localPosition);
 
     }
 

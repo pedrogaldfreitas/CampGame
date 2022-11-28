@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -26,7 +27,7 @@ public class FakeHeightObject : MonoBehaviour
 
     private void Start()
     {
-        height = transBody.position.y - transShadow.position.y;
+        height = (float)Decimal.Round((Decimal)(transBody.position.y - transShadow.position.y), 3);
         prevGroundVelocity = new Vector2(0, 0);
         shadowOffset = transShadow.transform.localPosition.y;
 
@@ -43,7 +44,7 @@ public class FakeHeightObject : MonoBehaviour
         UpdatePosition();
         CheckGroundHit();
 
-        height = transBody.position.y - transShadow.position.y;
+        height = (float)Decimal.Round((Decimal)(transBody.position.y - transShadow.position.y), 3);
         prevGroundVelocity = transform.position;
         
     }

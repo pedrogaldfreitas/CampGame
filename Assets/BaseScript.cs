@@ -33,7 +33,6 @@ public class BaseScript : MonoBehaviour
         bool belowWall = solidHeightFromBase > fakeHeightObj.heightOfObject + shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset;
 
         Physics2D.IgnoreCollision(baseCollider, otherCollider, true);
-
         while (aboveWall || belowWall || Physics2D.Distance(baseCollider, otherCollider).isOverlapped || collidersTouchingSlope.Contains(otherCollider))
         {
             aboveWall = shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset >= solidHeight;
@@ -42,7 +41,6 @@ public class BaseScript : MonoBehaviour
             yield return null;
         }
         collidersBeingIgnored.Remove(otherCollider);
-
         Physics2D.IgnoreCollision(baseCollider, otherCollider, false);
     }
 

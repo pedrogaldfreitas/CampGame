@@ -650,8 +650,6 @@ GameObject:
   - component: {fileID: 212491252}
   - component: {fileID: 212491255}
   - component: {fileID: 212491254}
-  - component: {fileID: 212491256}
-  - component: {fileID: 212491257}
   m_Layer: 17
   m_Name: base
   m_TagString: base
@@ -798,49 +796,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   collidersTouchingSlope: []
   collidersBeingIgnored: []
---- !u!114 &212491256
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 212491250}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db87c8c393aab6a47b337219a55c8a75, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  collidersTouchingSlope: []
-  collidersBeingIgnored: []
---- !u!60 &212491257
-PolygonCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 212491250}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 0.31, y: 0.6}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: -0.5, y: 0.5}
-      - {x: -0.5, y: -0.5}
-      - {x: 0.5, y: -0.5}
-      - {x: 0.5, y: 0.5}
 --- !u!1001 &228724503
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1791,8 +1746,6 @@ GameObject:
   - component: {fileID: 377510546}
   - component: {fileID: 377510549}
   - component: {fileID: 377510548}
-  - component: {fileID: 377510550}
-  - component: {fileID: 377510551}
   m_Layer: 17
   m_Name: base
   m_TagString: base
@@ -1939,49 +1892,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   collidersTouchingSlope: []
   collidersBeingIgnored: []
---- !u!114 &377510550
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 377510544}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db87c8c393aab6a47b337219a55c8a75, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  collidersTouchingSlope: []
-  collidersBeingIgnored: []
---- !u!60 &377510551
-PolygonCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 377510544}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 0.31, y: 0.6}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: -0.5, y: 0.5}
-      - {x: -0.5, y: -0.5}
-      - {x: 0.5, y: -0.5}
-      - {x: 0.5, y: 0.5}
 --- !u!114 &418814767 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8615965930219958747, guid: 4be9a42037fe1fc4580f6f9727fca704,
@@ -2053,8 +1963,6 @@ GameObject:
   - component: {fileID: 446340583}
   - component: {fileID: 446340586}
   - component: {fileID: 446340585}
-  - component: {fileID: 446340587}
-  - component: {fileID: 446340588}
   m_Layer: 17
   m_Name: base
   m_TagString: base
@@ -2201,49 +2109,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   collidersTouchingSlope: []
   collidersBeingIgnored: []
---- !u!114 &446340587
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 446340581}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db87c8c393aab6a47b337219a55c8a75, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  collidersTouchingSlope: []
-  collidersBeingIgnored: []
---- !u!60 &446340588
-PolygonCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 446340581}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 0.31, y: 0.6}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: -0.5, y: 0.5}
-      - {x: -0.5, y: -0.5}
-      - {x: 0.5, y: -0.5}
-      - {x: 0.5, y: 0.5}
 --- !u!1 &598283757
 GameObject:
   m_ObjectHideFlags: 0
@@ -4679,12 +4544,12 @@ PrefabInstance:
     - target: {fileID: 7271393414603932023, guid: fc2bb8f22c5957541b716c0590a6cea1,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -79.6
+      value: -79.4
       objectReference: {fileID: 0}
     - target: {fileID: 7271393414603932023, guid: fc2bb8f22c5957541b716c0590a6cea1,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: -11.86
+      value: -11.6
       objectReference: {fileID: 0}
     - target: {fileID: 7271393414603932023, guid: fc2bb8f22c5957541b716c0590a6cea1,
         type: 3}
@@ -6401,8 +6266,6 @@ GameObject:
   - component: {fileID: 1592009880}
   - component: {fileID: 1592009883}
   - component: {fileID: 1592009882}
-  - component: {fileID: 1592009884}
-  - component: {fileID: 1592009885}
   m_Layer: 17
   m_Name: base
   m_TagString: base
@@ -6549,49 +6412,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   collidersTouchingSlope: []
   collidersBeingIgnored: []
---- !u!114 &1592009884
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1592009878}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db87c8c393aab6a47b337219a55c8a75, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  collidersTouchingSlope: []
-  collidersBeingIgnored: []
---- !u!60 &1592009885
-PolygonCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1592009878}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 0.31, y: 0.6}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: -0.5, y: 0.5}
-      - {x: -0.5, y: -0.5}
-      - {x: 0.5, y: -0.5}
-      - {x: 0.5, y: 0.5}
 --- !u!1 &1602321495
 GameObject:
   m_ObjectHideFlags: 0
@@ -8641,7 +8461,7 @@ PrefabInstance:
     - target: {fileID: 4613811148787978086, guid: 596935127de58884aafa098c7d446420,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -641.48
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4613811148787978086, guid: 596935127de58884aafa098c7d446420,
         type: 3}
@@ -9261,8 +9081,6 @@ GameObject:
   - component: {fileID: 1912072063}
   - component: {fileID: 1912072065}
   - component: {fileID: 1912072064}
-  - component: {fileID: 1912072066}
-  - component: {fileID: 1912072067}
   m_Layer: 17
   m_Name: base
   m_TagString: base
@@ -9405,49 +9223,6 @@ PolygonCollider2D:
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 0.31, y: 0.6}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: -0.5, y: 0.5}
-      - {x: -0.5, y: -0.5}
-      - {x: 0.5, y: -0.5}
-      - {x: 0.5, y: 0.5}
---- !u!114 &1912072066
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1912072059}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: db87c8c393aab6a47b337219a55c8a75, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  collidersTouchingSlope: []
-  collidersBeingIgnored: []
---- !u!60 &1912072067
-PolygonCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1912072059}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}

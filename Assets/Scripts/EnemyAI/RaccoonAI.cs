@@ -16,8 +16,7 @@ public class RaccoonAI : MonoBehaviour
      */
 
     public float speed;
-    public Vector2 currSpot;
-    public Vector2 moveSpot;
+    public Vector2 moveDirection;
 
     private Transform landTarget;
 
@@ -31,7 +30,7 @@ public class RaccoonAI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        moveSpot = new Vector2(0, 0);
+        moveDirection = new Vector2(0, 0);
         playerLandTarget = GameObject.Find("PlayerParent").transform.Find("LandTarget");
         parent = transform.parent;
         raccoonAngry = false;
@@ -46,9 +45,8 @@ public class RaccoonAI : MonoBehaviour
         {
             if (parent.GetComponent<FakeHeightObject>().isGrounded)
             {
-                currSpot = landTarget.position;
-                moveSpot = Vector2.MoveTowards(currSpot, playerLandTarget.transform.position, speed / 15f);
-                parent.position = moveSpot;
+                moveDirection = (playerLandTarget.position - landTarget.position).normalized;
+                parent.transform.Translate(moveDirection * speed / 15f);
 
                 if (Vector2.Distance(transform.position, playerLandTarget.transform.position) < 15)
                 {

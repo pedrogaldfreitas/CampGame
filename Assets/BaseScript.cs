@@ -5,10 +5,10 @@ using UnityEngine;
 public class BaseScript : MonoBehaviour
 {
     //This is the "clearance" height of the object (if other object is above this height, it ignores collisions with it. SET AUTOMATICALLY VIA Start()
-    public float solidHeight;
+    private float solidHeight;
 
     //This is the solid's height from its base. An object can ignore collisions by passing "under" this solid.
-    public float solidHeightFromBase;
+    private float solidHeightFromBase;
 
     public List<Collider2D> collidersTouchingSlope;
     public List<Collider2D> collidersBeingIgnored;
@@ -41,8 +41,8 @@ public class BaseScript : MonoBehaviour
 
             yield return null;
         }
-
         collidersBeingIgnored.Remove(otherCollider);
+
         Physics2D.IgnoreCollision(baseCollider, otherCollider, false);
     }
 

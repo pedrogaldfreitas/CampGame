@@ -76,7 +76,6 @@ public class newShadowScript : MonoBehaviour
         //Debug.DrawRay(transform.position + new Vector3(vertiSlopeCheckRayXStart, vertiSlopeCheckRayYStart), Vector2.right * vertiSlopeCheckRayLength, Color.red);
         //Debug.DrawRay(transform.position + new Vector3(platformCheckRayXStart, platformCheckRayYStart), Vector2.right * platformCheckRayLength, Color.green);
 
-        Debug.Log("PEDROLOG: onHorizontalSlope = " + onHorizontalSlope);
         if (horizontalSlopeCheckRay)
         {
             SlopeCheck(horizontalSlopeCheckRay.collider.gameObject, "horizontal");
@@ -182,6 +181,7 @@ public class newShadowScript : MonoBehaviour
             float slopeFloorH = FindSlopeFloorh(slope.transform);
             if (onHorizontalSlope)
             {
+                //NOTE: This is where the problem lies. The second condition causes the raccoon to stop rising.
                 if ((this.transform.position.x != prevXVal)&&(Mathf.Abs(slopeFloorH - floorHeight) < 2))
                 {
                     totalAmountRisenOrSunk += 35 * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime;
@@ -203,7 +203,6 @@ public class newShadowScript : MonoBehaviour
                         if (parentObj.GetComponent<FakeHeightObject>().isGrounded)
                         {
                             //parentObj.transform.position = new Vector2(35 * (transform.position.x - prevXVal) * slopeValue, transform.position.x - prevXVal).normalized * Time.deltaTime;
-                            //Debug.Log("PEDROLOG: parentObj.transform.position BEFORE = " + parentObj.transform.position + ", AFTER = " + (parentObj.transform.position + (Vector3.up * 35 * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime)));
                             parentObj.transform.position += Vector3.up * 35 * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime;                           
                         } else
                         {
@@ -246,15 +245,6 @@ public class newShadowScript : MonoBehaviour
         float highestPlatformFH = 0;
         bool highestFHisSlope = false;
 
-        /*if (horizontalSlopeCheckRay.Length > 0)
-        {
-            onHorizontalSlope = true;
-        }
-        if (verticalSlopeCheckRay.Length > 0)
-        {
-            onVerticalSlope = true;
-        }*/
-
         foreach (RaycastHit2D platform in platformCheckRay)
         {
             //Goal here: Find the greatest floor height that is still less than the current object's floor height.
@@ -272,33 +262,27 @@ public class newShadowScript : MonoBehaviour
         foreach (RaycastHit2D horizSlope in horizontalSlopeCheckRay)
         {
             //Goal here: Find the greatest point in the horizontal slope that's less than the current object's floor height.
-            if (parentObj.tag == "Player" || parentObj.tag == "Raccoon")
+            slopeFH = FindSlopeFloorh(horizSlope.transform);
+            if (slopeFH <= floorHeight+2)
             {
-                slopeFH = FindSlopeFloorh(horizSlope.transform);
-                if (slopeFH <= floorHeight+2)
+                if (slopeFH > nearestFloorHeight)
                 {
-                    if (slopeFH > nearestFloorHeight)
-                    {
-                        nearestFloorHeight = slopeFH;
-                        highestFHisSlope = true;
-                    }
+                    nearestFloorHeight = slopeFH;
+                    highestFHisSlope = true;
                 }
             }
         }
-
+        
         foreach (RaycastHit2D vertiSlope in verticalSlopeCheckRay)
         {
             //Goal here: Find the greatest point in the horizontal slope that's less than the current object's floor height.
-            if (parentObj.tag == "Player")
+            slopeFH = FindSlopeFloorh(vertiSlope.transform);
+            if (slopeFH <= floorHeight + 2)
             {
-                slopeFH = FindSlopeFloorh(vertiSlope.transform);
-                if (slopeFH <= floorHeight + 2)
+                if (slopeFH > nearestFloorHeight)
                 {
-                    if (slopeFH > nearestFloorHeight)
-                    {
-                        nearestFloorHeight = slopeFH;
-                        highestFHisSlope = true;
-                    }
+                    nearestFloorHeight = slopeFH;
+                    highestFHisSlope = true;
                 }
             }
         }
@@ -388,7 +372,6 @@ public class newShadowScript : MonoBehaviour
         fh = (horizontalFH > verticalFH) ? horizontalFH : verticalFH;
         if (flag)
         {
-            Debug.Log("PEDROLOG#3 findSlopeFloorHeight fh = " + fh);
             flag = false;
         }
         return fh;

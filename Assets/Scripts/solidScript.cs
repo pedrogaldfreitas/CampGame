@@ -66,7 +66,7 @@ public class solidScript : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if ((collision.transform.name == "LandTarget" || collision.transform.name.StartsWith("RaccoonParent")) && !collidersBeingIgnored.Contains(collision.GetComponent<Collider2D>()))
+        if (collision.transform.name == "LandTarget"/* || collision.transform.name.StartsWith("RaccoonParent"))*/ && !collidersBeingIgnored.Contains(collision.GetComponent<Collider2D>()))
         {
             newShadowScript shadow = collision.transform.parent.Find("Shadow").GetComponent<newShadowScript>();
             FakeHeightObject fakeHeightObj = collision.transform.parent.GetComponent<FakeHeightObject>();

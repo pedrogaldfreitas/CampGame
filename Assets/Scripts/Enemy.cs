@@ -19,7 +19,7 @@ public class Enemy : MonoBehaviour
     private void Start()
     {
         parent = transform.parent;
-        Physics2D.IgnoreCollision(transform.parent.Find("Shadow").GetComponent<BoxCollider2D>(), GameObject.Find("PlayerParent").transform.Find("Shadow").GetComponent<BoxCollider2D>(), true);
+        //Physics2D.IgnoreCollision(transform.parent.Find("Shadow").GetComponent<BoxCollider2D>(), GameObject.Find("PlayerParent").transform.Find("Shadow").GetComponent<BoxCollider2D>(), true);
     }
 
     void Update()
@@ -35,6 +35,8 @@ public class Enemy : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
+        Debug.Log("PEDROLOG: 1 - " + (collision.gameObject.tag == "Player") + ", 2 - " + (collision.GetType() == typeof(BoxCollider2D)) + ", 3 - " + CheckForShadowCollision(collision));
+        Debug.Log("PEDROLOG/2 " + collision.gameObject.tag);
         if ((collision.gameObject.tag == "Player") && (collision.GetType() == typeof(BoxCollider2D)) && (CheckForShadowCollision(collision)))
         {
             DamageOther(collision.gameObject, touchDamage);
@@ -62,7 +64,12 @@ public class Enemy : MonoBehaviour
     //Checks if the criteria is filled for a collision with another object. (shadows collide + objects collide)
     bool CheckForShadowCollision(Collider2D collision)
     {
-        if (transform.parent.Find("Shadow").GetComponent<BoxCollider2D>().IsTouching(collision))
+        Collider2D thisCollider = transform.parent.Find("Shadow").GetComponent<BoxCollider2D>();
+        Collider2D otherCollider = collision.transform.parent?.Find("Shadow")?.GetComponent<BoxCollider2D>();
+        bool bothCollidersExist = thisCollider != null && otherCollider != null;
+        bool collidersAreNotTheSame = (thisCollider != otherCollider);
+
+        if (bothCollidersExist && collidersAreNotTheSame && Physics2D.Distance(thisCollider, otherCollider).isOverlapped)
         {
             return true;
         }

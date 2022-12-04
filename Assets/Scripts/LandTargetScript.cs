@@ -16,4 +16,12 @@ public class LandTargetScript : MonoBehaviour
         this.transform.position = new Vector2(transform.position.x, shadowScript.transform.position.y - shadowScript.floorHeight);
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.collider.name == "LandTarget")
+        {
+            Physics2D.IgnoreCollision(GetComponent<Collider2D>(), collision.collider);
+        }
+    }
+
 }

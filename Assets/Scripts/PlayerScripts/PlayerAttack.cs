@@ -284,7 +284,7 @@ public class PlayerAttack : MonoBehaviour
         float hitForce = swingNum == 2 ? 2 : 0.7f;
         damage = swingNum == 2 ? damage * 2 : damage;
 
-        enemy.GetComponent<Enemy>().TakeDamage(damage);
+        enemy.GetComponent<Enemy>().TakeDamage(damage, (transform.parent.Find("LandTarget").position - enemy.transform.parent.Find("LandTarget").position).normalized);
         if (enemy.gameObject.GetComponent<Enemy>().lightEnemy)
         {
             launchBackEnemy(enemy.gameObject, hitForce);

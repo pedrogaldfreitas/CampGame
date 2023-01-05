@@ -33,10 +33,63 @@ public class CutsceneManager : MonoBehaviour
         //StartCoroutine(testCutscene());
         //playCutsceneUsingID("D1M0");
         //StartCoroutine(DayTitles(1));
+       
+        playCutsceneUsingID("TEST");
     }
 
 
     #region Cutscenes
+
+    IEnumerator TEST()
+    {
+        float waitTime = 0.3f;
+        while (true)
+        {
+            yield return StartCoroutine(WalkDown(GameObject.Find("Victor"), 15, -277f));
+
+            yield return StartCoroutine(faceDirection(GameObject.Find("Victor"), "UP"));
+            yield return StartCoroutine(wait(waitTime));
+            yield return StartCoroutine(faceDirection(GameObject.Find("Victor"), "RIGHT"));
+            yield return StartCoroutine(wait(waitTime));
+            yield return StartCoroutine(faceDirection(GameObject.Find("Victor"), "DOWN"));
+            yield return StartCoroutine(wait(waitTime));
+            yield return StartCoroutine(faceDirection(GameObject.Find("Victor"), "LEFT"));
+            yield return StartCoroutine(wait(waitTime));
+
+            yield return StartCoroutine(WalkLeft(GameObject.Find("Victor"), 15, -352));
+
+            yield return StartCoroutine(faceDirection(GameObject.Find("Victor"), "UP"));
+            yield return StartCoroutine(wait(waitTime));
+            yield return StartCoroutine(faceDirection(GameObject.Find("Victor"), "RIGHT"));
+            yield return StartCoroutine(wait(waitTime));
+            yield return StartCoroutine(faceDirection(GameObject.Find("Victor"), "DOWN"));
+            yield return StartCoroutine(wait(waitTime));
+            yield return StartCoroutine(faceDirection(GameObject.Find("Victor"), "LEFT"));
+            yield return StartCoroutine(wait(waitTime));
+
+            yield return StartCoroutine(WalkUp(GameObject.Find("Victor"), 15, -247));
+
+            yield return StartCoroutine(faceDirection(GameObject.Find("Victor"), "UP"));
+            yield return StartCoroutine(wait(waitTime));
+            yield return StartCoroutine(faceDirection(GameObject.Find("Victor"), "RIGHT"));
+            yield return StartCoroutine(wait(waitTime));
+            yield return StartCoroutine(faceDirection(GameObject.Find("Victor"), "DOWN"));
+            yield return StartCoroutine(wait(waitTime));
+            yield return StartCoroutine(faceDirection(GameObject.Find("Victor"), "LEFT"));
+            yield return StartCoroutine(wait(waitTime));
+
+            yield return StartCoroutine(WalkRight(GameObject.Find("Victor"), 15, -322));
+
+            yield return StartCoroutine(faceDirection(GameObject.Find("Victor"), "UP"));
+            yield return StartCoroutine(wait(waitTime));
+            yield return StartCoroutine(faceDirection(GameObject.Find("Victor"), "RIGHT"));
+            yield return StartCoroutine(wait(waitTime));
+            yield return StartCoroutine(faceDirection(GameObject.Find("Victor"), "DOWN"));
+            yield return StartCoroutine(wait(waitTime));
+            yield return StartCoroutine(faceDirection(GameObject.Find("Victor"), "LEFT"));
+            yield return StartCoroutine(wait(waitTime));
+        }
+    }
 
     //Meaning: Day1Morning0 (Coming off dock onto shore)
     IEnumerator D1M0()
@@ -357,12 +410,14 @@ public class CutsceneManager : MonoBehaviour
     IEnumerator WalkUp(GameObject character, float speed, float yPos)
     {
         Transform parentOfChar = character.transform.parent;
+        Transform landTargetTransform = parentOfChar.Find("LandTarget");
+        Rigidbody2D parentRB = parentOfChar.GetComponent<Rigidbody2D>();
         character.GetComponent<Animator>().SetFloat("Vertical", 2);
 
-        while (parentOfChar.position.y < yPos)
+        while (landTargetTransform.position.y < yPos)
         {
-            parentOfChar.position = new Vector3(parentOfChar.position.x, parentOfChar.position.y + (speed*Time.deltaTime));
-            if (parentOfChar.position.y >= yPos)
+            parentRB.MovePosition(new Vector3(parentOfChar.position.x, parentOfChar.position.y + (speed * Time.deltaTime)));
+            if (landTargetTransform.position.y >= yPos)
             {
                 character.GetComponent<Animator>().SetFloat("Vertical", 0);
             }
@@ -374,12 +429,14 @@ public class CutsceneManager : MonoBehaviour
     IEnumerator WalkDown(GameObject character, float speed, float yPos)
     {
         Transform parentOfChar = character.transform.parent;
+        Transform landTargetTransform = parentOfChar.Find("LandTarget");
+        Rigidbody2D parentRB = parentOfChar.GetComponent<Rigidbody2D>();
         character.GetComponent<Animator>().SetFloat("Vertical", -2);
 
-        while (parentOfChar.position.y > yPos)
+        while (landTargetTransform.position.y > yPos)
         {
-            parentOfChar.position = new Vector3(parentOfChar.position.x, parentOfChar.position.y - (speed * Time.deltaTime));
-            if (parentOfChar.position.y <= yPos)
+            parentRB.MovePosition(new Vector3(parentOfChar.position.x, parentOfChar.position.y - (speed * Time.deltaTime)));
+            if (landTargetTransform.position.y <= yPos)
             {
                 character.GetComponent<Animator>().SetFloat("Vertical", 0);
             }
@@ -391,12 +448,14 @@ public class CutsceneManager : MonoBehaviour
     IEnumerator WalkRight(GameObject character, float speed, float xPos)
     {
         Transform parentOfChar = character.transform.parent;
+        Transform landTargetTransform = parentOfChar.Find("LandTarget");
+        Rigidbody2D parentRB = parentOfChar.GetComponent<Rigidbody2D>();
         character.GetComponent<Animator>().SetFloat("Horizontal", 2);
 
-        while (character.transform.position.x < xPos)
+        while (landTargetTransform.position.x < xPos)
         {
-            parentOfChar.position = new Vector3(parentOfChar.position.x + (speed * Time.deltaTime), parentOfChar.position.y);
-            if (parentOfChar.position.x >= xPos)
+            parentRB.MovePosition(new Vector3(parentOfChar.position.x + (speed * Time.deltaTime), parentOfChar.position.y));
+            if (landTargetTransform.position.x >= xPos)
             {
                 character.GetComponent<Animator>().SetFloat("Horizontal", 0);
             }
@@ -406,8 +465,9 @@ public class CutsceneManager : MonoBehaviour
 
     IEnumerator WalkLeft(GameObject character, float speed, float xPos, string facingDirection = "LEFT")
     {
-
         Transform parentOfChar = character.transform.parent;
+        Transform landTargetTransform = parentOfChar.Find("LandTarget");
+        Rigidbody2D parentRB = parentOfChar.GetComponent<Rigidbody2D>();
 
         if (facingDirection == "LEFT")
         {
@@ -418,10 +478,10 @@ public class CutsceneManager : MonoBehaviour
         }
 
 
-        while (parentOfChar.position.x > xPos)
+        while (landTargetTransform.position.x > xPos)
         {
-            parentOfChar.position = new Vector3(parentOfChar.position.x - (speed * Time.deltaTime), parentOfChar.position.y);
-            if (parentOfChar.position.x <= xPos)
+            parentRB.MovePosition(new Vector3(parentOfChar.position.x - (speed * Time.deltaTime), parentOfChar.position.y));
+            if (landTargetTransform.position.x <= xPos)
             {
                 character.GetComponent<Animator>().SetFloat("Horizontal", 0);
             }

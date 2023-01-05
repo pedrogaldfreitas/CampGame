@@ -83,7 +83,7 @@ public class playerInteractions : MonoBehaviour
         }
 
         //Removes the item from the scene.
-        item.SetActive(false);
+        item.transform.parent.gameObject.SetActive(false);
         return 1;
     }
 

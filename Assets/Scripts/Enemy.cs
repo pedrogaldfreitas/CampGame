@@ -11,14 +11,18 @@ public class Enemy : MonoBehaviour
     //Player damage variables
     public float knockbackPower;
 
-    Transform parent;
+    private Transform parent;
+    private Rigidbody2D parentRB;
+    public bool movementBlocked;
 
     //A light enemy can be launched back by being wacked with a stick. (Raccoon is light, bear is not)
     public bool lightEnemy;
 
     private void Start()
     {
+        movementBlocked = false;
         parent = transform.parent;
+        parentRB = parent.GetComponent<Rigidbody2D>();
         //Physics2D.IgnoreCollision(transform.parent.Find("Shadow").GetComponent<BoxCollider2D>(), GameObject.Find("PlayerParent").transform.Find("Shadow").GetComponent<BoxCollider2D>(), true);
     }
 
@@ -35,19 +39,35 @@ public class Enemy : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        Debug.Log("PEDROLOG: 1 - " + (collision.gameObject.tag == "Player") + ", 2 - " + (collision.GetType() == typeof(BoxCollider2D)) + ", 3 - " + CheckForShadowCollision(collision));
-        Debug.Log("PEDROLOG/2 " + collision.gameObject.tag);
         if ((collision.gameObject.tag == "Player") && (collision.GetType() == typeof(BoxCollider2D)) && (CheckForShadowCollision(collision)))
         {
             DamageOther(collision.gameObject, touchDamage);
         }
     }
 
-    public void TakeDamage(int dmg)
+    public void TakeDamage(int dmg, Vector2 direction)
     {
         enemyHealth -= dmg;
         Debug.Log("Enemy damaged, health at " + enemyHealth + ".");
+
+        StartCoroutine(GetKnockedBack(dmg, direction));
+
         return;
+    }
+
+    //This runs when the enemy is hit and knocked back. NOT for getting thrown by a powerful attack.
+    public IEnumerator GetKnockedBack(int dmg, Vector2 direction)
+    {
+        float pushAmount = 25;
+        movementBlocked = true;
+        while (pushAmount > 0)
+        {
+            parentRB.MovePosition(parent.position - ((Vector3)direction * pushAmount * Time.deltaTime));
+            pushAmount -= 2;
+            yield return new WaitForEndOfFrame();
+        }
+        yield return new WaitForSeconds(0.3f);
+        movementBlocked = false;
     }
 
     //Currently only works when damaging the player.

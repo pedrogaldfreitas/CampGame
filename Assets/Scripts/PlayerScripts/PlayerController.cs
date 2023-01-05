@@ -24,9 +24,12 @@ public class PlayerController : MonoBehaviour
     public float vSlopeSlowdown;    //Should be proportional to slopeAngleInRad/(pi/2)
     public float vSlopeSlowdownMultiplier;
 
+    private Rigidbody2D rb;
+
     void Start()
     {
         movementEnabled = true;
+        rb = GetComponent<Rigidbody2D>();
     }
 
     private void Update()
@@ -48,7 +51,7 @@ public class PlayerController : MonoBehaviour
 
             if (GetComponent<FakeHeightObject>().isGrounded)
             {
-                transform.position += new Vector3(moveVelocity.x*(1-hSlopeSlowdown), moveVelocity.y*(1-vSlopeSlowdown)) * runSpeedMultiplier * Time.deltaTime;
+                rb.MovePosition(this.transform.position + (new Vector3(moveVelocity.x * (1 - hSlopeSlowdown), moveVelocity.y * (1 - vSlopeSlowdown)) * runSpeedMultiplier * Time.deltaTime));
             }
 
             //ANIMATION COMPONENTS

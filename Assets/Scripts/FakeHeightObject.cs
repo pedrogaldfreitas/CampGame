@@ -82,7 +82,6 @@ public class FakeHeightObject : MonoBehaviour
             transBody.GetComponent<BoxCollider2D>().enabled = false;
             transShadow.GetComponent<BoxCollider2D>().enabled = true;
         //}
-
         transShadow.position = new Vector2(transShadow.position.x, transShadow.position.y - height);
         transShadow.GetComponent<newShadowScript>().floorHeight -= height;
         isGrounded = false;

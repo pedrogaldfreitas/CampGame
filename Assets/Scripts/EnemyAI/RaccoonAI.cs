@@ -4,72 +4,106 @@ using UnityEngine;
 
 public class RaccoonAI : MonoBehaviour
 {
-
-    /*RACCOON BEHAVIORS:
-     * 
-     * -Wander (just like squirrel)
-     * 
-     * -Run towards player
-     * -Jump at player (faster attack)
-     * -Stand still, staring at player
-     * 
-     */
-
+    //INTERFACE ON UNITY
+    [Range(0, 50)]
+    public int growlRadius = 50;
+    [Range(0, 50)]
+    public int attackRadius = 50;
     public float speed;
     public Vector2 moveDirection;
+    private float distanceFromPlayer;
 
+    private Transform parent;
     private Transform landTarget;
+    private Transform playerLandTarget;
+    private Enemy enemyScript;
+    private Rigidbody2D parentRB;
 
-    public enum State { WANDER, CHASE, JUMPATTACK, ALERT, RELOCATE };
+    public enum State { EATINGTRASH, CHASE, JUMPATTACK, ALERT, RELOCATE };
     public State raccoonState;
 
-    public bool raccoonAngry;
-    private Transform playerLandTarget;
-    private Transform parent;
+    private bool CR_running;
 
     // Start is called before the first frame update
     void Start()
     {
+        enemyScript = GetComponent<Enemy>();
+        CR_running = false;
         moveDirection = new Vector2(0, 0);
         playerLandTarget = GameObject.Find("PlayerParent").transform.Find("LandTarget");
         parent = transform.parent;
-        raccoonAngry = false;
+        parentRB = parent.GetComponent<Rigidbody2D>();
         landTarget = transform.parent.Find("LandTarget");
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        if (raccoonState == State.CHASE)
+        switch(raccoonState)
         {
-            if (parent.GetComponent<FakeHeightObject>().isGrounded)
-            {
-                moveDirection = (playerLandTarget.position - landTarget.position).normalized;
-                parent.transform.Translate(moveDirection * speed / 15f);
-
-                if (Vector2.Distance(transform.position, playerLandTarget.transform.position) < 15)
+            case State.EATINGTRASH:
+                distanceFromPlayer = Vector2.Distance(playerLandTarget.position, landTarget.position);
+                //IDEA: Raccoon is chill when player is far away.
+                if (distanceFromPlayer >= growlRadius)
                 {
-                    //raccoonState = State.JUMPATTACK;
+                    //Raccoon is chill when player is far away, eating trash.
+                } else if (distanceFromPlayer < growlRadius && distanceFromPlayer >= attackRadius)
+                {
+                    //Raccoon growls.
+                    if (!CR_running)
+                    {
+                        StartCoroutine(RaccoonBlink());
+                    }
+                } else
+                {
+                    raccoonState = State.CHASE;
+                    //Raccoon attacks.
                 }
-            }
-        }
-        if (raccoonState == State.JUMPATTACK)
-        {
-            Debug.Log("JUMPATTACK!");
+                //If player gets closer, Raccoon growls but stays still.
 
-            //moveSpot = Vector2.MoveTowards(transform.position, player.transform.position, speed / 8f);
-            //parent.gameObject.GetComponent<FakeHeightObject>().Jump((moveSpot - currSpot)*30f, 40);
-            // raccoonState = State.RELOCATE;
-            raccoonState = State.CHASE;
+                break;
+            case State.CHASE:
+                if (parent.GetComponent<FakeHeightObject>().isGrounded && !enemyScript.movementBlocked)
+                {
+                    moveDirection = (playerLandTarget.position - landTarget.position).normalized;
+                    //parent.transform.Translate(moveDirection * speed / 15f);
+                    parentRB.MovePosition(parent.position + (Vector3)(moveDirection * speed / 15f));
+
+                    if (Vector2.Distance(transform.position, playerLandTarget.transform.position) < 15)
+                    {
+                        //raccoonState = State.JUMPATTACK;
+                    }
+                }
+                break;
+            case State.JUMPATTACK:
+                //moveSpot = Vector2.MoveTowards(transform.position, player.transform.position, speed / 8f);
+                //parent.gameObject.GetComponent<FakeHeightObject>().Jump((moveSpot - currSpot)*30f, 40);
+                raccoonState = State.CHASE;
+                break;
+            default:
+                break;
         }
-        if (raccoonState == State.RELOCATE)
+
+    }
+
+    IEnumerator RaccoonBlink()
+    {
+        CR_running = true;
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        Color color1 = new Color(0.6981132f, 0.06915272f, 0.1973518f);
+        Color color2 = new Color(1, 0, 0.113f);
+        while (distanceFromPlayer < 30 && distanceFromPlayer >= 10)
         {
-            if (parent.GetComponent<FakeHeightObject>().isGrounded)
+            if (spriteRenderer.color == color1)
             {
-
+                spriteRenderer.color = color2;
+            } else
+            {
+                spriteRenderer.color = color1;
             }
+            yield return new WaitForSeconds(0.25f);
         }
-
+        spriteRenderer.color = color1;
+        CR_running = false;
     }
 }

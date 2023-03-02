@@ -66,7 +66,6 @@ public class RaccoonAI : MonoBehaviour
                 if (parent.GetComponent<FakeHeightObject>().isGrounded && !enemyScript.movementBlocked)
                 {
                     moveDirection = (playerLandTarget.position - landTarget.position).normalized;
-                    //parent.transform.Translate(moveDirection * speed / 15f);
                     parentRB.MovePosition(parent.position + (Vector3)(moveDirection * speed / 15f));
 
                     if (Vector2.Distance(transform.position, playerLandTarget.transform.position) < 15)

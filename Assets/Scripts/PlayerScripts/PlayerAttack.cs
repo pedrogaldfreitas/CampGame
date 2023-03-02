@@ -31,6 +31,8 @@ public class PlayerAttack : MonoBehaviour
     private Coroutine swingNumResetCoroutine;
 
     public bool blockSwinging;
+    public bool bufferedSwing;
+    public bool swingBufferingAllowed;
     public float dashForwardSpeed;
     public float dashForwardSpeedDecreaseRate;
     public float finalSwingSpeedStill;
@@ -48,6 +50,8 @@ public class PlayerAttack : MonoBehaviour
         playerInventory = this.GetComponent<playerInventory>();
         swingNum = 0;
         currentSwingStickCoroutine = null;
+        bufferedSwing = false;
+        swingBufferingAllowed = false;
     }
 
     // Update is called once per frame
@@ -55,14 +59,14 @@ public class PlayerAttack : MonoBehaviour
     {
         if (playerInventory.activePrimary == "STICK")
         {
-            if ((Input.GetKeyDown(KeyCode.Z) == true) && !blockSwinging)
+            if (Input.GetKeyDown(KeyCode.Z) == true)
             {
-                if (currentSwingStickCoroutine != null)
+                if (!blockSwinging)
                 {
-                    StopCoroutine(currentSwingStickCoroutine);
+                    StartCoroutine(swingStick());
+                } else if (swingBufferingAllowed) {
+                    bufferedSwing = true;
                 }
-                StartCoroutine(swingStick());
-                timeBtwAttack = startTimeBtwAttack;
             }
 
             if (timeBtwAttack > 0)
@@ -110,8 +114,29 @@ public class PlayerAttack : MonoBehaviour
         List<Collider2D> enemiesToDamage = new List<Collider2D>();
         Physics2D.OverlapCollider(attackCirclePos.GetComponent<PolygonCollider2D>(), contactFilter, enemiesToDamage);
 
+        bool isMovingSwing = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")) != Vector2.zero;
+        bool isBigSwing = (isMovingSwing && swingNum == 2) || (isMovingSwing && swingNum == 4);
+        int hitForce;
+
+        if (isMovingSwing)
+        {
+            hitForce = 4;
+            if (isBigSwing)
+            {
+                hitForce *= 2;
+            }
+        } else
+        {
+            hitForce = 6;
+            if (isBigSwing)
+            {
+                hitForce *= 2;
+            }
+        }
+
         for (int i = 0; i < enemiesToDamage.Count; i++)
         {
+            Collider2D enemy = enemiesToDamage[i];
             if (PlayerFacing.playerFacingDir == PlayerFacing.facingDir.DOWN)
             {
 
@@ -123,8 +148,9 @@ public class PlayerAttack : MonoBehaviour
                     }
                     else
                     {
-                        hitEnemy(enemiesToDamage[i]);
-                        //enemiesToDamage[i].GetComponent<Enemy>().TakeDamage(damage);
+
+                        enemy.GetComponent<Enemy>().TakeDamage(hitForce, (transform.parent.Find("LandTarget").position - enemy.transform.parent.Find("LandTarget").position).normalized);
+                        //hitEnemy(enemiesToDamage[i], hitForce);
                     }
                 }
             }
@@ -138,8 +164,8 @@ public class PlayerAttack : MonoBehaviour
                     }
                     else
                     {
-                        hitEnemy(enemiesToDamage[i]);
-                        // enemiesToDamage[i].GetComponent<Enemy>().TakeDamage(damage);
+                        enemy.GetComponent<Enemy>().TakeDamage(hitForce, (transform.parent.Find("LandTarget").position - enemy.transform.parent.Find("LandTarget").position).normalized);
+                        //hitEnemy(enemiesToDamage[i], hitForce);
                     }
                 }
             }
@@ -153,8 +179,8 @@ public class PlayerAttack : MonoBehaviour
                     }
                     else
                     {
-                        hitEnemy(enemiesToDamage[i]);
-                        //enemiesToDamage[i].GetComponent<Enemy>().TakeDamage(damage);
+                        enemy.GetComponent<Enemy>().TakeDamage(hitForce, (transform.parent.Find("LandTarget").position - enemy.transform.parent.Find("LandTarget").position).normalized);
+                        //hitEnemy(enemiesToDamage[i], hitForce);
                     }
                 }
             }
@@ -168,8 +194,8 @@ public class PlayerAttack : MonoBehaviour
                     }
                     else
                     {
-                        hitEnemy(enemiesToDamage[i]);
-                        //enemiesToDamage[i].GetComponent<Enemy>().TakeDamage(damage);
+                        enemy.GetComponent<Enemy>().TakeDamage(hitForce, (transform.parent.Find("LandTarget").position - enemy.transform.parent.Find("LandTarget").position).normalized);
+                        //hitEnemy(enemiesToDamage[i], hitForce);
                     }
                 }
             }
@@ -190,8 +216,9 @@ public class PlayerAttack : MonoBehaviour
 
     IEnumerator swingStickPlayerMovement(Vector2 dirOfMovement, int swingNum)
     {
-        float speed = swingNum != 2 ? dashForwardSpeed : dashForwardSpeed * 1.4f;
-        float speedDecreaseRate = swingNum != 2 ? dashForwardSpeedDecreaseRate : dashForwardSpeedDecreaseRate * 0.7f;
+        bool isBigSwing = (dirOfMovement != Vector2.zero && swingNum == 2) || (dirOfMovement == Vector2.zero && swingNum == 4);
+        float speed = !isBigSwing ? dashForwardSpeed : dashForwardSpeed * 1.4f;
+        float speedDecreaseRate = !isBigSwing ? dashForwardSpeedDecreaseRate : dashForwardSpeedDecreaseRate * 0.7f;
 
         while (speed > 0)
         {
@@ -205,14 +232,38 @@ public class PlayerAttack : MonoBehaviour
         currentSwingStickCoroutine = null;
     }
 
+    public void swingStickAgainIfSwingBuffered()
+    {
+        if (bufferedSwing) {
+            StartCoroutine(swingStick());
+        }
+    }
+
+    public void allowSwingBuffering()
+    {
+        swingBufferingAllowed = true;
+    }
+
     IEnumerator swingStick()
     {
+        timeBtwAttack = startTimeBtwAttack;
+        if (currentSwingStickCoroutine != null)
+        {
+            StopCoroutine(currentSwingStickCoroutine);
+        }
+        if (bufferedSwing)
+        {
+            bufferedSwing = false;
+        }
+        swingBufferingAllowed = false;
+
         attackAnimator.SetFloat("SwingNum", swingNum);
         attackAnimator.SetTrigger("Zkey");        
         
         Vector2 directionOfMovement = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        bool isBigSwing = (directionOfMovement != Vector2.zero && swingNum == 2) || (directionOfMovement == Vector2.zero && swingNum == 4);
 
-        if (swingNum == 2)
+        if (isBigSwing)
         {
             if (directionOfMovement == new Vector2(0, 0))
             {
@@ -222,7 +273,7 @@ public class PlayerAttack : MonoBehaviour
             {
                 SetSwingAnimationSpeed(finalSwingSpeedDash);
             }
-        } else if (swingNum < 2)
+        } else
         {
             SetSwingAnimationSpeed(1);
         }
@@ -248,7 +299,7 @@ public class PlayerAttack : MonoBehaviour
         currentSwingStickCoroutine = swingStickPlayerMovement(directionOfMovement, swingNum);
         StartCoroutine(currentSwingStickCoroutine);
 
-        if (swingNum == 2)
+        if (isBigSwing)
         {
             swingNum = 0;
         }
@@ -277,21 +328,18 @@ public class PlayerAttack : MonoBehaviour
         return;
     }
 
-    private void hitEnemy(Collider2D enemy)
+    private void hitEnemy(Collider2D enemy, int hitForce)
     {
-        Debug.Log("hitEnemy works.");
+        //Vector2  = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
 
-        float hitForce = swingNum == 2 ? 2 : 0.7f;
-        damage = swingNum == 2 ? damage * 2 : damage;
-
-        enemy.GetComponent<Enemy>().TakeDamage(damage, (transform.parent.Find("LandTarget").position - enemy.transform.parent.Find("LandTarget").position).normalized);
+        enemy.GetComponent<Enemy>().TakeDamage(hitForce, (transform.parent.Find("LandTarget").position - enemy.transform.parent.Find("LandTarget").position).normalized);
         if (enemy.gameObject.GetComponent<Enemy>().lightEnemy)
         {
-            launchBackEnemy(enemy.gameObject, hitForce);
+            //launchBackEnemy(enemy.gameObject, hitForce);
         }
     }
 
-    //parameter "enemy" takes the parent object of the enemy.
+    //parameter "enemy" takes the parent object of the enemy. [CAN BE DELETED]
     private void launchBackEnemy(GameObject enemy, float hitForce)
     {
         //float oldVerticalVel = enemy.transform.parent.GetComponent<FakeHeightObject>().verticalVelocity;

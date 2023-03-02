@@ -34,7 +34,7 @@ public class CutsceneManager : MonoBehaviour
         //playCutsceneUsingID("D1M0");
         //StartCoroutine(DayTitles(1));
        
-        playCutsceneUsingID("TEST");
+        //playCutsceneUsingID("TEST");
     }
 
 

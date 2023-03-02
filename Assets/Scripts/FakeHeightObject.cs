@@ -51,6 +51,7 @@ public class FakeHeightObject : MonoBehaviour
 
     public void Jump(Vector2 groundVelocity, float verticalVelocity, bool grounded = true, Vector3 rotation = default(Vector3), Quaternion rotationAfterLanding = default(Quaternion))
     {
+        Debug.Log("PEDROLOG#1 Raccoon Jump() called with groundVelocity = " + groundVelocity + " and vertical velocity = " + verticalVelocity);
         if (grounded)
         {
             this.groundVelocity = groundVelocity;
@@ -104,7 +105,7 @@ public class FakeHeightObject : MonoBehaviour
             verticalVelocity += gravity * Time.deltaTime;
             transBody.position += new Vector3(0, verticalVelocity, 0) * Time.deltaTime;
 
-            transObject.position += (Vector3)groundVelocity * Time.deltaTime;
+            transObject.GetComponent<Rigidbody2D>().MovePosition(transObject.position + ((Vector3)this.groundVelocity * Time.deltaTime));
 
             transBody.Rotate(airTimeRotation);
         } 

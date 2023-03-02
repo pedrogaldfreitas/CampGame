@@ -11,9 +11,14 @@ public class Enemy : MonoBehaviour
     //Player damage variables
     public float knockbackPower;
 
+    //Knockback Variables
+    public float knockbackVerticalVel;
+    public float knockbackGroundVel;
+
     private Transform parent;
     private Rigidbody2D parentRB;
     public bool movementBlocked;
+    private Transform playerShadow;
 
     //A light enemy can be launched back by being wacked with a stick. (Raccoon is light, bear is not)
     public bool lightEnemy;
@@ -23,6 +28,7 @@ public class Enemy : MonoBehaviour
         movementBlocked = false;
         parent = transform.parent;
         parentRB = parent.GetComponent<Rigidbody2D>();
+        playerShadow = GameObject.Find("PlayerParent").transform.Find("Shadow");
         //Physics2D.IgnoreCollision(transform.parent.Find("Shadow").GetComponent<BoxCollider2D>(), GameObject.Find("PlayerParent").transform.Find("Shadow").GetComponent<BoxCollider2D>(), true);
     }
 
@@ -58,15 +64,20 @@ public class Enemy : MonoBehaviour
     //This runs when the enemy is hit and knocked back. NOT for getting thrown by a powerful attack.
     public IEnumerator GetKnockedBack(int dmg, Vector2 direction)
     {
-        float pushAmount = 25;
+        Transform playerParentTransform = GameObject.Find("PlayerParent").transform;
+
         movementBlocked = true;
-        while (pushAmount > 0)
+        Transform landTarget = parent.Find("LandTarget");
+        Vector2 moveSpot = landTarget.position - playerParentTransform.Find("LandTarget").position;
+
+        parent.GetComponent<FakeHeightObject>().Jump(moveSpot*knockbackGroundVel, knockbackVerticalVel);
+
+        while (!parent.GetComponent<FakeHeightObject>().isGrounded)
         {
-            parentRB.MovePosition(parent.position - ((Vector3)direction * pushAmount * Time.deltaTime));
-            pushAmount -= 2;
             yield return new WaitForEndOfFrame();
         }
-        yield return new WaitForSeconds(0.3f);
+
+        //yield return new WaitForSeconds(0.3f);
         movementBlocked = false;
     }
 

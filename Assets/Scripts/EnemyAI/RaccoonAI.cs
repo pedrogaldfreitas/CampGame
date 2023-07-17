@@ -19,10 +19,12 @@ public class RaccoonAI : MonoBehaviour
     private Enemy enemyScript;
     private Rigidbody2D parentRB;
 
-    public enum State { EATINGTRASH, CHASE, JUMPATTACK, ALERT, RELOCATE };
+    public enum State { EATINGTRASH, CHASE, JUMPATTACK, ALERT, RELOCATE, BACKANDFORTHJUMPTEST };
     public State raccoonState;
 
     private bool CR_running;
+
+    private Vector2 testHopDirection = Vector2.right;
 
     // Start is called before the first frame update
     void Start()
@@ -78,6 +80,14 @@ public class RaccoonAI : MonoBehaviour
                 //moveSpot = Vector2.MoveTowards(transform.position, player.transform.position, speed / 8f);
                 //parent.gameObject.GetComponent<FakeHeightObject>().Jump((moveSpot - currSpot)*30f, 40);
                 raccoonState = State.CHASE;
+                break;
+            case State.BACKANDFORTHJUMPTEST:
+                if (parent.GetComponent<FakeHeightObject>().isGrounded)
+                {
+                    parent.gameObject.GetComponent<FakeHeightObject>().Jump(testHopDirection * 30f, 40);
+                    Debug.Log("PEDROLOG/BUG1: X position upon landing: " + transform.position.x);
+                    testHopDirection = -testHopDirection;
+                }
                 break;
             default:
                 break;

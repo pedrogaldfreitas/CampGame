@@ -10,6 +10,12 @@ public class BaseScript : MonoBehaviour
     //This is the solid's height from its base. An object can ignore collisions by passing "under" this solid.
     private float solidHeightFromBase;
 
+    [Header("Setup Variables")]
+    [SerializeField]
+    [Tooltip("If the object is sitting on a platform (not hovering), drag the platform here to set the solidHeightFromBase variable.")]
+    private Transform startingPlatform;
+
+    [Header("Test Variables")]
     public List<Collider2D> collidersTouchingSlope;
     public List<Collider2D> collidersBeingIgnored;
 
@@ -19,6 +25,12 @@ public class BaseScript : MonoBehaviour
         collidersBeingIgnored = new List<Collider2D>();
         solidHeight = transform.parent.Find("top").GetComponent<platformScript>().floorHeight;
         solidHeightFromBase = transform.parent.Find("solid").position.y - transform.position.y;
+
+        if (startingPlatform)
+        {
+            solidHeightFromBase = startingPlatform.Find("top").GetComponent<platformScript>().floorHeight;
+            this.transform.position = new Vector2(transform.position.x, transform.position.y - solidHeightFromBase);
+        }
     }
 
     private IEnumerator IgnoreCollisions(Collider2D otherCollider)

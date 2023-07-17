@@ -2096,35 +2096,28 @@ AnimationClip:
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
-    intParameter: 0
+    intParameter: 5
     messageOptions: 0
-  - time: 0.35
+  - time: 0.4
     functionName: HitEnemiesInSwingZone
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
-    intParameter: 0
+    intParameter: 5
     messageOptions: 0
-  - time: 0.45
+  - time: 0.51666665
     functionName: HitEnemiesInSwingZone
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
-  - time: 0.55
-    functionName: HitEnemiesInSwingZone
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
+    intParameter: 5
     messageOptions: 0
   - time: 0.65
     functionName: HitEnemiesInSwingZone
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
-    intParameter: 0
+    intParameter: 5
     messageOptions: 0
   - time: 1
     functionName: BlockSwinging

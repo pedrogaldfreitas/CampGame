@@ -17,10 +17,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/MilesRoom.unity
     guid: 3effb08f75882674399a8b4a30a1ad28
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/LowerCampSite.unity
     guid: b73130a4d81c28e43a031e4a29b336af
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/MECHANICS_TESTS/AllCharacters.unity
     guid: 68f38e0de1c674f468745682bfd8faf5
   m_configObjects: {}

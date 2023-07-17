@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class platformScript : MonoBehaviour
 {
@@ -11,7 +12,7 @@ public class platformScript : MonoBehaviour
 
     void Start()
     {
-        floorHeight = transform.position.y - transform.parent.Find("base").position.y;
+        floorHeight = (float)Math.Round(transform.position.y - transform.parent.Find("base").position.y, 3);
     }
 
 }

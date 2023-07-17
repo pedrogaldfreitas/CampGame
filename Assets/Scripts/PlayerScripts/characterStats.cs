@@ -22,6 +22,7 @@ public class characterStats : MonoBehaviour
 
     private void Start()
     {
+        playerAnimator = GetComponent<Animator>();
         //PLACEHOLDER
        /*if (this.gameObject.name == "NPCVictor")
        {

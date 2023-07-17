@@ -7,6 +7,7 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     public int touchDamage;
     public int enemyHealth;
+    private int baseEnemyHealth;
 
     //Player damage variables
     public float knockbackPower;
@@ -23,10 +24,14 @@ public class Enemy : MonoBehaviour
     //A light enemy can be launched back by being wacked with a stick. (Raccoon is light, bear is not)
     public bool lightEnemy;
 
+    Transform healthBar;
+
     private void Start()
     {
+        baseEnemyHealth = enemyHealth;
         movementBlocked = false;
         parent = transform.parent;
+        healthBar = transform.Find("HealthBar").Find("Filled");
         parentRB = parent.GetComponent<Rigidbody2D>();
         playerShadow = GameObject.Find("PlayerParent").transform.Find("Shadow");
         //Physics2D.IgnoreCollision(transform.parent.Find("Shadow").GetComponent<BoxCollider2D>(), GameObject.Find("PlayerParent").transform.Find("Shadow").GetComponent<BoxCollider2D>(), true);
@@ -45,39 +50,37 @@ public class Enemy : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if ((collision.gameObject.tag == "Player") && (collision.GetType() == typeof(BoxCollider2D)) && (CheckForShadowCollision(collision)))
+        if ((collision.gameObject.tag == "Player") && (collision.GetType() == typeof(BoxCollider2D)) && (CheckForBaseCollision(collision)))
         {
             DamageOther(collision.gameObject, touchDamage);
         }
     }
 
-    public void TakeDamage(int dmg, Vector2 direction)
+    public void TakeDamage(int hitForce, Vector2 direction, float groundSpeedToLaunch)
     {
-        enemyHealth -= dmg;
-        Debug.Log("Enemy damaged, health at " + enemyHealth + ".");
+        enemyHealth -= hitForce;
+        healthBar.localScale = new Vector3(((float)enemyHealth / (float)baseEnemyHealth)*16f, healthBar.localScale.y, healthBar.localScale.z);
 
-        StartCoroutine(GetKnockedBack(dmg, direction));
+        StartCoroutine(GetKnockedBack(hitForce, direction, groundSpeedToLaunch));
 
         return;
     }
 
-    //This runs when the enemy is hit and knocked back. NOT for getting thrown by a powerful attack.
-    public IEnumerator GetKnockedBack(int dmg, Vector2 direction)
+    //This runs when the enemy is hit and knocked back.
+    public IEnumerator GetKnockedBack(int hitForce, Vector2 direction, float groundSpeedMultiplier)
     {
         Transform playerParentTransform = GameObject.Find("PlayerParent").transform;
 
         movementBlocked = true;
         Transform landTarget = parent.Find("LandTarget");
         Vector2 moveSpot = landTarget.position - playerParentTransform.Find("LandTarget").position;
-
-        parent.GetComponent<FakeHeightObject>().Jump(moveSpot*knockbackGroundVel, knockbackVerticalVel);
+        parent.GetComponent<FakeHeightObject>().Jump(moveSpot*knockbackGroundVel* groundSpeedMultiplier, knockbackVerticalVel * hitForce/3.5f);
 
         while (!parent.GetComponent<FakeHeightObject>().isGrounded)
         {
             yield return new WaitForEndOfFrame();
         }
 
-        //yield return new WaitForSeconds(0.3f);
         movementBlocked = false;
     }
 
@@ -93,10 +96,10 @@ public class Enemy : MonoBehaviour
     }
 
     //Checks if the criteria is filled for a collision with another object. (shadows collide + objects collide)
-    bool CheckForShadowCollision(Collider2D collision)
+    bool CheckForBaseCollision(Collider2D collision)
     {
-        Collider2D thisCollider = transform.parent.Find("Shadow").GetComponent<BoxCollider2D>();
-        Collider2D otherCollider = collision.transform.parent?.Find("Shadow")?.GetComponent<BoxCollider2D>();
+        Collider2D thisCollider = transform.parent.Find("LandTarget").GetComponent<BoxCollider2D>();
+        Collider2D otherCollider = collision.transform.parent?.Find("LandTarget")?.GetComponent<BoxCollider2D>();
         bool bothCollidersExist = thisCollider != null && otherCollider != null;
         bool collidersAreNotTheSame = (thisCollider != otherCollider);
 

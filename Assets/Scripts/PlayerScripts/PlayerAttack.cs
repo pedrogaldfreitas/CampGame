@@ -63,7 +63,7 @@ public class PlayerAttack : MonoBehaviour
             {
                 if (!blockSwinging)
                 {
-                    StartCoroutine(swingStick());
+                    StartCoroutine(SwingStick());
                 } else if (swingBufferingAllowed) {
                     bufferedSwing = true;
                 }
@@ -105,7 +105,7 @@ public class PlayerAttack : MonoBehaviour
         return;
     }
 
-    public void HitEnemiesInSwingZone()
+    public void HitEnemiesInSwingZone(int hitForce = 0)
     {
         ContactFilter2D contactFilter = new ContactFilter2D();
         contactFilter.SetLayerMask(LayerMask.GetMask("Enemy"));
@@ -114,25 +114,7 @@ public class PlayerAttack : MonoBehaviour
         List<Collider2D> enemiesToDamage = new List<Collider2D>();
         Physics2D.OverlapCollider(attackCirclePos.GetComponent<PolygonCollider2D>(), contactFilter, enemiesToDamage);
 
-        bool isMovingSwing = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")) != Vector2.zero;
-        bool isBigSwing = (isMovingSwing && swingNum == 2) || (isMovingSwing && swingNum == 4);
-        int hitForce;
-
-        if (isMovingSwing)
-        {
-            hitForce = 4;
-            if (isBigSwing)
-            {
-                hitForce *= 2;
-            }
-        } else
-        {
-            hitForce = 6;
-            if (isBigSwing)
-            {
-                hitForce *= 2;
-            }
-        }
+        bool isBigSwing = (swingNum == 4);
 
         for (int i = 0; i < enemiesToDamage.Count; i++)
         {
@@ -140,62 +122,57 @@ public class PlayerAttack : MonoBehaviour
             if (PlayerFacing.playerFacingDir == PlayerFacing.facingDir.DOWN)
             {
 
-                if (enemiesToDamage[i].transform.position.y <= attackCirclePos.position.y)
+                if (enemy.transform.position.y <= attackCirclePos.position.y)
                 {
-                    if (enemiesToDamage[i].tag == "InteractObject")
+                    if (enemy.tag == "InteractObject")
                     {
-                        enemiesToDamage[i].GetComponent<breakableObjectScript>().TakeDamage(damage, true);
+                        enemy.GetComponent<breakableObjectScript>().TakeDamage(damage, true);
                     }
                     else
                     {
-
-                        enemy.GetComponent<Enemy>().TakeDamage(hitForce, (transform.parent.Find("LandTarget").position - enemy.transform.parent.Find("LandTarget").position).normalized);
-                        //hitEnemy(enemiesToDamage[i], hitForce);
+                        hitEnemy(enemiesToDamage[i], hitForce);
                     }
                 }
             }
             else if (PlayerFacing.playerFacingDir == PlayerFacing.facingDir.UP)
             {
-                if (enemiesToDamage[i].transform.position.y >= attackCirclePos.position.y)
+                if (enemy.transform.position.y >= attackCirclePos.position.y)
                 {
-                    if (enemiesToDamage[i].tag == "InteractObject")
+                    if (enemy.tag == "InteractObject")
                     {
-                        enemiesToDamage[i].GetComponent<breakableObjectScript>().TakeDamage(damage, true);
+                        enemy.GetComponent<breakableObjectScript>().TakeDamage(damage, true);
                     }
                     else
                     {
-                        enemy.GetComponent<Enemy>().TakeDamage(hitForce, (transform.parent.Find("LandTarget").position - enemy.transform.parent.Find("LandTarget").position).normalized);
-                        //hitEnemy(enemiesToDamage[i], hitForce);
+                        hitEnemy(enemy, hitForce);
                     }
                 }
             }
             else if (PlayerFacing.playerFacingDir == PlayerFacing.facingDir.LEFT)
             {
-                if (enemiesToDamage[i].transform.position.x <= attackCirclePos.position.x)
+                if (enemy.transform.position.x <= attackCirclePos.position.x)
                 {
-                    if (enemiesToDamage[i].tag == "InteractObject")
+                    if (enemy.tag == "InteractObject")
                     {
-                        enemiesToDamage[i].GetComponent<breakableObjectScript>().TakeDamage(damage, true);
+                        enemy.GetComponent<breakableObjectScript>().TakeDamage(damage, true);
                     }
                     else
                     {
-                        enemy.GetComponent<Enemy>().TakeDamage(hitForce, (transform.parent.Find("LandTarget").position - enemy.transform.parent.Find("LandTarget").position).normalized);
-                        //hitEnemy(enemiesToDamage[i], hitForce);
+                        hitEnemy(enemy, hitForce);
                     }
                 }
             }
             else if (PlayerFacing.playerFacingDir == PlayerFacing.facingDir.RIGHT)
             {
-                if (enemiesToDamage[i].transform.position.x >= attackCirclePos.position.x)
+                if (enemy.transform.position.x >= attackCirclePos.position.x)
                 {
-                    if (enemiesToDamage[i].tag == "InteractObject")
+                    if (enemy.tag == "InteractObject")
                     {
-                        enemiesToDamage[i].GetComponent<breakableObjectScript>().TakeDamage(damage, true);
+                        enemy.GetComponent<breakableObjectScript>().TakeDamage(damage, true);
                     }
                     else
                     {
-                        enemy.GetComponent<Enemy>().TakeDamage(hitForce, (transform.parent.Find("LandTarget").position - enemy.transform.parent.Find("LandTarget").position).normalized);
-                        //hitEnemy(enemiesToDamage[i], hitForce);
+                        hitEnemy(enemy, hitForce);
                     }
                 }
             }
@@ -208,15 +185,16 @@ public class PlayerAttack : MonoBehaviour
         return;
     }
 
-    IEnumerator swingNumResetTimer()
+    IEnumerator SwingNumResetTimer()
     {
         yield return new WaitForSeconds(swingNumTimeBeforeReset);
         ResetSwingNum();
     }
 
-    IEnumerator swingStickPlayerMovement(Vector2 dirOfMovement, int swingNum)
+    IEnumerator SwingStickPlayerMovement(Vector2 dirOfMovement, int swingNum)
     {
-        bool isBigSwing = (dirOfMovement != Vector2.zero && swingNum == 2) || (dirOfMovement == Vector2.zero && swingNum == 4);
+        //bool isBigSwing = (dirOfMovement != Vector2.zero && swingNum == 2) || (dirOfMovement == Vector2.zero && swingNum == 4);
+        bool isBigSwing = (swingNum == 4);
         float speed = !isBigSwing ? dashForwardSpeed : dashForwardSpeed * 1.4f;
         float speedDecreaseRate = !isBigSwing ? dashForwardSpeedDecreaseRate : dashForwardSpeedDecreaseRate * 0.7f;
 
@@ -232,10 +210,10 @@ public class PlayerAttack : MonoBehaviour
         currentSwingStickCoroutine = null;
     }
 
-    public void swingStickAgainIfSwingBuffered()
+    public void SwingStickAgainIfSwingBuffered()
     {
         if (bufferedSwing) {
-            StartCoroutine(swingStick());
+            StartCoroutine(SwingStick());
         }
     }
 
@@ -244,7 +222,7 @@ public class PlayerAttack : MonoBehaviour
         swingBufferingAllowed = true;
     }
 
-    IEnumerator swingStick()
+    IEnumerator SwingStick()
     {
         timeBtwAttack = startTimeBtwAttack;
         if (currentSwingStickCoroutine != null)
@@ -261,7 +239,7 @@ public class PlayerAttack : MonoBehaviour
         attackAnimator.SetTrigger("Zkey");        
         
         Vector2 directionOfMovement = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-        bool isBigSwing = (directionOfMovement != Vector2.zero && swingNum == 2) || (directionOfMovement == Vector2.zero && swingNum == 4);
+        bool isBigSwing = (swingNum == 4);
 
         if (isBigSwing)
         {
@@ -282,7 +260,7 @@ public class PlayerAttack : MonoBehaviour
         {
             StopCoroutine(swingNumResetCoroutine);
         }
-        swingNumResetCoroutine = StartCoroutine(swingNumResetTimer());
+        swingNumResetCoroutine = StartCoroutine(SwingNumResetTimer());
 
 
         yield return new WaitForSeconds(0.08f);
@@ -296,7 +274,7 @@ public class PlayerAttack : MonoBehaviour
         }
 
         adjustStickTransform();
-        currentSwingStickCoroutine = swingStickPlayerMovement(directionOfMovement, swingNum);
+        currentSwingStickCoroutine = SwingStickPlayerMovement(directionOfMovement, swingNum);
         StartCoroutine(currentSwingStickCoroutine);
 
         if (isBigSwing)
@@ -309,19 +287,15 @@ public class PlayerAttack : MonoBehaviour
 
     void adjustStickTransform()
     {
-        switch (swingNum)
+        switch (swingNum%2)
         {
             case 1:
                 stickObj.localPosition = new Vector3(0.41f, 1.39f, -0.5f);
                 stickObj.GetComponent<SpriteRenderer>().flipX = false;
                 break;
-            case 2:
+            case 0:
                 stickObj.localPosition = new Vector3(-0.36f, 1.28f, -0.5f);
                 stickObj.GetComponent<SpriteRenderer>().flipX = true;
-                break;
-            case 3:
-                stickObj.localPosition = new Vector3(0.41f, 1.39f, -0.5f);
-                stickObj.GetComponent<SpriteRenderer>().flipX = false;
                 break;
         }
 
@@ -330,13 +304,17 @@ public class PlayerAttack : MonoBehaviour
 
     private void hitEnemy(Collider2D enemy, int hitForce)
     {
-        //Vector2  = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+        bool isBigSwing = (swingNum == 4);
 
-        enemy.GetComponent<Enemy>().TakeDamage(hitForce, (transform.parent.Find("LandTarget").position - enemy.transform.parent.Find("LandTarget").position).normalized);
-        if (enemy.gameObject.GetComponent<Enemy>().lightEnemy)
+        //NOTE: Lunge attack changes ground speed of projectile. hitForce affects both ground speed AND vertical speed of projectile.
+        bool isLungeAttack = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")) != Vector2.zero;
+        float groundSpeedMultiplier = 1;
+        if (isLungeAttack)
         {
-            //launchBackEnemy(enemy.gameObject, hitForce);
+            groundSpeedMultiplier = 2;
         }
+
+        enemy.GetComponent<Enemy>().TakeDamage(hitForce, (transform.parent.Find("LandTarget").position - enemy.transform.parent.Find("LandTarget").position).normalized, groundSpeedMultiplier);
     }
 
     //parameter "enemy" takes the parent object of the enemy. [CAN BE DELETED]

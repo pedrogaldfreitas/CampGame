@@ -5,6 +5,12 @@ using UnityEngine;
 
 public class FakeHeightObject : MonoBehaviour
 {
+    [Header("Setup Variables")]
+    [Tooltip("This object is meant to determine which floorHeight the object should start on. Drag the platform object onto this field in the Unity editor.")]
+    [SerializeField]
+    private Transform startingPlatform;
+
+    [Header("Test Variables")]
     public Transform transObject;
     public Transform transBody;
     public Transform transShadow;
@@ -32,6 +38,11 @@ public class FakeHeightObject : MonoBehaviour
         shadowOffset = transShadow.transform.localPosition.y;
 
         heightOfObject = transBody.GetComponent<Collider2D>().bounds.size.y; //Collider of object must be its first collider.
+
+        if (startingPlatform)
+        {
+            transShadow.GetComponent<newShadowScript>().floorHeight = startingPlatform.Find("top").GetComponent<platformScript>().floorHeight;
+        }
     }
 
     private void Update()
@@ -51,7 +62,6 @@ public class FakeHeightObject : MonoBehaviour
 
     public void Jump(Vector2 groundVelocity, float verticalVelocity, bool grounded = true, Vector3 rotation = default(Vector3), Quaternion rotationAfterLanding = default(Quaternion))
     {
-        Debug.Log("PEDROLOG#1 Raccoon Jump() called with groundVelocity = " + groundVelocity + " and vertical velocity = " + verticalVelocity);
         if (grounded)
         {
             this.groundVelocity = groundVelocity;
@@ -72,17 +82,9 @@ public class FakeHeightObject : MonoBehaviour
         if (objToIgnore)
         {
             ignoredSolidPlatformObj = objToIgnore;
-            //if (this.name == "PlayerParent")
-            //{
-                Physics2D.IgnoreCollision(transBody.GetComponent<BoxCollider2D>(), objToIgnore.GetComponent<PolygonCollider2D>(), true);
-            //}
+            Physics2D.IgnoreCollision(transBody.GetComponent<BoxCollider2D>(), objToIgnore.GetComponent<PolygonCollider2D>(), true);
         }
 
-        //if (this.name == "PlayerParent")
-        //{
-            transBody.GetComponent<BoxCollider2D>().enabled = false;
-            transShadow.GetComponent<BoxCollider2D>().enabled = true;
-        //}
         transShadow.position = new Vector2(transShadow.position.x, transShadow.position.y - height);
         transShadow.GetComponent<newShadowScript>().floorHeight -= height;
         isGrounded = false;

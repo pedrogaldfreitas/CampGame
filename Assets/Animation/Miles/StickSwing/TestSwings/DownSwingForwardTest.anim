@@ -1502,7 +1502,7 @@ AnimationClip:
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
-    intParameter: 0
+    intParameter: 3
     messageOptions: 0
   - time: 0.3
     functionName: allowSwingBuffering
@@ -1519,7 +1519,7 @@ AnimationClip:
     intParameter: 0
     messageOptions: 0
   - time: 0.38333333
-    functionName: swingStickAgainIfSwingBuffered
+    functionName: SwingStickAgainIfSwingBuffered
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

@@ -118,9 +118,9 @@ public class CutsceneManager : MonoBehaviour
         GameObject.Find("NPCVictor").transform.position = new Vector2(99999, 99999);
 
         cutsceneActive = false;
-        UpdateMissionState(DayOne.Objective.GOTOOPENINGCAMPFIRE);
+        //UpdateMissionState(DayOne.Objective.GOTOOPENINGCAMPFIRE);
         playerParent.GetComponent<PlayerController>().enableMovement();
-        DayOne.Morning.spokeToVicAfterBoat = true;
+        //DayOne.Morning.spokeToVicAfterBoat = true;
     }
 
     //Meaning: Day1Morning2 (Sitting on the log in front of campfire, being tasked with finding girl.)
@@ -406,6 +406,31 @@ public class CutsceneManager : MonoBehaviour
         }
     }
 
+    public IEnumerator ShowMissionText(string missionText)
+    {
+        TextMeshProUGUI missionTitleText = GameObject.Find("UI").transform.Find("MissionTitleText").GetComponent<TextMeshProUGUI>();
+        missionTitleText.text = missionText;
+
+        for (float i = 0; i <= 1; i += 0.05f)
+        {
+            fadeColor = missionTitleText.color;
+            fadeColor.a = i;
+            missionTitleText.color = fadeColor;
+            yield return new WaitForSeconds(0.01f);
+        }
+
+        yield return new WaitForSeconds(5f);
+
+        for (float i = 1; i >= 0; i -= 0.05f)
+        {
+            fadeColor = missionTitleText.color;
+            fadeColor.a = i;
+            missionTitleText.color = fadeColor;
+            yield return new WaitForSeconds(0.01f);
+        }
+
+        missionTitleText.text = "";
+    }
 
     IEnumerator WalkUp(GameObject character, float speed, float yPos)
     {
@@ -595,10 +620,10 @@ public class CutsceneManager : MonoBehaviour
         }
     }
 
-    void UpdateMissionState(DayOne.Objective objective)
+    /*void UpdateMissionState(DayOne.Objective objective)
     {
         GameObject.Find("MissionProgressionPoints").GetComponent<setMissionProgressionPoints>().setMissionStateDay1(objective);
-    }
+    }*/
 
     IEnumerator multipleCoroutines(IEnumerator coroutine1, IEnumerator coroutine2)
     {

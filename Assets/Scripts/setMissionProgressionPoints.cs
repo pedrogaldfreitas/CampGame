@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class setMissionProgressionPoints : MonoBehaviour
 {
+    /*
     public bool enabledPoints;
 
     Transform[] dayPoints;
@@ -76,5 +77,5 @@ public class setMissionProgressionPoints : MonoBehaviour
                 day7Points.Find(point => point.name == "GoDownstairs").gameObject.SetActive(true);
                 break;
         }
-    }
+    }*/
 }

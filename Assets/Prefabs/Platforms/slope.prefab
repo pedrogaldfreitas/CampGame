@@ -12,6 +12,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: slope
       objectReference: {fileID: 0}
+    - target: {fileID: 5236979936998159690, guid: 4d245b747eada414dbad4e35675e934d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 5236979936998159690, guid: 4d245b747eada414dbad4e35675e934d,
+        type: 3}
+      propertyPath: m_TagString
+      value: Slope
+      objectReference: {fileID: 0}
     - target: {fileID: 5236979936998159691, guid: 4d245b747eada414dbad4e35675e934d,
         type: 3}
       propertyPath: m_RootOrder
@@ -66,6 +76,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5236979937247269002, guid: 4d245b747eada414dbad4e35675e934d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 17
+      objectReference: {fileID: 0}
+    - target: {fileID: 5236979937247269006, guid: 4d245b747eada414dbad4e35675e934d,
+        type: 3}
+      propertyPath: isSlope
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5236979937407333000, guid: 4d245b747eada414dbad4e35675e934d,
         type: 3}
@@ -323,5 +343,57 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 5.43
       objectReference: {fileID: 0}
+    - target: {fileID: 5236979937407333013, guid: 4d245b747eada414dbad4e35675e934d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 5236979937407333013, guid: 4d245b747eada414dbad4e35675e934d,
+        type: 3}
+      propertyPath: m_TagString
+      value: Slope
+      objectReference: {fileID: 0}
+    - target: {fileID: 5236979938105705367, guid: 4d245b747eada414dbad4e35675e934d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d245b747eada414dbad4e35675e934d, type: 3}
+--- !u!1 &513976749040357886 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5236979937407333013, guid: 4d245b747eada414dbad4e35675e934d,
+    type: 3}
+  m_PrefabInstance: {fileID: 5732940080291423083}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &7699469390534123199
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 513976749040357886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c132296a12b0e946b640391385df52e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  thisSlopeState: 0
+  isHorizontalSlope: 1
+  isVerticalSlope: 0
+  multiplier: 10
+  platform1: {fileID: 0}
+  platform2: {fileID: 0}
+  y1: 0
+  y2: 0
+  x1: 0
+  x2: 0
+  movementMultiplier: 0
+  h1: 0
+  h2: 0
+  slopeAngle: 0
+  horizontalDistance: 0
+  verticalDistance: 0
+  h3: 0
+  horizontalFloorHeightThreshold: 1
+  verticalFloorHeightThreshold: 0

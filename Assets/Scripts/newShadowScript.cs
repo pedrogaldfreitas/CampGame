@@ -178,14 +178,12 @@ public class newShadowScript : MonoBehaviour
         if (horizontalOrVertical == "horizontal" || wasPrevOnHorizontalSlope)
         {
             float slopeValue = slopeScript.horizontalFloorHeightThreshold;
-            float slopeFloorH = FindSlopeFloorh(slope.transform);
+            float slopeFloorH = FloorheightFunctions.FindSlopeFloorh(transform, slope.transform);
             if (onHorizontalSlope)
             {
-                //NOTE: This is where the problem lies. The second condition causes the raccoon to stop rising.
                 if ((this.transform.position.x != prevXVal)&&(Mathf.Abs(slopeFloorH - floorHeight) < 2))
                 {
                     totalAmountRisenOrSunk += 35 * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime;
-                    //Debug.Log("PEDROLOG: totalAmountRisenOrSunk =" + totalAmountRisenOrSunk);
                     if (!onHorizontalSlope && wasPrevOnHorizontalSlope)
                     {
                         float[] twoPlatformHeights = new float[2] { slopeScript.h1, slopeScript.h2 };
@@ -216,7 +214,7 @@ public class newShadowScript : MonoBehaviour
         if (onVerticalSlope)
         {
             float slopeValue = slopeScript.verticalFloorHeightThreshold;
-            if ((this.transform.position.y != prevYVal) && (Mathf.Abs(FindSlopeFloorh(slope.transform) - floorHeight) < 2))
+            if ((this.transform.position.y != prevYVal) && (Mathf.Abs(FloorheightFunctions.FindSlopeFloorh(transform,slope.transform) - floorHeight) < 2))
             {
                 //floorHeight += slopeValue;
                 if (parentObj.GetComponent<FakeHeightObject>().isGrounded)
@@ -262,7 +260,7 @@ public class newShadowScript : MonoBehaviour
         foreach (RaycastHit2D horizSlope in horizontalSlopeCheckRay)
         {
             //Goal here: Find the greatest point in the horizontal slope that's less than the current object's floor height.
-            slopeFH = FindSlopeFloorh(horizSlope.transform);
+            slopeFH = FloorheightFunctions.FindSlopeFloorh(transform, horizSlope.transform);
             if (slopeFH <= floorHeight+2)
             {
                 if (slopeFH > nearestFloorHeight)
@@ -276,7 +274,7 @@ public class newShadowScript : MonoBehaviour
         foreach (RaycastHit2D vertiSlope in verticalSlopeCheckRay)
         {
             //Goal here: Find the greatest point in the horizontal slope that's less than the current object's floor height.
-            slopeFH = FindSlopeFloorh(vertiSlope.transform);
+            slopeFH = FloorheightFunctions.FindSlopeFloorh(transform, vertiSlope.transform);
             if (slopeFH <= floorHeight + 2)
             {
                 if (slopeFH > nearestFloorHeight)
@@ -312,7 +310,10 @@ public class newShadowScript : MonoBehaviour
     }
 
     //Takes floorheight of the player if they are standing on a slope.
-    private float FindSlopeFloorh(Transform slope)
+
+    //NOTE: This has been taken and put into FloorheightFunctions.cs. This is to make this function more accessible by other scripts.
+
+   /* private float FindSlopeFloorh(Transform slope)
     {
         float fh = 0;
         float horizontalFH = -9999;
@@ -351,10 +352,6 @@ public class newShadowScript : MonoBehaviour
             float plat2FH = slope.GetComponent<newSlopeScript>().platform2.transform.Find("top").GetComponent<platformScript>().floorHeight;
 
             verticalFH = ((transform.position.y - slopeBottomSide) / (slopeTopSide - slopeBottomSide)); //This should be the % of the way up the slope.
-            /*if (plat1FH > plat2FH)
-            {
-                verticalFH = (1 - verticalFH);
-            }*/
 
             verticalFH = verticalFH * Mathf.Abs(plat2FH - plat1FH);
 
@@ -375,7 +372,7 @@ public class newShadowScript : MonoBehaviour
             flag = false;
         }
         return fh;
-    }
+    }*/
 
     public void sortingOrderAdjust()
     {

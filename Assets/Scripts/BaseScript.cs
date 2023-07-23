@@ -7,6 +7,10 @@ public class BaseScript : MonoBehaviour
     //This is the "clearance" height of the object (if other object is above this height, it ignores collisions with it. SET AUTOMATICALLY VIA Start()
     private float solidHeight;
 
+    //Is this platform a slope?
+    [SerializeField]
+    private bool isSlope = false;
+
     //This is the solid's height from its base. An object can ignore collisions by passing "under" this solid.
     private float solidHeightFromBase;
 
@@ -78,7 +82,20 @@ public class BaseScript : MonoBehaviour
             newShadowScript shadow = collision.transform.parent.Find("Shadow").GetComponent<newShadowScript>();
             FakeHeightObject fakeHeightObj = collision.transform.parent.GetComponent<FakeHeightObject>();
 
-            bool aboveWall = shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset >= solidHeight;
+            bool aboveWall = false;
+
+            if (isSlope)
+            {
+                //For HORIZONTAL SLOPES ONLY now (vertical will not work unless updated) (Maybe?)
+                newSlopeScript slopeScript = transform.parent.Find("top").GetComponent<newSlopeScript>();
+                float slopeHeightAtCollisionPoint = FloorheightFunctions.FindSlopeFloorh(shadow.transform, slopeScript.transform);
+                float lowestPlatformFH = System.Math.Min(slopeScript.h1, slopeScript.h2);
+                aboveWall = shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset >= lowestPlatformFH + slopeHeightAtCollisionPoint;
+            } else
+            {
+                aboveWall = shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset >= solidHeight;
+            }
+
             bool belowWall = solidHeightFromBase > fakeHeightObj.heightOfObject + shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset;
 
             if (aboveWall || belowWall)

@@ -61,7 +61,6 @@ public class StateManager : MonoBehaviour
     public void TransitionMission(Mission missionID)
     {
         activeMission = missionID;
-        Debug.Log("PEDROLOG: mission text = " + missionID.titleText);
         if (missionID.titleText != "") StartCoroutine(cutsceneManager.ShowMissionText(missionID.titleText));
 
         return;

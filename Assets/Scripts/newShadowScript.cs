@@ -61,48 +61,28 @@ public class newShadowScript : MonoBehaviour
 
     void Update()
     {
-        horizontalSlopeCheckRay = Physics2D.Raycast(transform.position + Vector3.down * raycastDistanceMultiplier, Vector2.down, 0f, (1 << 12));
-        verticalSlopeCheckRay = Physics2D.Raycast(transform.position + Vector3.down * raycastDistanceMultiplier, Vector2.down, 0f, (1 << 11));
-        //RaycastHit2D horizontalSlopeCheckRay = Physics2D.Raycast(transform.position + new Vector3(horizSlopeCheckRayXStart, horizSlopeCheckRayYStart), Vector2.down, horizSlopeCheckRayLength, (1 << 12));
-        //RaycastHit2D verticalSlopeCheckRay = Physics2D.Raycast(transform.position + new Vector3(vertiSlopeCheckRayXStart, vertiSlopeCheckRayYStart), Vector2.right, vertiSlopeCheckRayLength, (1 << 11));
-
         RaycastHit2D[] platformBaseCheckRay = Physics2D.RaycastAll(transform.position + Vector3.down * raycastDistanceMultiplier, Vector2.down, 0f, (1 << 17));
         //RaycastHit2D[] platformBaseCheckRay = Physics2D.RaycastAll(transform.position + new Vector3(platformCheckRayXStart, platformCheckRayYStart), Vector2.right, platformCheckRayLength, (1 << 17));
 
-        checkFloorHeight();
+        //checkFloorHeight();
         sortingOrderAdjust();
-        Debug.DrawRay(transform.position + Vector3.down * raycastDistanceMultiplier, Vector2.down*0.3f, Color.blue);
+        //Debug.DrawRay(transform.position + Vector3.down * raycastDistanceMultiplier, Vector2.down*0.3f, Color.blue);
         //Debug.DrawRay(transform.position + new Vector3(horizSlopeCheckRayXStart, horizSlopeCheckRayYStart), Vector2.down * horizSlopeCheckRayLength, Color.blue);
         //Debug.DrawRay(transform.position + new Vector3(vertiSlopeCheckRayXStart, vertiSlopeCheckRayYStart), Vector2.right * vertiSlopeCheckRayLength, Color.red);
         //Debug.DrawRay(transform.position + new Vector3(platformCheckRayXStart, platformCheckRayYStart), Vector2.right * platformCheckRayLength, Color.green);
 
-        if (horizontalSlopeCheckRay)
-        {
-            SlopeCheck(horizontalSlopeCheckRay.collider.gameObject, "horizontal");
-            onHorizontalSlope = true;
-        } else
-        {
-            onHorizontalSlope = false;
-        }
-
-        if (verticalSlopeCheckRay)
-        {
-            SlopeCheck(verticalSlopeCheckRay.collider.gameObject, "vertical");
-            onVerticalSlope = true;
-        } else
-        {
-            onVerticalSlope = false;
-        }
 
         if (platformBaseCheckRay.Length > 0)
         {
-            platformBaseDetect(platformBaseCheckRay);
+            //platformBaseDetect(platformBaseCheckRay);
         }
 
         prevXVal = transform.position.x;
         prevYVal = transform.position.y;
         prevGroundVel = transform.position;
     }
+
+    /*
     public void platformBaseDetect(RaycastHit2D[] platformBaseCheckRay)
     {
         if (wasPrevOnHorizontalSlope)
@@ -139,7 +119,7 @@ public class newShadowScript : MonoBehaviour
             }
         }
     }
-
+    */
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -165,75 +145,8 @@ public class newShadowScript : MonoBehaviour
         }
     }
 
-    //SOURCE OF PROBLEM: Janky jumping likely happens because of this function.
-    private void SlopeCheck(GameObject slope, string horizontalOrVertical)
-    {
-        newSlopeScript slopeScript = slope.GetComponent<newSlopeScript>();
-        //onHorizontalSlope = slopeScript.isHorizontalSlope;
-        //onVerticalSlope = slopeScript.isVerticalSlope;
-
-        float floorMovementMultiplier = slopeScript.movementMultiplier;
-        float slopeAngle = slopeScript.slopeAngle;
-
-        if (horizontalOrVertical == "horizontal" || wasPrevOnHorizontalSlope)
-        {
-            float slopeValue = slopeScript.horizontalFloorHeightThreshold;
-            float slopeFloorH = FloorheightFunctions.FindSlopeFloorh(transform, slope.transform);
-            if (onHorizontalSlope)
-            {
-                if ((this.transform.position.x != prevXVal)&&(Mathf.Abs(slopeFloorH - floorHeight) < 2))
-                {
-                    totalAmountRisenOrSunk += 35 * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime;
-                    if (!onHorizontalSlope && wasPrevOnHorizontalSlope)
-                    {
-                        float[] twoPlatformHeights = new float[2] { slopeScript.h1, slopeScript.h2 };
-                        float platformBeingSteppedOn = twoPlatformHeights.Aggregate((x, y) => Mathf.Abs(x - totalAmountRisenOrSunk) < Mathf.Abs(y - totalAmountRisenOrSunk) ? x : y);
-                        if (parentObj.GetComponent<FakeHeightObject>().isGrounded)
-                        {
-                            parentObj.transform.position += (Vector3.up * (platformBeingSteppedOn - totalAmountRisenOrSunk)) * floorMovementMultiplier ;
-                        }
-                        else
-                        {
-                            this.transform.position += Vector3.up * (platformBeingSteppedOn - totalAmountRisenOrSunk);
-                        }
-                    } else
-                    {
-                        if (parentObj.GetComponent<FakeHeightObject>().isGrounded)
-                        {
-                            //parentObj.transform.position = new Vector2(35 * (transform.position.x - prevXVal) * slopeValue, transform.position.x - prevXVal).normalized * Time.deltaTime;
-                            parentObj.transform.position += Vector3.up * 35 * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime;                           
-                        } else
-                        {
-                            this.transform.position += Vector3.up * 35 * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime;
-                        }
-                    }
-                }
-            }
-        }
-        
-        if (onVerticalSlope)
-        {
-            float slopeValue = slopeScript.verticalFloorHeightThreshold;
-            if ((this.transform.position.y != prevYVal) && (Mathf.Abs(FloorheightFunctions.FindSlopeFloorh(transform,slope.transform) - floorHeight) < 2))
-            {
-                //floorHeight += slopeValue;
-                if (parentObj.GetComponent<FakeHeightObject>().isGrounded)
-                {
-                    parentObj.transform.position += Vector3.up * 35 * (transform.position.y - prevYVal) * slopeValue * Time.deltaTime;
-                    //parentObj.transform.position -= Vector3.down * 6 * (transform.position.y - prevYVal) * slopeValue * Time.deltaTime;
-                } else
-                {
-                    this.transform.position += Vector3.up * 35 * (transform.position.y - prevYVal) * slopeValue * Time.deltaTime;
-                    //this.transform.position -= Vector3.down * 6 * (transform.position.y - prevYVal) * slopeValue * Time.deltaTime;
-                }
-            }
-        }
-        wasPrevOnHorizontalSlope = onHorizontalSlope;
-        wasPrevOnVerticalSlope = onVerticalSlope;
-       
-    }
-
     //Updates every frame, checks the appropriate floor height of the object.
+    /*
     public void checkFloorHeight()
     {
         float nearestFloorHeight = -99999;
@@ -260,7 +173,7 @@ public class newShadowScript : MonoBehaviour
         foreach (RaycastHit2D horizSlope in horizontalSlopeCheckRay)
         {
             //Goal here: Find the greatest point in the horizontal slope that's less than the current object's floor height.
-            slopeFH = FloorheightFunctions.FindSlopeFloorh(transform, horizSlope.transform);
+            slopeFH = FloorheightFunctions.FindSlopeFloorh(transform, horizSlope.transform.parent.Find("top").transform);
             if (slopeFH <= floorHeight+2)
             {
                 if (slopeFH > nearestFloorHeight)
@@ -307,7 +220,7 @@ public class newShadowScript : MonoBehaviour
                 }
             }
         }
-    }
+    }*/
 
     //Takes floorheight of the player if they are standing on a slope.
 

@@ -331,6 +331,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d90182c74d152a7429c2b81fcaa12a18, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  raycastDistanceMultiplier: 1.15
+  onHorizontalSlope: 0
+  onVerticalSlope: 0
 --- !u!61 &1337454595676541788
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1486,6 +1489,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a46ea47d112262d4aa30d9c9f6dc2345, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startingPlatform: {fileID: 0}
   transObject: {fileID: 8531711150975866216}
   transBody: {fileID: 8531711151125855767}
   transShadow: {fileID: 6137764594261420619}

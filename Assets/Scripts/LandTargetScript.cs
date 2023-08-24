@@ -13,9 +13,6 @@ public class LandTargetScript : MonoBehaviour
     private Transform currentPlatformParent;
 
     RaycastHit2D[] baseCheckRay;
-    /*RaycastHit2D[] platformBaseCheckRay;
-    RaycastHit2D horizontalSlopeBaseCheckRay;
-    RaycastHit2D verticalSlopeBaseCheckRay;*/
     [Range(0f, 3f)] public float raycastDistanceMultiplier;
     private float prevXVal;
     private float prevYVal;
@@ -62,22 +59,6 @@ public class LandTargetScript : MonoBehaviour
             SlopeCheck(currentPlatformParent.Find("top").gameObject, "vertical");
         }
 
-        //NOTE: Here, if decided floorheight is of a horizontal slope, set onHorizontalSlope to true. Otherwise, set to false.
-
-
-        //NOTE: Here, if we see that onHorizontalSlope or onVerticalSlope is true, we do a SlopeCheck to adjust the positioning of the shadow + main object.
-
-        /* OLD:
-        if (horizontalSlopeBaseCheckRay)
-        {
-            SlopeCheck(horizontalSlopeBaseCheckRay.collider.transform.Find("top").gameObject, "horizontal");
-            onHorizontalSlope = true;
-        }
-        else
-        {
-            onHorizontalSlope = false;
-        }*/
-
         //These must be set AFTER the SlopeCheck call here on Update().
         prevXVal = transform.position.x;
         prevYVal = transform.position.y;
@@ -90,10 +71,12 @@ public class LandTargetScript : MonoBehaviour
     {
         public float floorHeight;
         public RaycastHit2D rayHit;
-        public baseAndFloorheightPair(float fh, RaycastHit2D raycastHit)
+        public bool isSlope;
+        public baseAndFloorheightPair(float fh, RaycastHit2D raycastHit, bool slope)
         {
             floorHeight = fh;
             rayHit = raycastHit;
+            isSlope = slope;
         }
     }
 
@@ -114,24 +97,43 @@ public class LandTargetScript : MonoBehaviour
             int baseObjLayer = baseHit.transform.parent.gameObject.layer;
             if (baseObjLayer == LayerMask.NameToLayer("HorizontalSlope") || baseObjLayer == LayerMask.NameToLayer("VerticalSlope"))
             {
-                baseAndFloorHeightArray.Add(new baseAndFloorheightPair(FloorheightFunctions.FindSlopeFloorh(transform, baseHit.transform.parent.Find("top")), baseHit));
+                newSlopeScript slopeScript = baseHit.transform.parent.Find("top").GetComponent<newSlopeScript>();
+                float lowestPlatformFH = System.Math.Min(slopeScript.h1, slopeScript.h2);
+                baseAndFloorHeightArray.Add(new baseAndFloorheightPair(lowestPlatformFH, baseHit, true));
             } else
             {
-                baseAndFloorHeightArray.Add(new baseAndFloorheightPair(baseHit.transform.parent.Find("top").GetComponent<platformScript>().floorHeight, baseHit));
+                baseAndFloorHeightArray.Add(new baseAndFloorheightPair(baseHit.transform.parent.Find("top").GetComponent<platformScript>().floorHeight, baseHit, false));
             }
         }
 
         baseAndFloorHeightArray = baseAndFloorHeightArray.OrderBy(o => o.floorHeight).ToList();
 
         FakeHeightObject thisObjHeightInfo = parentTransform.GetComponent<FakeHeightObject>();
+        float thisObjHeight = shadowScript.floorHeight + (thisObjHeightInfo.height + thisObjHeightInfo.shadowOffset);
+        float accurateSlopeFH = -1;
 
         bool stopFlag = false;
         int index = 0;
         while (!stopFlag && index < baseAndFloorHeightArray.Count)
         {
-            if ((shadowScript.floorHeight + (thisObjHeightInfo.height + thisObjHeightInfo.shadowOffset) > baseAndFloorHeightArray[index].floorHeight) && (shadowScript.floorHeight != baseAndFloorHeightArray[index].floorHeight))
+            baseAndFloorheightPair currentBaseAndFloorheightPair = baseAndFloorHeightArray[index];
+            if (currentBaseAndFloorheightPair.isSlope)
             {
-                parentTransform.GetComponent<FakeHeightObject>().Rise(baseAndFloorHeightArray[index].floorHeight);
+                accurateSlopeFH = FloorheightFunctions.FindSlopeFloorh(transform, currentBaseAndFloorheightPair.rayHit.transform.parent.Find("top"));
+            }
+
+            if (thisObjHeight > currentBaseAndFloorheightPair.floorHeight && ((!currentBaseAndFloorheightPair.isSlope && shadowScript.floorHeight != currentBaseAndFloorheightPair.floorHeight) || (currentBaseAndFloorheightPair.isSlope && shadowScript.floorHeight != accurateSlopeFH)))
+            {
+                if (currentBaseAndFloorheightPair.isSlope && currentBaseAndFloorheightPair.rayHit.transform.parent != currentPlatformParent)
+                {
+                    if (thisObjHeight > accurateSlopeFH && shadowScript.floorHeight < accurateSlopeFH) {
+
+                        parentTransform.GetComponent<FakeHeightObject>().Rise(accurateSlopeFH);
+                    }
+                } else
+                {
+                    parentTransform.GetComponent<FakeHeightObject>().Rise(currentBaseAndFloorheightPair.floorHeight);
+                }
                 stopFlag = true;
             }
             else if (index != baseAndFloorHeightArray.Count-1)
@@ -143,8 +145,23 @@ public class LandTargetScript : MonoBehaviour
             }
         }
 
-        currentPlatformParent = baseAndFloorHeightArray[index].rayHit.transform.parent;
-        
+        baseAndFloorheightPair chosenPlatform = baseAndFloorHeightArray[index];
+
+        if (shadowScript.floorHeight > chosenPlatform.floorHeight && chosenPlatform.rayHit.transform.parent != currentPlatformParent)
+        {
+            if (chosenPlatform.isSlope && thisObjHeight > accurateSlopeFH && Mathf.Abs(shadowScript.floorHeight-accurateSlopeFH) > 2)
+            {
+                parentTransform.GetComponent<FakeHeightObject>().Drop(((Vector2)transform.position - prevGroundVel) * 30, shadowScript.floorHeight - accurateSlopeFH);
+            } else if (!chosenPlatform.isSlope && thisObjHeight > chosenPlatform.floorHeight)
+            {
+               //parentTransform.GetComponent<FakeHeightObject>().Drop(((Vector2)transform.position - prevGroundVel) * 30, shadowScript.floorHeight - chosenPlatform.floorHeight);
+            }
+
+        }
+
+        currentPlatformParent = chosenPlatform.rayHit.transform.parent;
+
+
         if (currentPlatformParent.gameObject.layer == LayerMask.NameToLayer("HorizontalSlope"))
         {
             onHorizontalSlope = true;
@@ -166,7 +183,6 @@ public class LandTargetScript : MonoBehaviour
     private void SlopeCheck(GameObject slope, string horizontalOrVertical)
     {
         newSlopeScript slopeScript = slope.GetComponent<newSlopeScript>();
-        Debug.Log("PEDROLOG/1: SlopeCheck runs.");
 
         float floorMovementMultiplier = slopeScript.movementMultiplier;
         float slopeAngle = slopeScript.slopeAngle;
@@ -178,7 +194,6 @@ public class LandTargetScript : MonoBehaviour
             float slopeFloorH = FloorheightFunctions.FindSlopeFloorh(transform, slope.transform);
             if (onHorizontalSlope)
             {
-                Debug.Log("PEDROLOG/2.5: slopeFloorH = " + slopeFloorH + ", floorHeight = " + floorHeight + ", Mathf.Abs(slopeFloorH - floorHeight) = " + Mathf.Abs(slopeFloorH - floorHeight) + ", WORKS? => " + (Mathf.Abs(slopeFloorH - floorHeight) < 2));
                 if ((this.transform.position.x != prevXVal) && (Mathf.Abs(slopeFloorH - floorHeight) < 2))
                 {
                     totalAmountRisenOrSunk += 35 * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime;
@@ -187,8 +202,10 @@ public class LandTargetScript : MonoBehaviour
                         float[] twoPlatformHeights = new float[2] { slopeScript.h1, slopeScript.h2 };
                         float platformBeingSteppedOn = twoPlatformHeights.Aggregate((x, y) => Mathf.Abs(x - totalAmountRisenOrSunk) < Mathf.Abs(y - totalAmountRisenOrSunk) ? x : y);
                         if (parentTransform.GetComponent<FakeHeightObject>().isGrounded)
-                        {                        
-                            parentTransform.position += (Vector3.up * (platformBeingSteppedOn - totalAmountRisenOrSunk)) * floorMovementMultiplier;
+                        {
+                            float changeAmount = (platformBeingSteppedOn - totalAmountRisenOrSunk) * floorMovementMultiplier;
+                            parentTransform.position += Vector3.up * changeAmount;
+                            shadowScript.floorHeight += changeAmount;
                         }
                         else
                         {
@@ -199,13 +216,15 @@ public class LandTargetScript : MonoBehaviour
                     {
                         if (parentTransform.GetComponent<FakeHeightObject>().isGrounded)
                         {
-                            Debug.Log("PEDROLOG/3.1 SUCCESS");
-                            parentTransform.position += Vector3.up * 35 * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime;
+                            float changeAmount = 35 * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime;
+                            parentTransform.position += Vector3.up * changeAmount;
+                            shadowScript.floorHeight += changeAmount;
                         }
                         else
                         {
-                            Debug.Log("PEDROLOG/3.2 SUCCESS");
-                            shadowTransform.position += Vector3.up * 35 * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime;
+                            float changeAmount = 35 * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime;
+                            shadowTransform.position += Vector3.up * changeAmount;
+                            shadowScript.floorHeight += changeAmount;
                         }
                     }
                 }
@@ -261,7 +280,7 @@ public class LandTargetScript : MonoBehaviour
         {
             if (highestFHisSlope)
             {
-                shadowScript.floorHeight = slopeFH;
+               // shadowScript.floorHeight = slopeFH;
             }
             else
             {

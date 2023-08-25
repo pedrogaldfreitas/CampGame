@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
     //Movement variables
     public float speed;
     private float runSpeedMultiplier;
+    private float movementInterpolation;
 
     private Vector2 moveVelocity;
     Vector2 walkingDir;
@@ -29,12 +30,12 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         movementEnabled = true;
+        movementInterpolation = 0.3f;
         rb = GetComponent<Rigidbody2D>();
     }
 
     private void Update()
     {
-
         isGrounded = GetComponent<FakeHeightObject>().isGrounded;
 
         if (Input.GetKeyDown(KeyCode.Space) && this.tag == "Player" && isGrounded)
@@ -45,7 +46,9 @@ public class PlayerController : MonoBehaviour
         if (movementEnabled)
         {
             Vector2 moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
-            moveVelocity = moveInput.normalized * speed;
+            Vector2 targetDirectionAndSpeed = moveInput.normalized * speed;
+
+            moveVelocity = new Vector2(Mathf.Lerp(moveVelocity.x, targetDirectionAndSpeed.x, movementInterpolation), Mathf.Lerp(moveVelocity.y, targetDirectionAndSpeed.y, movementInterpolation));
 
             runSpeedMultiplier = Input.GetKey(KeyCode.LeftShift) ? 2 : 1;
 

@@ -12,9 +12,12 @@ public class DialogueFeed : MonoBehaviour
 
     // VICTOR/DAY1MORN
     [System.NonSerialized]
-    public string diagV1M0, diagV1M1, diagV1M2, diagV1M3, diagV1M4, diagV1M5_1_1, diagV1M5_1_2, diagV1M5_1_3, 
+    public List<string> diagV1M1 = new List<string>();
+    public List<string> diagV1M2 = new List<string>();
+    public List<string> diagV1M3 = new List<string>();
+    /*public string diagV1M0, diagV1M1, diagV1M2, diagV1M3, diagV1M4, diagV1M5_1_1, diagV1M5_1_2, diagV1M5_1_3, 
         diagV1M5_2_1, diagV1M5_2_2, diagV1M5_2_3, diagV1M5_2_4, diagV1M5, diagV1M6, diagV1M7, diagV1M8, diagV1M9, diagV1M10, 
-        diagV1M11, diagV1M12, diagV1M13, diagV1M14, diagV1M15, diagV1M16, diagV1M17;
+        diagV1M11, diagV1M12, diagV1M13, diagV1M14, diagV1M15, diagV1M16, diagV1M17;*/
 
     // WALLY/DAY1MORN
     [System.NonSerialized]
@@ -70,6 +73,55 @@ public class DialogueFeed : MonoBehaviour
 
     void setMainDialogueDay1Victor()
     {
+        diagV1M1.Add("Oh jeez, the opening campfire's gonna start any minute now.");
+        diagV1M1.Add("I gotta go do something real quick before it starts.");
+        diagV1M1.Add("Just wait for me there, 'kay?? Campfire's that way! I'll be quick!!");
+
+
+        diagV1M2.Add("Ta-dahh...");
+        diagV1M2.Add("Fresh outta the Camp Awestruck merch store!");
+        diagV1M2.Add("Whatchya think, Miles?");
+
+        diagV1M2.Add("Heh-heh. I knew I'd look rad wearing it.");
+        diagV1M2.Add("You know what? Because you said that, I've decided I'm gonna keep it on.");
+        diagV1M2.Add("See? Like I was just telling you. Your words are already having an impact on others!");
+
+        diagV1M2.Add("Oh. Is it really that bad?");
+        diagV1M2.Add("Guess I'll just take it off then.");
+        diagV1M2.Add("See? Your words are already having an impact on others!");
+        diagV1M2.Add("If you hadn't said that, I probably woulda kept the hat on the whole week.");
+
+        diagV1M3.Add("This week's gonna be awesome...");
+        diagV1M3.Add("On day five, we usually go on an outtrip! It's the best part.");
+
+        //Victor + Wally talk by campfire
+        diagV1M3.Add("Yeah, outtrip! We'll get to spend a night out off-campsite. There's gonna be smores, cliff jum--");
+
+        diagV1M3.Add("Yeah!");
+
+        diagV1M3.Add("...Uhh, it IS possible. But I--");
+
+        diagV1M3.Add("The wha--?");
+
+        diagV1M3.Add("Dude, what on earth are you talking about??");
+
+        diagV1M3.Add("Oh God, Miles, MAKE HIM STOP!");
+
+        //Seaweed (still known as "Wasabi") pulls up.
+        /*
+        diagV1M.Add("Bears? Well, yeah. The island's mostly just wilderness.");
+        diagV1M.Add("But you don't have to worry about them! Unless you cover yourself in honey and head to the woods, you won't run into any.");
+
+        diagV1M.Add("The Wolfman? You mean that monster that lurks around in rural areas at night and preys on kids?");
+        diagV1M.Add("Don't worry, dude. That's all folklore.");
+
+        diagV1M.Add("Uh... I've never... maybe some people... I mean, you-- probably don't...");
+        diagV1M.Add("You're starting to freak me out a little, man.");*/
+
+        diagV1M3.Add("Wasabi!! I'm eleven now, I think you'll get to be me and Miles' camp counsellor this year!!");
+
+        diagV1M3.Add("Be quick, Miles. Don't forget to use that map I gave you if you need to.");
+        /*
         diagV1M0 = "Oh jeez, the opening campfire's gonna start any minute now.";
         diagV1M1 = "I gotta go do something real quick before it starts.";
         diagV1M2 = "Just wait for me there, 'kay?? Campfire's that way! I'll be quick!!";
@@ -116,7 +168,7 @@ public class DialogueFeed : MonoBehaviour
 
         diagV1M13 = "Wasabi!! I'm eleven now, I think you'll get to be me and Miles' camp counsellor this year!!";
 
-        diagV1M14 = "Be quick, Miles. Don't forget to use that map I gave you if you need to.";
+        diagV1M14 = "Be quick, Miles. Don't forget to use that map I gave you if you need to.";*/
 
     }
 
@@ -187,7 +239,7 @@ public class DialogueFeed : MonoBehaviour
         string diag;
 
         //PUT CODE INSTEAD:
-        diag = diagV1M0;
+        diag = diagV1M1[0];
 
         return diag;
     }

@@ -219,6 +219,8 @@ GameObject:
   - component: {fileID: 1337454595676541787}
   - component: {fileID: 1337454595676541791}
   - component: {fileID: 1337454595676541788}
+  - component: {fileID: 3876565123562612157}
+  - component: {fileID: 626678911143240526}
   m_Layer: 6
   m_Name: LandTarget
   m_TagString: Untagged
@@ -360,6 +362,38 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
+--- !u!58 &3876565123562612157
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1337454595676541797}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 1.75
+--- !u!114 &626678911143240526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1337454595676541797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6e6fefaa0c0993e41b8e2265ac760658, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  possibleInteractables: []
+  highlightedInteractable: {fileID: 0}
+  prevHighlightedInteractable: {fileID: 0}
+  interactButtonInterpolation: 0.3
 --- !u!1 &4363537891199962193
 GameObject:
   m_ObjectHideFlags: 0
@@ -1695,7 +1729,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8531711151125855851}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 483dcc04961c7974cbeece5a3c2d20ce, type: 3}
   m_Name: 

@@ -672,9 +672,10 @@ GameObject:
   - component: {fileID: 2977705422758264534}
   - component: {fileID: 2977705422758264532}
   - component: {fileID: 2977705422758264490}
+  - component: {fileID: 8071592423487762495}
   m_Layer: 0
   m_Name: PrimaryNPCParent
-  m_TagString: Untagged
+  m_TagString: NPC
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -744,6 +745,24 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 7
+--- !u!114 &8071592423487762495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2977705422758264535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74b9361bb8fd4b349a1c2826c1031f4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactButtonPosition: {x: 0, y: 12.5}
+  cutsceneToTrigger: 
+  triggeredByProximity: 0
+  triggeredByInteraction: 0
+  triggeredByCollision: 0
+  cutsceneTriggered: 0
 --- !u!1 &2977705422879528405
 GameObject:
   m_ObjectHideFlags: 0

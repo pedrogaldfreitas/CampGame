@@ -46,11 +46,6 @@ public class LandTargetScript : MonoBehaviour
         }
         checkFloorHeight(baseCheckRay);
 
-        if (parentTransform.name == "PlayerParent")
-        {
-            Debug.Log("PEDROLOG/0: currentPlatformParent name = " + currentPlatformParent?.name + ", layer = " + currentPlatformParent?.transform.gameObject.layer + "onHorizontalSlope = " + onHorizontalSlope);
-        }
-
         if (onHorizontalSlope)
         {
             SlopeCheck(currentPlatformParent.Find("top").gameObject, "horizontal");
@@ -176,7 +171,6 @@ public class LandTargetScript : MonoBehaviour
             onHorizontalSlope = false;
             onVerticalSlope = false;
         }
-        Debug.Log("PEDROLOG/4: currentPlayformParent = " + currentPlatformParent + ", onHorizontalSlope = " + onHorizontalSlope);
         return;
     }
 

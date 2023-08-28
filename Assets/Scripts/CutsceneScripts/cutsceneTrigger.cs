@@ -5,20 +5,30 @@ using UnityEngine;
 
 public class cutsceneTrigger : MonoBehaviour
 {
+    [Header("Setup Variables")]
+    [Tooltip("This value should be set to know where the Interact button should appear. This should be the LOCAL position, not GLOBAL position.")]
+    public Vector2 interactButtonPosition;
+
+    [Header("Test Variables")]
+    Transform player;
+
+    private bool isNPC;
     [SerializeField]
     public string cutsceneToTrigger;
-    public bool triggeredByProximity;
-    [Range(0f, 40f)]
-    public float proximityRadius;
+    public bool triggeredByProximity;   
+    private float proximityRadius;
     public bool triggeredByInteraction;
     public bool triggeredByCollision;
 
     public bool cutsceneTriggered;
 
+
     // Start is called before the first frame update
     void Start()
     {
         cutsceneTriggered = false;
+        player = GameObject.Find("PlayerParent").transform;
+        isNPC = transform.tag == "NPC";
     }
 
     // Update is called once per frame
@@ -26,24 +36,31 @@ public class cutsceneTrigger : MonoBehaviour
     {
         if (triggeredByProximity == true)
         {
-            if ((Vector2.Distance(GameObject.Find("Player").transform.position, this.transform.position) <= proximityRadius)&&(cutsceneTriggered == false)) {
+            if ((Vector2.Distance(player.position, transform.position) <= proximityRadius) && (cutsceneTriggered == false)) {
                 cutsceneTriggered = true;
                 GameObject.Find("UI").GetComponent<CutsceneManager>().playCutsceneUsingID(cutsceneToTrigger);
             }
         }
         if (triggeredByInteraction == true)
         {
-            if ((Input.GetKeyDown(KeyCode.K)) && (Vector2.Distance(GameObject.Find("Player").transform.position, this.transform.position) <= proximityRadius) && (cutsceneTriggered == false))
+            if (Vector2.Distance(player.position, transform.position) <= proximityRadius/* && cutsceneTriggered == false*/)
+            {
+                if (!player.GetComponent<closestInteractable>().possibleInteractables.Contains(transform))
+                {
+                    //player.GetComponent<closestInteractable>().AddInteractableToList(transform);
+                }
+            }
+            /*if ((Input.GetKeyDown(KeyCode.K)) && (Vector2.Distance(player.position, transform.position) <= proximityRadius) && (cutsceneTriggered == false))
             {
                 cutsceneTriggered = true;
                 GameObject.Find("UI").GetComponent<CutsceneManager>().playCutsceneUsingID(cutsceneToTrigger);
-            }
+            }*/
         }
     }
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(this.transform.position, proximityRadius);
+        Gizmos.DrawWireSphere(transform.position, proximityRadius);
     }
 }

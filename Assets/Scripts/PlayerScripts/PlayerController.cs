@@ -45,7 +45,7 @@ public class PlayerController : MonoBehaviour
 
         if (movementEnabled)
         {
-            Vector2 moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+            Vector2 moveInput = new Vector2(Input.GetAxisRaw("HorizontalArrows"), Input.GetAxisRaw("VerticalArrows"));
             Vector2 targetDirectionAndSpeed = moveInput.normalized * speed;
 
             moveVelocity = new Vector2(Mathf.Lerp(moveVelocity.x, targetDirectionAndSpeed.x, movementInterpolation), Mathf.Lerp(moveVelocity.y, targetDirectionAndSpeed.y, movementInterpolation));
@@ -58,8 +58,8 @@ public class PlayerController : MonoBehaviour
             }
 
             //ANIMATION COMPONENTS
-            playerAnimator.SetFloat("Vertical", Input.GetAxisRaw("Vertical") * 2);
-            playerAnimator.SetFloat("Horizontal", Input.GetAxisRaw("Horizontal") * 2);
+            playerAnimator.SetFloat("Vertical", Input.GetAxisRaw("VerticalArrows") * 2);
+            playerAnimator.SetFloat("Horizontal", Input.GetAxisRaw("HorizontalArrows") * 2);
         }
     }
 

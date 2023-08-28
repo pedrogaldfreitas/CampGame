@@ -100,16 +100,16 @@ public class CutsceneManager : MonoBehaviour
         yield return StartCoroutine(faceDirection(player, "UP"));
         changeArmsAndLegs(GameObject.Find("NPCWally"), "", "", "SITTING");
 
-        yield return StartCoroutine(dialogue(allDiagOptions.diagV1M0));
+        //yield return StartCoroutine(dialogue(allDiagOptions.diagV1M0));
         changeFacialExpression(GameObject.Find("NPCVictor"), "", "", "SMILETALK");
         changeFacialExpression(player, "STRANGE", "", "");
         yield return StartCoroutine(faceDirection(player, "DOWN"));
 
-        yield return StartCoroutine(dialogue(allDiagOptions.diagV1M1));
+        //yield return StartCoroutine(dialogue(allDiagOptions.diagV1M1));
         changeFacialExpression(player, "DEFAULT", "", "");
         yield return StartCoroutine(faceDirection(player, "UP"));
 
-        yield return StartCoroutine(dialogue(allDiagOptions.diagV1M2));
+        //yield return StartCoroutine(dialogue(allDiagOptions.diagV1M2));
 
         //StartCoroutine(WalkLeft(GameObject.Find("NPCVictor"), 0, 100));
         StartCoroutine(WalkRight(GameObject.Find("NPCVictor"), 40, 110));
@@ -139,7 +139,7 @@ public class CutsceneManager : MonoBehaviour
         yield return StartCoroutine(faceDirection(player, "UP"));
         GameObject.Find("VictorParent").transform.position = new Vector2(-227f, -103.9f);
         yield return StartCoroutine(WalkDown(GameObject.Find("NPCVictor"), 20, -157.6f));
-        yield return StartCoroutine(dialogue(GameObject.Find("AllDiagOptions").GetComponent<DialogueFeed>().diagV1M1));
+        //yield return StartCoroutine(dialogue(GameObject.Find("AllDiagOptions").GetComponent<DialogueFeed>().diagV1M1));
         yield return StartCoroutine(wait(2f));
 
         //yield return StartCoroutine(faceDirection(player, "DOWN"));
@@ -170,6 +170,7 @@ public class CutsceneManager : MonoBehaviour
 
         yield return StartCoroutine(multipleCoroutines(WalkRight(GameObject.Find("NPCVictor"), 20, -212.6f), WalkDown(GameObject.Find("NPCVictor"), 20, -175.5f)));
 
+        /*
         yield return StartCoroutine(dialogue(GameObject.Find("AllDiagOptions").GetComponent<DialogueFeed>().diagV1M2));
         yield return StartCoroutine(dialogue(GameObject.Find("AllDiagOptions").GetComponent<DialogueFeed>().diagW1M0));
         yield return StartCoroutine(dialogue(GameObject.Find("AllDiagOptions").GetComponent<DialogueFeed>().diagV1M3));
@@ -178,15 +179,16 @@ public class CutsceneManager : MonoBehaviour
         yield return StartCoroutine(dialogue(GameObject.Find("AllDiagOptions").GetComponent<DialogueFeed>().diagW1M2));
         yield return StartCoroutine(dialogue(GameObject.Find("AllDiagOptions").GetComponent<DialogueFeed>().diagV1M5));
         yield return StartCoroutine(dialogue(GameObject.Find("AllDiagOptions").GetComponent<DialogueFeed>().diagW1M3));
-        yield return StartCoroutine(dialogue(GameObject.Find("AllDiagOptions").GetComponent<DialogueFeed>().diagV1M6));
+        yield return StartCoroutine(dialogue(GameObject.Find("AllDiagOptions").GetComponent<DialogueFeed>().diagV1M6));*/
 
         //GameObject.Find("NPCElijah").transform.position = new Vector2(player.transform.position.x, player.transform.position.y - 70);
        // yield return StartCoroutine(WalkUp(GameObject.Find("NPCElijah"), 20, player.transform.position.y - 15));
+       /*
         yield return StartCoroutine(dialogue(GameObject.Find("AllDiagOptions").GetComponent<DialogueFeed>().diagE1M0));
         yield return StartCoroutine(dialogue(GameObject.Find("AllDiagOptions").GetComponent<DialogueFeed>().diagV1M7));
         yield return StartCoroutine(dialogue(GameObject.Find("AllDiagOptions").GetComponent<DialogueFeed>().diagE1M1));
         yield return StartCoroutine(dialogue(GameObject.Find("AllDiagOptions").GetComponent<DialogueFeed>().diagV1M8));
-        yield return StartCoroutine(dialogue(GameObject.Find("AllDiagOptions").GetComponent<DialogueFeed>().diagW1M4));
+        yield return StartCoroutine(dialogue(GameObject.Find("AllDiagOptions").GetComponent<DialogueFeed>().diagW1M4));*/
 
         GameObject.Find("MissionManager").GetComponent<missionManager>().setMission("D1M2");
 

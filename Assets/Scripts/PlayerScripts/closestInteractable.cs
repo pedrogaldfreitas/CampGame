@@ -19,9 +19,11 @@ public class closestInteractable : MonoBehaviour
 
     Transform interactableItemBody;
     cutsceneTrigger highlightedInteractableCutsceneTrigger;
+    CutsceneManager cutsceneManager;
 
     void Start()
     {
+        cutsceneManager = GameObject.Find("UI").GetComponent<CutsceneManager>();
         highlightedInteractable = null;
         prevHighlightedInteractable = null;
         targetButtonScreenPoint = new Vector2(0,0);
@@ -47,7 +49,7 @@ public class closestInteractable : MonoBehaviour
         }
 
         //Hide the interact button.
-        if (highlightedInteractable == null && interactButtonActive)
+        if ((highlightedInteractable == null || cutsceneManager.cutsceneActive) && interactButtonActive)
         {
             if (coroutineRunning != null)
             {
@@ -57,7 +59,7 @@ public class closestInteractable : MonoBehaviour
         }
 
         //Show/Interact with the interact button.
-        if (highlightedInteractable != null)
+        if (highlightedInteractable != null && !cutsceneManager.cutsceneActive)
         {
             if (prevHighlightedInteractable != highlightedInteractable)
             {
@@ -130,7 +132,8 @@ public class closestInteractable : MonoBehaviour
     {
         coroutineRunning = StartCoroutine(HideInteractButton());
 
-        //CODE HERE for interaction.
+        string cutsceneToTrigger = item.parent.GetComponent<cutsceneTrigger>().cutsceneToTrigger;
+        cutsceneManager.playCutsceneUsingID(cutsceneToTrigger);
     }
 
     private IEnumerator ShowInteractButton(Transform item)

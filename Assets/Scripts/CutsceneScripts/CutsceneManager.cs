@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using static StateManager;
 using TMPro;
 
@@ -20,6 +21,8 @@ public class CutsceneManager : MonoBehaviour
     private DialogueManager dialogueManager;
     private DialogueFeed allDiagOptions;
 
+    //Chat bubble related variables.
+    RectTransform chatBubble;
 
     private void Start()
     {
@@ -30,10 +33,12 @@ public class CutsceneManager : MonoBehaviour
         dialogueManager = GameObject.Find("Dialogue Manager").GetComponent<DialogueManager>();
         allDiagOptions = GameObject.Find("AllDiagOptions").GetComponent<DialogueFeed>();
 
+        chatBubble = GameObject.Find("ChatBubbleImage").GetComponent<RectTransform>();
+
         //StartCoroutine(testCutscene());
         //playCutsceneUsingID("D1M0");
         //StartCoroutine(DayTitles(1));
-       
+
         //playCutsceneUsingID("TEST");
     }
 
@@ -89,6 +94,21 @@ public class CutsceneManager : MonoBehaviour
             yield return StartCoroutine(faceDirection(GameObject.Find("Victor"), "LEFT"));
             yield return StartCoroutine(wait(waitTime));
         }
+    }
+
+
+    IEnumerator NEWDIAGBOXTEST()
+    {
+        playerParent.GetComponent<PlayerController>().disableMovement();
+        cutsceneActive = true;
+        StartCoroutine(OpenChatBubble(Color.white));
+
+        yield return StartCoroutine(dialogue(allDiagOptions.testDiag[0]));
+        yield return StartCoroutine(dialogue(allDiagOptions.testDiag[1]));
+
+        StartCoroutine(CloseChatBubble());
+        cutsceneActive = false;
+        playerParent.GetComponent<PlayerController>().enableMovement();
     }
 
     //Meaning: Day1Morning0 (Coming off dock onto shore)
@@ -611,6 +631,47 @@ public class CutsceneManager : MonoBehaviour
     IEnumerator wait(float time)
     {
         yield return new WaitForSeconds(time);
+    }
+
+    IEnumerator OpenChatBubble(Color color)
+    {
+        StopCoroutine("OpenChatBubble");
+        StopCoroutine("CloseChatBubble");
+
+        Image chatBubbleImage = chatBubble.GetComponent<Image>();
+
+        chatBubble.localScale = new Vector3(0.9f, 0.9f, 1);
+        chatBubbleImage.color = new Color(color.r, color.g, color.b, 0);
+
+        while (chatBubble.localScale.x < 0.99f || chatBubbleImage.color.a < 0.99f)
+        {
+            chatBubble.localScale = new Vector3(Mathf.Lerp(chatBubble.localScale.x, 1, 0.4f), Mathf.Lerp(chatBubble.localScale.y, 1, 0.4f), 1);
+            chatBubbleImage.color += new Color(0, 0, 0, 0.2f);
+
+            yield return new WaitForSeconds(0.01f);
+        }
+
+        chatBubble.localScale = new Vector3(1, 1, 1);
+        chatBubbleImage.color = new Color(color.r, color.g, color.b, 1);
+    }
+
+    IEnumerator CloseChatBubble()
+    {
+        StopCoroutine("OpenChatBubble");
+        StopCoroutine("CloseChatBubble");
+
+        Image chatBubbleImage = chatBubble.GetComponent<Image>();
+
+        while (chatBubble.localScale.x > 0.901f || chatBubbleImage.color.a > 0.01f)
+        {
+            chatBubble.localScale = new Vector3(Mathf.Lerp(chatBubble.localScale.x, 0.9f, 0.4f), Mathf.Lerp(chatBubble.localScale.y, 0.9f, 0.4f), 1);
+            chatBubbleImage.color -= new Color(0, 0, 0, 0.2f);
+
+            yield return new WaitForSeconds(0.01f);
+        }
+
+        chatBubble.localScale = new Vector3(0.9f, 0.9f, 1);
+        chatBubbleImage.color = new Color(chatBubbleImage.color.r, chatBubbleImage.color.g, chatBubbleImage.color.b, 0);
     }
 
     IEnumerator dialogue(string diag)

@@ -41,21 +41,6 @@ public class cutsceneTrigger : MonoBehaviour
                 GameObject.Find("UI").GetComponent<CutsceneManager>().playCutsceneUsingID(cutsceneToTrigger);
             }
         }
-        if (triggeredByInteraction == true)
-        {
-            if (Vector2.Distance(player.position, transform.position) <= proximityRadius/* && cutsceneTriggered == false*/)
-            {
-                if (!player.GetComponent<closestInteractable>().possibleInteractables.Contains(transform))
-                {
-                    //player.GetComponent<closestInteractable>().AddInteractableToList(transform);
-                }
-            }
-            /*if ((Input.GetKeyDown(KeyCode.K)) && (Vector2.Distance(player.position, transform.position) <= proximityRadius) && (cutsceneTriggered == false))
-            {
-                cutsceneTriggered = true;
-                GameObject.Find("UI").GetComponent<CutsceneManager>().playCutsceneUsingID(cutsceneToTrigger);
-            }*/
-        }
     }
 
     private void OnDrawGizmos()

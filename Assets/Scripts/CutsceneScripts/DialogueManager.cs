@@ -9,7 +9,7 @@ public class DialogueManager : MonoBehaviour
 {
 
     private Queue<string> sentences;
-    public TextMeshPro dialogueText;
+    public TextMeshProUGUI dialogueText;
 
     [SerializeField]
     private Animator speechBubbleAnim;
@@ -56,9 +56,8 @@ public class DialogueManager : MonoBehaviour
     {
         //dialogueText.ForceMeshUpdate();
 
-        if(Input.GetKeyDown(KeyCode.K) == true && continueButton.activeSelf)
+        if(Input.GetKeyDown(KeyCode.A) == true && continueButton.activeSelf)
         {
-            Debug.Log("Continue key pressed");
             EndDialogue();
         }
 
@@ -96,7 +95,7 @@ public class DialogueManager : MonoBehaviour
 
             charIterator++;
 
-            if (Input.GetKey(KeyCode.K) == true)
+            if (Input.GetKey(KeyCode.A) == true)
             {
                 yield return new WaitForSeconds(0.02f * typeSentenceSpeed);
             }
@@ -323,7 +322,7 @@ public class DialogueManager : MonoBehaviour
             }
             int returnedValue = 1;
 
-            if ((Input.GetKey(KeyCode.K))&&(loopCount > 10))
+            if ((Input.GetKey(KeyCode.A))&&(loopCount > 10))
             {
                 returnedValue = endDiagChoice();
             }

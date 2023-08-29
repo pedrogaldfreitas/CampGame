@@ -9,6 +9,7 @@ public class DialogueFeed : MonoBehaviour
 
     //MISC
     public string diagD1_FIRSTACORN;
+    public List<string> testDiag = new List<string>();
 
     // VICTOR/DAY1MORN
     [System.NonSerialized]
@@ -66,9 +67,16 @@ public class DialogueFeed : MonoBehaviour
 
     public void Awake()
     {
+        setTestDiagFeed();
         setMainDialogueDay1Victor();
         setMainDialogueDay1Wally();
         setMainDialogueDay1Girl();
+    }
+
+    void setTestDiagFeed()
+    {
+        testDiag.Add("This is test dialogue. It's meant to show the way the font behaves on the speech bubble.");
+        testDiag.Add("Hopefully everything's working fine up until this point.");
     }
 
     void setMainDialogueDay1Victor()

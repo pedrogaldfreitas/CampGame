@@ -4,15 +4,16 @@ using UnityEngine;
 
 public class showRightArm : StateMachineBehaviour
 {
-    private Transform armTrans;
 
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        
-        armTrans = animator.transform.Find("PlayerArms").transform.Find("rightArmParent");
-        
-        armTrans.position = new Vector3(armTrans.localPosition.x, armTrans.localPosition.y, -0.6f);
-        animator.transform.Find("PlayerArms").transform.Find("rightArmParent").localPosition = armTrans.position;
+
+        Transform armTrans = animator.transform.Find("PlayerArms").transform.Find("rightArmParent");
+
+        armTrans.localPosition = new Vector3(12.2948f, -21.3718f, -0.6f);
+        armTrans.localScale = new Vector3(-1, 1, 1);
+
+        armTrans.Find("RightSleeve").localPosition = new Vector3(0.1423f, 2.186f, -0.1f);
     }
 
 }

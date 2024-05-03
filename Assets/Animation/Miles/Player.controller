@@ -1604,7 +1604,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 'playerForwardAttack '
-  m_Speed: 3.5
+  m_Speed: 2.7
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 2999689720401719552}
@@ -2336,7 +2336,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: playerLeftAttack
-  m_Speed: 3.5
+  m_Speed: 2.7
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 7900244864149358514}
@@ -4217,7 +4217,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: playerRightAttack
-  m_Speed: 3.5
+  m_Speed: 2.7
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: -7378497230038252331}
@@ -7179,7 +7179,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: playerBackwardAttack
-  m_Speed: 3.5
+  m_Speed: 2.7
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 1871496664963614055}

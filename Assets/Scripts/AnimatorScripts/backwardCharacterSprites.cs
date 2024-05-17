@@ -15,9 +15,9 @@ public class backwardCharacterSprites : StateMachineBehaviour
     {
         rightArmTrans = animator.transform.Find("PlayerArms").transform.Find("rightArmParent");
         leftArmTrans = animator.transform.Find("PlayerArms").transform.Find("leftArmParent");
-        eyes = animator.transform.Find("PlayerEyes").gameObject;
-        nose = animator.transform.Find("PlayerNose").gameObject;
-        mouth = animator.transform.Find("PlayerMouth").gameObject;
+        eyes = animator.transform.Find("PlayerEyesParent").Find("PlayerEyes").gameObject;
+        nose = animator.transform.Find("PlayerNoseParent").Find("PlayerNose").gameObject;
+        mouth = animator.transform.Find("PlayerMouthParent").Find("PlayerMouth").gameObject;
 
         rightArmTrans.localPosition = new Vector3(15.02f, -17.41f, 0);
         leftArmTrans.localPosition = new Vector3(9.73f, -17.49f, 0);

@@ -1604,7 +1604,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 'playerForwardAttack '
-  m_Speed: 2.7
+  m_Speed: 3.5
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 2999689720401719552}
@@ -1653,7 +1653,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e359f6abdb8d3e14196deadb03042c8c, type: 3}
   m_Name: 
@@ -2362,7 +2362,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: playerLeftAttack
-  m_Speed: 2.7
+  m_Speed: 3.5
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 7900244864149358514}
@@ -4050,7 +4050,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e359f6abdb8d3e14196deadb03042c8c, type: 3}
   m_Name: 
@@ -4243,7 +4243,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: playerRightAttack
-  m_Speed: 2.7
+  m_Speed: 3.5
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: -7378497230038252331}
@@ -6839,9 +6839,6 @@ AnimatorStateMachine:
   - serializedVersion: 1
     m_State: {fileID: 737042823342731494}
     m_Position: {x: -1705, y: -155, z: 0}
-  - serializedVersion: 1
-    m_State: {fileID: -6404624624758092360}
-    m_Position: {x: -1670, y: -90, z: 0}
   m_ChildStateMachines: []
   m_AnyStateTransitions:
   - {fileID: 7211237377208744946}
@@ -7208,7 +7205,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: playerBackwardAttack
-  m_Speed: 2.7
+  m_Speed: 3.5
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 1871496664963614055}

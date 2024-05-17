@@ -14,11 +14,11 @@ public class bodyPartScript : MonoBehaviour
         parentTransform = transform.parent;
         if (this.gameObject.tag == "bodypart")
         {
-            legsRenderer = parentTransform.Find("PlayerLegs").gameObject.GetComponent<Renderer>();
+            legsRenderer = parentTransform.parent.Find("PlayerLegsParent").Find("PlayerLegs").gameObject.GetComponent<Renderer>();
         }
         if (this.gameObject.tag == "bodypart(arm)")
         {
-            legsRenderer = parentTransform.parent.parent.Find("PlayerLegs").gameObject.GetComponent<Renderer>();
+            legsRenderer = parentTransform.parent.parent.Find("PlayerLegsParent").Find("PlayerLegs").gameObject.GetComponent<Renderer>();
         }
     }
 

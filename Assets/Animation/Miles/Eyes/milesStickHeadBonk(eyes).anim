@@ -84,7 +84,7 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    path: PlayerEyes
+    path: PlayerEyesParent/PlayerEyes
   m_ScaleCurves: []
   m_FloatCurves: []
   m_PPtrCurves:
@@ -96,7 +96,7 @@ AnimationClip:
     - time: 0.43333334
       value: {fileID: 21300000, guid: e332ef6856e7fb84cad58ff50270c067, type: 3}
     attribute: m_Sprite
-    path: PlayerEyes
+    path: PlayerEyesParent/PlayerEyes
     classID: 212
     script: {fileID: 0}
   m_SampleRate: 60
@@ -107,14 +107,14 @@ AnimationClip:
   m_ClipBindingConstant:
     genericBindings:
     - serializedVersion: 2
-      path: 2017444001
+      path: 3488531096
       attribute: 1
       script: {fileID: 0}
       typeID: 4
       customType: 0
       isPPtrCurve: 0
     - serializedVersion: 2
-      path: 2017444001
+      path: 3488531096
       attribute: 0
       script: {fileID: 0}
       typeID: 212
@@ -215,7 +215,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.x
-    path: PlayerEyes
+    path: PlayerEyesParent/PlayerEyes
     classID: 4
     script: {fileID: 0}
   - curve:
@@ -288,7 +288,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.y
-    path: PlayerEyes
+    path: PlayerEyesParent/PlayerEyes
     classID: 4
     script: {fileID: 0}
   - curve:
@@ -361,7 +361,7 @@ AnimationClip:
       m_PostInfinity: 2
       m_RotationOrder: 4
     attribute: m_LocalPosition.z
-    path: PlayerEyes
+    path: PlayerEyesParent/PlayerEyes
     classID: 4
     script: {fileID: 0}
   m_EulerEditorCurves: []

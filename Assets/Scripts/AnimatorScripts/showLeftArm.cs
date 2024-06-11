@@ -15,6 +15,6 @@ public class showLeftArm : StateMachineBehaviour
         armVector = new Vector3(12.295f, -21.371f, -0.6f);
 
         leftArm.localPosition = armVector;
-        leftArm.Find("LeftSleeve").localPosition = new Vector3(0.05f, 1f, -0.1f);
+        leftArm.Find("LeftSleeveParent").localPosition = new Vector3(0.05f, 1f, -0.1f);
     }
 }

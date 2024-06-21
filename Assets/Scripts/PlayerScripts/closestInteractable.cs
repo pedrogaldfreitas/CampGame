@@ -114,6 +114,12 @@ public class closestInteractable : MonoBehaviour
         {
             possibleInteractables.Add(collision.transform);
         }
+
+        //TEMPORARY: Must delete after. For testing the "Grabpole" object.
+        if (collision.name == "GRABPOLE")
+        {
+            possibleInteractables.Add(collision.transform);
+        }
     }
 
     private void OnTriggerExit2D(Collider2D collision)

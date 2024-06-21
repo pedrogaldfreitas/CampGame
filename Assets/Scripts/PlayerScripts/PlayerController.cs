@@ -7,13 +7,22 @@ public class PlayerController : MonoBehaviour
     //Movement variables
     public float speed;
     private float runSpeedMultiplier;
-    private float movementInterpolation;
+    private float walkingInterpolation;
 
     private Vector2 moveVelocity;
     Vector2 walkingDir;
 
     private bool isGrounded;
     public bool movementEnabled;
+
+    //Running variables
+    public bool isRunning;
+    [SerializeField]
+    private float runAcceleration;
+    [SerializeField]
+    private float runDeceleration;
+    public float runningInterpolation;
+    public float runningTurningInterpolation;
 
     //Animation variables
     [SerializeField]
@@ -25,13 +34,18 @@ public class PlayerController : MonoBehaviour
     public float vSlopeSlowdown;    //Should be proportional to slopeAngleInRad/(pi/2)
     public float vSlopeSlowdownMultiplier;
 
+    private enum direction { STOP, UP, DOWN, LEFT, RIGHT };
+    private direction playerMovementDirection;
+
     private Rigidbody2D rb;
 
     void Start()
     {
         movementEnabled = true;
-        movementInterpolation = 0.3f;
+        walkingInterpolation = 0.3f;
         rb = GetComponent<Rigidbody2D>();
+        playerMovementDirection = direction.STOP;
+        moveVelocity = Vector2.zero;
     }
 
     private void Update()
@@ -48,9 +62,79 @@ public class PlayerController : MonoBehaviour
             Vector2 moveInput = new Vector2(Input.GetAxisRaw("HorizontalArrows"), Input.GetAxisRaw("VerticalArrows"));
             Vector2 targetDirectionAndSpeed = moveInput.normalized * speed;
 
-            moveVelocity = new Vector2(Mathf.Lerp(moveVelocity.x, targetDirectionAndSpeed.x, movementInterpolation), Mathf.Lerp(moveVelocity.y, targetDirectionAndSpeed.y, movementInterpolation));
+            //THIS SECTION: Make alterations if player running
+            if (Input.GetKeyDown(KeyCode.LeftShift))
+            {
+                ToggleRun(true);
+            }
 
-            runSpeedMultiplier = Input.GetKey(KeyCode.LeftShift) ? 2 : 1;
+            if (Input.GetKeyUp(KeyCode.LeftShift))
+            {
+                ToggleRun(false);
+            }
+
+            playerMovementDirection = GetPlayerMovementDirection();
+
+            //Debug.Log("PEDROLOG: direction = " + playerMovementDirection);
+            if (isRunning)
+            {
+                runSpeedMultiplier = 2;
+                //Debug.Log("PEDROLOG: targetDirectionAndSpeed = " + targetDirectionAndSpeed);
+                //Debug.Log("PEDROLOG: moveVelocity = " + moveVelocity);
+                //moveVelocity = new Vector2(Mathf.Lerp(moveVelocity.x, targetDirectionAndSpeed.x, runningInterpolation), Mathf.Lerp(moveVelocity.y, targetDirectionAndSpeed.y, runningInterpolation));
+                switch (playerMovementDirection) 
+                {
+                    case direction.UP:                   
+                        if (moveInput.y > 0)    //Continue moving in this direction, with some interpolation
+                        {
+                            moveVelocity = new Vector2(Mathf.Lerp(moveVelocity.x, targetDirectionAndSpeed.x, runningInterpolation), Mathf.Lerp(moveVelocity.y, targetDirectionAndSpeed.y, runningInterpolation));
+                        } else
+                        {
+                            //Player has released the key for running in this direction. Should "drift" if turning to another direction, or "brake" gradually if stopping/running in opposite direction.
+                            moveVelocity = new Vector2(Mathf.Lerp(moveVelocity.x, targetDirectionAndSpeed.x, runningTurningInterpolation), Mathf.Lerp(moveVelocity.y, targetDirectionAndSpeed.y, runningTurningInterpolation));
+                        }                
+                        break;
+                    case direction.DOWN:
+                        if (moveInput.y < 0)
+                        {
+                            moveVelocity = new Vector2(Mathf.Lerp(moveVelocity.x, targetDirectionAndSpeed.x, runningInterpolation), Mathf.Lerp(moveVelocity.y, targetDirectionAndSpeed.y, runningInterpolation));
+                        }
+                        else
+                        {
+                            moveVelocity = new Vector2(Mathf.Lerp(moveVelocity.x, targetDirectionAndSpeed.x, walkingInterpolation), Mathf.Lerp(moveVelocity.y, targetDirectionAndSpeed.y, walkingInterpolation));
+                        }
+                        break;
+                    case direction.LEFT:
+                        if (moveInput.x < 0)
+                        {
+                            moveVelocity = new Vector2(Mathf.Lerp(moveVelocity.x, targetDirectionAndSpeed.x, runningInterpolation), Mathf.Lerp(moveVelocity.y, targetDirectionAndSpeed.y, runningInterpolation));
+                        }
+                        else
+                        {
+                            moveVelocity = new Vector2(Mathf.Lerp(moveVelocity.x, targetDirectionAndSpeed.x, walkingInterpolation), Mathf.Lerp(moveVelocity.y, targetDirectionAndSpeed.y, walkingInterpolation));
+                        }
+                        break;
+                    case direction.RIGHT:
+                        if (moveInput.x > 0)
+                        {
+                            moveVelocity = new Vector2(Mathf.Lerp(moveVelocity.x, targetDirectionAndSpeed.x, runningInterpolation), Mathf.Lerp(moveVelocity.y, targetDirectionAndSpeed.y, runningInterpolation));
+                        }
+                        else
+                        {
+                            moveVelocity = new Vector2(Mathf.Lerp(moveVelocity.x, targetDirectionAndSpeed.x, walkingInterpolation), Mathf.Lerp(moveVelocity.y, targetDirectionAndSpeed.y, walkingInterpolation));
+                        }
+                        break;
+                    default:
+                        moveVelocity = new Vector2(Mathf.Lerp(moveVelocity.x, targetDirectionAndSpeed.x, walkingInterpolation), Mathf.Lerp(moveVelocity.y, targetDirectionAndSpeed.y, walkingInterpolation));
+                        break;
+                }
+
+            }
+            else
+            {
+                runSpeedMultiplier = 1;
+                moveVelocity = new Vector2(Mathf.Lerp(moveVelocity.x, targetDirectionAndSpeed.x, walkingInterpolation), Mathf.Lerp(moveVelocity.y, targetDirectionAndSpeed.y, walkingInterpolation));
+            }
 
             if (GetComponent<FakeHeightObject>().isGrounded)
             {
@@ -63,11 +147,32 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private direction GetPlayerMovementDirection()
+    {
+        direction returnVal = direction.STOP;
+
+        if (Mathf.Abs(moveVelocity.x) > Mathf.Abs(moveVelocity.y))
+        {
+            returnVal = moveVelocity.x < 0 ?  direction.LEFT :  direction.RIGHT;
+        } else if (Mathf.Abs(moveVelocity.x) < Mathf.Abs(moveVelocity.y))
+        {
+            returnVal = moveVelocity.y < 0 ? direction.DOWN : direction.UP;
+        }
+
+        return returnVal;
+    }
+
     //Leaps in the direction dir.
     void playerJump()
     {
         walkingDir = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
         GetComponent<FakeHeightObject>().Jump(walkingDir*25, 50);
+    }
+
+    private void ToggleRun(bool toggle)
+    {
+        isRunning = toggle;
+        return;
     }
 
     public void disableMovement()

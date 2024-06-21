@@ -26,7 +26,7 @@ public class CutsceneManager : MonoBehaviour
 
     private void Start()
     {
-        blackScreen = GameObject.Find("BlackScreen").GetComponent<Image>();
+        blackScreen = GameObject.Find("BlackScreen")?.GetComponent<Image>();
         cutsceneActive = false;
         player = GameObject.Find("Player");
         playerParent = GameObject.Find("PlayerParent");

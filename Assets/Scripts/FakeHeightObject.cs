@@ -64,6 +64,7 @@ public class FakeHeightObject : MonoBehaviour
     {
         if (grounded)
         {
+            Debug.Log("PEDROLOG: Player jump verticalvelocity = " + verticalVelocity);
             this.groundVelocity = groundVelocity;
             this.verticalVelocity = verticalVelocity;
             isGrounded = false;
@@ -106,6 +107,7 @@ public class FakeHeightObject : MonoBehaviour
         {
             verticalVelocity += gravity * Time.deltaTime;
             transBody.position += new Vector3(0, verticalVelocity, 0) * Time.deltaTime;
+            //transBody.GetComponent<Rigidbody2D>().
 
             transObject.GetComponent<Rigidbody2D>().MovePosition(transObject.position + ((Vector3)this.groundVelocity * Time.deltaTime));
 

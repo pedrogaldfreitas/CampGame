@@ -27,7 +27,7 @@ public class forwardCharacterSprites : StateMachineBehaviour
         //rightArmParent.Find("PlayerRightArm").localPosition = new Vector3(0.2558f, -0.083f, 0);
 
         leftArmParent.Find("LeftSleeveParent").localPosition = new Vector3(-0.4102f, -0.628f, -0.1f);
-        rightArmParent.Find("RightSleeveParent").localPosition = new Vector3(1.189f, -1.483f, -0.1f);
+        rightArmParent.Find("RightSleeveParent").localPosition = new Vector3(0.61170f, -0.7300006f, -0.1f);
 
         animator.transform.Find("PlayerLegsParent").Find("PlayerLegs").localPosition = new Vector3(0.03590031f, -0.5746201f, 0.4f);
     }

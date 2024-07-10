@@ -35,16 +35,22 @@ public class PlayerController : MonoBehaviour
     public float vSlopeSlowdownMultiplier;
 
     private enum direction { STOP, UP, DOWN, LEFT, RIGHT };
-    private direction playerMovementDirection;
+    private direction movementDirection;
 
     private Rigidbody2D rb;
+
+    //Test Variables for Braking
+    [SerializeField]
+    private float brakeTimeBeforeLerp;
+    [SerializeField]
+    private float brakeSlowdownRate;
 
     void Start()
     {
         movementEnabled = true;
         walkingInterpolation = 0.3f;
         rb = GetComponent<Rigidbody2D>();
-        playerMovementDirection = direction.STOP;
+        movementDirection = direction.STOP;
         moveVelocity = Vector2.zero;
     }
 
@@ -71,53 +77,49 @@ public class PlayerController : MonoBehaviour
             if (Input.GetKeyUp(KeyCode.LeftShift))
             {
                 ToggleRun(false);
+                StartCoroutine(RunBrake(movementDirection, moveVelocity));
             }
 
-            playerMovementDirection = GetPlayerMovementDirection();
-
-            //Debug.Log("PEDROLOG: direction = " + playerMovementDirection);
             if (isRunning)
             {
                 runSpeedMultiplier = 2;
-                //Debug.Log("PEDROLOG: targetDirectionAndSpeed = " + targetDirectionAndSpeed);
-                //Debug.Log("PEDROLOG: moveVelocity = " + moveVelocity);
                 //moveVelocity = new Vector2(Mathf.Lerp(moveVelocity.x, targetDirectionAndSpeed.x, runningInterpolation), Mathf.Lerp(moveVelocity.y, targetDirectionAndSpeed.y, runningInterpolation));
-                switch (playerMovementDirection) 
+                //moveVelocity = new Vector2(Mathf.Lerp(moveVelocity.x, targetDirectionAndSpeed.x, walkingInterpolation), Mathf.Lerp(moveVelocity.y, targetDirectionAndSpeed.y, walkingInterpolation));
+                switch (movementDirection) 
                 {
-                    case direction.UP:                   
-                        if (moveInput.y > 0)    //Continue moving in this direction, with some interpolation
+                    case direction.UP:
+                        if (moveInput.y == 0)   //If player lets go of the left direction while running to the left...
                         {
-                            moveVelocity = new Vector2(Mathf.Lerp(moveVelocity.x, targetDirectionAndSpeed.x, runningInterpolation), Mathf.Lerp(moveVelocity.y, targetDirectionAndSpeed.y, runningInterpolation));
-                        } else
+                            StartCoroutine(RunBrake(movementDirection, moveVelocity));  //Brake.
+                        }
+                        else //Otherwise, keep running this way.
                         {
-                            //Player has released the key for running in this direction. Should "drift" if turning to another direction, or "brake" gradually if stopping/running in opposite direction.
-                            moveVelocity = new Vector2(Mathf.Lerp(moveVelocity.x, targetDirectionAndSpeed.x, runningTurningInterpolation), Mathf.Lerp(moveVelocity.y, targetDirectionAndSpeed.y, runningTurningInterpolation));
-                        }                
+                            moveVelocity = new Vector2(Mathf.Lerp(moveVelocity.x, targetDirectionAndSpeed.x, walkingInterpolation), Mathf.Lerp(moveVelocity.y, targetDirectionAndSpeed.y, walkingInterpolation));
+                        }
                         break;
                     case direction.DOWN:
-                        if (moveInput.y < 0)
+                        if (moveInput.y == 0)   //If player lets go of the left direction while running to the left...
                         {
-                            moveVelocity = new Vector2(Mathf.Lerp(moveVelocity.x, targetDirectionAndSpeed.x, runningInterpolation), Mathf.Lerp(moveVelocity.y, targetDirectionAndSpeed.y, runningInterpolation));
+                            StartCoroutine(RunBrake(movementDirection, moveVelocity));  //Brake.
                         }
-                        else
+                        else //Otherwise, keep running this way.
                         {
                             moveVelocity = new Vector2(Mathf.Lerp(moveVelocity.x, targetDirectionAndSpeed.x, walkingInterpolation), Mathf.Lerp(moveVelocity.y, targetDirectionAndSpeed.y, walkingInterpolation));
                         }
                         break;
                     case direction.LEFT:
-                        if (moveInput.x < 0)
+                        if (moveInput.x == 0)   //If player lets go of the left direction while running to the left...
                         {
-                            moveVelocity = new Vector2(Mathf.Lerp(moveVelocity.x, targetDirectionAndSpeed.x, runningInterpolation), Mathf.Lerp(moveVelocity.y, targetDirectionAndSpeed.y, runningInterpolation));
-                        }
-                        else
+                            StartCoroutine(RunBrake(movementDirection, moveVelocity));  //Brake.
+                        } else //Otherwise, keep running this way.
                         {
                             moveVelocity = new Vector2(Mathf.Lerp(moveVelocity.x, targetDirectionAndSpeed.x, walkingInterpolation), Mathf.Lerp(moveVelocity.y, targetDirectionAndSpeed.y, walkingInterpolation));
                         }
                         break;
                     case direction.RIGHT:
-                        if (moveInput.x > 0)
+                        if (moveInput.x == 0)
                         {
-                            moveVelocity = new Vector2(Mathf.Lerp(moveVelocity.x, targetDirectionAndSpeed.x, runningInterpolation), Mathf.Lerp(moveVelocity.y, targetDirectionAndSpeed.y, runningInterpolation));
+                            StartCoroutine(RunBrake(movementDirection, moveVelocity));  //Brake.
                         }
                         else
                         {
@@ -136,10 +138,21 @@ public class PlayerController : MonoBehaviour
                 moveVelocity = new Vector2(Mathf.Lerp(moveVelocity.x, targetDirectionAndSpeed.x, walkingInterpolation), Mathf.Lerp(moveVelocity.y, targetDirectionAndSpeed.y, walkingInterpolation));
             }
 
+            if (Mathf.Abs(moveVelocity.x) < 0.005f)
+            {
+                moveVelocity = new Vector2(0, moveVelocity.y);
+            }
+            if (Mathf.Abs(moveVelocity.y) < 0.005f)
+            {
+                moveVelocity = new Vector2(moveVelocity.x, 0);
+            }
+
             if (GetComponent<FakeHeightObject>().isGrounded)
             {
                 rb.MovePosition(this.transform.position + (new Vector3(moveVelocity.x * (1 - hSlopeSlowdown), moveVelocity.y * (1 - vSlopeSlowdown)) * runSpeedMultiplier * Time.deltaTime));
             }
+
+            movementDirection = GetPlayerMovementDirection();
 
             //ANIMATION COMPONENTS
             playerAnimator.SetFloat("Vertical", Input.GetAxisRaw("VerticalArrows") * 2);
@@ -157,6 +170,9 @@ public class PlayerController : MonoBehaviour
         } else if (Mathf.Abs(moveVelocity.x) < Mathf.Abs(moveVelocity.y))
         {
             returnVal = moveVelocity.y < 0 ? direction.DOWN : direction.UP;
+        } else if (moveVelocity.x == 0 && moveVelocity.y == 0)
+        {
+            returnVal = direction.STOP;
         }
 
         return returnVal;
@@ -183,6 +199,43 @@ public class PlayerController : MonoBehaviour
     public void enableMovement()
     {
         movementEnabled = true;
+    }
+
+    private IEnumerator RunBrake(direction momentumDirection, Vector2 breakMovementVelocity)
+    {
+        //disableMovement();
+        ToggleRun(false);
+        float breakTimePassed = 0;
+        breakMovementVelocity = breakMovementVelocity * 0.9f;
+
+        while (breakTimePassed < brakeTimeBeforeLerp) //Initial, linear slowdown
+        {
+            rb.MovePosition(this.transform.position + new Vector3(breakMovementVelocity.x * (1 - hSlopeSlowdown), breakMovementVelocity.y * (1 - vSlopeSlowdown)) * 2 * Time.deltaTime);
+            breakTimePassed += 0.05f;
+            yield return new WaitForEndOfFrame();
+        }
+        float lerpedX = breakMovementVelocity.x;
+        float lerpedY = breakMovementVelocity.y;
+
+        //NOTE: When the player speed when slowing down passes the regular movement speed, allow for interruption of this process by player input.
+        while (Mathf.Abs(lerpedX) > 0 || Mathf.Abs(lerpedY) > 0) //Subsequent lerped slowdown
+        {
+            //Vector2 speedWhileBraking = new Vector2(lerpedX, lerpedY);
+
+            if (Mathf.Abs(lerpedX) < 0.01f && Mathf.Abs(lerpedY) < 0.1f)
+            {
+                lerpedX = 0;
+                lerpedY = 0;
+            }
+            lerpedX = Mathf.Lerp(lerpedX, 0, brakeSlowdownRate);
+            lerpedY = Mathf.Lerp(lerpedY, 0, brakeSlowdownRate);
+
+            rb.MovePosition(this.transform.position + new Vector3(lerpedX * (1 - hSlopeSlowdown), lerpedY * (1 - vSlopeSlowdown)) * 2 * Time.deltaTime);
+            yield return new WaitForEndOfFrame();
+        }
+
+        //enableMovement();
+        yield return new WaitForEndOfFrame();
     }
 
 }

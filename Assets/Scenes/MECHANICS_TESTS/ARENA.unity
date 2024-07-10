@@ -8425,21 +8425,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1337454595676541791, guid: b10ba900da399524494b4ec6beb32549,
-        type: 3}
-      propertyPath: raycastVerticalDistance
-      value: 1.41
-      objectReference: {fileID: 0}
-    - target: {fileID: 1337454595676541791, guid: b10ba900da399524494b4ec6beb32549,
-        type: 3}
-      propertyPath: raycastHorizontalDistance
-      value: 0.81
-      objectReference: {fileID: 0}
-    - target: {fileID: 8531711150975866132, guid: b10ba900da399524494b4ec6beb32549,
-        type: 3}
-      propertyPath: m_Simulated
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 8531711150975866216, guid: b10ba900da399524494b4ec6beb32549,
         type: 3}
       propertyPath: m_RootOrder
@@ -8499,11 +8484,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: PlayerParent
-      objectReference: {fileID: 0}
-    - target: {fileID: 8531711151125855760, guid: b10ba900da399524494b4ec6beb32549,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8531711151125855763, guid: b10ba900da399524494b4ec6beb32549,
         type: 3}

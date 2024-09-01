@@ -20,9 +20,16 @@ AnimationClip:
   m_PPtrCurves:
   - curve:
     - time: 0
-      value: {fileID: 21300000, guid: 85ae241f65e85474e96ee29d19402ea4, type: 3}
+      value: {fileID: 21300000, guid: eb1d95b902a981744964bf86aeea1874, type: 3}
     attribute: m_Sprite
     path: PlayerArms/leftArmParent/PlayerLeftArm
+    classID: 212
+    script: {fileID: 0}
+  - curve:
+    - time: 0
+      value: {fileID: 21300000, guid: 0c6c0aa50ae20b54ea7c01a7a135be78, type: 3}
+    attribute: m_Sprite
+    path: PlayerArms/leftArmParent/LeftSleeveParent/LeftSleeve
     classID: 212
     script: {fileID: 0}
   m_SampleRate: 60
@@ -39,8 +46,16 @@ AnimationClip:
       typeID: 212
       customType: 23
       isPPtrCurve: 1
+    - serializedVersion: 2
+      path: 320747798
+      attribute: 0
+      script: {fileID: 0}
+      typeID: 212
+      customType: 23
+      isPPtrCurve: 1
     pptrCurveMapping:
-    - {fileID: 21300000, guid: 85ae241f65e85474e96ee29d19402ea4, type: 3}
+    - {fileID: 21300000, guid: eb1d95b902a981744964bf86aeea1874, type: 3}
+    - {fileID: 21300000, guid: 0c6c0aa50ae20b54ea7c01a7a135be78, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}

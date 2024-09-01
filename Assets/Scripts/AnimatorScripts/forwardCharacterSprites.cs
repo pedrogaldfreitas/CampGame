@@ -17,6 +17,8 @@ public class forwardCharacterSprites : StateMachineBehaviour
 
         Transform leftArmParent = playerArms.Find("leftArmParent");
         Transform rightArmParent = playerArms.Find("rightArmParent");
+        Transform leftSleeve = leftArmParent.Find("LeftSleeveParent");
+        Transform rightSleeve = rightArmParent.Find("RightSleeveParent");
 
         leftArmParent.localPosition = new Vector3(14.89107f, -17.56166f, 0.6f);
         rightArmParent.localPosition = new Vector3(9.51f, -17.39f, 0.6f);
@@ -26,8 +28,10 @@ public class forwardCharacterSprites : StateMachineBehaviour
         //leftArmParent.Find("PlayerLeftArm").localPosition = new Vector3(0, 0, 0); 
         //rightArmParent.Find("PlayerRightArm").localPosition = new Vector3(0.2558f, -0.083f, 0);
 
-        leftArmParent.Find("LeftSleeveParent").localPosition = new Vector3(-0.4102f, -0.628f, -0.1f);
-        rightArmParent.Find("RightSleeveParent").localPosition = new Vector3(0.61170f, -0.7300006f, -0.1f);
+        leftSleeve.localPosition = new Vector3(-0.4102f, -0.628f, -0.1f);
+        leftSleeve.localScale = new Vector3(1, 1, 1);
+        rightSleeve.localPosition = new Vector3(0.61170f, -0.7300006f, -0.1f);
+        rightSleeve.localScale = new Vector3(-1, 1, 1);
 
         animator.transform.Find("PlayerLegsParent").Find("PlayerLegs").localPosition = new Vector3(0.03590031f, -0.5746201f, 0.4f);
     }

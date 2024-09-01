@@ -12,14 +12,16 @@ public class bodyPartScript : MonoBehaviour
     {
         thisRenderer = GetComponent<Renderer>();
         parentTransform = transform.parent;
+        legsRenderer = GameObject.Find("PlayerParent").transform.Find("Player").Find("PlayerLegsParent").Find("PlayerLegs").gameObject.GetComponent<Renderer>();
+        /*
         if (this.gameObject.tag == "bodypart")
         {
-            legsRenderer = parentTransform.Find("PlayerLegs").gameObject.GetComponent<Renderer>();
+            legsRenderer = parentTransform.parent.Find("PlayerLegsParent").Find("PlayerLegs").gameObject.GetComponent<Renderer>();
         }
         if (this.gameObject.tag == "bodypart(arm)")
         {
-            legsRenderer = parentTransform.parent.parent.Find("PlayerLegs").gameObject.GetComponent<Renderer>();
-        }
+            legsRenderer = parentTransform.parent.parent.Find("PlayerLegsParent").Find("PlayerLegs").gameObject.GetComponent<Renderer>();
+        }*/
     }
 
     private void Update()

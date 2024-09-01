@@ -9,37 +9,65 @@ public class StateManager : MonoBehaviour
     [SerializeField]
     static public Day currentDay;
 
+    public class LocationState {
+        string areaName;
+        Vector2 position;
+
+        LocationState(string areaInput, Vector2 positionInput)
+        {
+            areaName = areaInput;
+            position = positionInput;
+        }
+    }
+
+    #region Character Locations
+
+    public LocationState MilesLoc;
+    public LocationState VictorLoc;
+    public LocationState VickyLoc;
+
+    #endregion Character Locations
+
     private CutsceneManager cutsceneManager;
 
     public class Mission {
+        public string missionID;
         public string titleText;
-        public Mission()
+        public Mission(string ID)
         {
+            missionID = ID;
             titleText = "";
         }
-        public Mission(string title)
+        public Mission(string ID, string title)
         {
+            missionID = ID;
             titleText = title;
         }
     }
 
     [SerializeField]
     public Mission activeMission;
+    public bool settingStates = true;
 
     //LIST OF MISSIONS (DAY ONE)
-    private Mission D1_M0 = new Mission(), 
-        D1_M1 = new Mission("Go to the opening campfire"),
-        D1_M2 = new Mission("Find the missing girl"),
-        D1_M3 = new Mission("Regroup with the campers");
-
+    /*
+     WARNING: For each mission created, you MUST add it into dayOneMissions list in order for the missions debug panel to work properly.
+     */
+    public List<Mission> dayOneMissions = new List<Mission>();
+   
     public void Start()
     {
         currentDay = Day.ONE;
         cutsceneManager = GameObject.Find("UI").GetComponent<CutsceneManager>();
 
+        dayOneMissions.Add(new Mission("D1_M0"));
+        dayOneMissions.Add(new Mission("D1_M1", "Go to the opening campfire"));
+        dayOneMissions.Add(new Mission("D1_M2", "Find the missing girl"));
+        dayOneMissions.Add(new Mission("D1_M3", "Regroup with the campers"));
+
         switch (currentDay) {
             case Day.ONE:
-                activeMission = D1_M1;
+                activeMission = GetMissionFromID("D1_M1");
                 break;
             case Day.TWO:
                 break;
@@ -55,13 +83,31 @@ public class StateManager : MonoBehaviour
                 break;
         }
         TransitionMission(activeMission);
+
+        settingStates = false;
+    }
+
+    //Gets mission object based on ID.
+    public Mission GetMissionFromID(string missionID)
+    {
+        return dayOneMissions.Find((mission) => { return mission.missionID == missionID; });
     }
 
     //Ends current mission (if it exists) and transitions to selected mission.
-    public void TransitionMission(Mission missionID)
+    public void TransitionMission(Mission mission)
     {
-        activeMission = missionID;
-        if (missionID.titleText != "") StartCoroutine(cutsceneManager.ShowMissionText(missionID.titleText));
+        activeMission = mission;
+        if (mission.titleText != "") StartCoroutine(cutsceneManager.ShowMissionText(mission.titleText));
+
+        //HERE: Set the positions of all items, characters, world stats, etc. depending on the mission.
+        switch(mission.missionID)
+        {
+            case "D1M1":
+
+                break;
+            default:
+                break;
+        }
 
         return;
     }

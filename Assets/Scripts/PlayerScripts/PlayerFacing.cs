@@ -41,4 +41,5 @@ public class PlayerFacing : MonoBehaviour
         animator.SetInteger("FacingDir(UDLR)", (int)playerFacingDir);
 
     }
+
 }

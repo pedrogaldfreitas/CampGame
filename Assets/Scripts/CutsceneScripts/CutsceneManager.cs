@@ -16,7 +16,7 @@ public class CutsceneManager : MonoBehaviour
 
     //Fade in/out variables
     private Color fadeColor;
-    private GameObject blackScreen;
+    private Image blackScreen;
 
     private DialogueManager dialogueManager;
     private DialogueFeed allDiagOptions;
@@ -26,7 +26,7 @@ public class CutsceneManager : MonoBehaviour
 
     private void Start()
     {
-        blackScreen = GameObject.Find("BlackScreen");
+        blackScreen = GameObject.Find("BlackScreen")?.GetComponent<Image>();
         cutsceneActive = false;
         player = GameObject.Find("Player");
         playerParent = GameObject.Find("PlayerParent");
@@ -381,51 +381,61 @@ public class CutsceneManager : MonoBehaviour
     }
 
     //WARNING: Time values should be at 0.01f and below. Otherwise, use SlowFadeIn.
-    IEnumerator FastFadeIn(float time)
+    public IEnumerator FastFadeIn(float time)
     {
         for (float i = 0; i <= 1; i += 0.05f)
         {
-            fadeColor = blackScreen.GetComponent<SpriteRenderer>().color;
+            //fadeColor = blackScreen.GetComponent<SpriteRenderer>().color;
+            fadeColor = blackScreen.color;
             fadeColor.a = i;
-            GameObject.Find("BlackScreen").GetComponent<SpriteRenderer>().color = fadeColor;
+            blackScreen.color = fadeColor;
+           // GameObject.Find("BlackScreen").GetComponent<SpriteRenderer>().color = fadeColor;
             yield return new WaitForSeconds(time);
         }
+        fadeColor.a = 1;
+        blackScreen.color = fadeColor;
     }
 
     //WARNING: Time values should be above 0.01f. Otherwise, use FastFadeIn.
-    IEnumerator SlowFadeIn(float time)
+    public IEnumerator SlowFadeIn(float time)
     {
         for (float i = 0; i <= 1; i += 0.005f)
         {
-            fadeColor = blackScreen.GetComponent<SpriteRenderer>().color;
+            fadeColor = blackScreen.color;
             fadeColor.a = i;
-            GameObject.Find("BlackScreen").GetComponent<SpriteRenderer>().color = fadeColor;
+            blackScreen.color = fadeColor;
             yield return new WaitForSeconds(time);
         }
+        fadeColor.a = 1;
+        blackScreen.color = fadeColor;
     }
 
     //WARNING: Time values should be at 0.01f and below. Otherwise, use SlowFadeOut.
-    IEnumerator FastFadeOut(float time)
+    public IEnumerator FastFadeOut(float time)
     {
         for (float i = 1; i >= 0; i -= 0.05f)
         {
-            fadeColor = blackScreen.GetComponent<SpriteRenderer>().color;
+            fadeColor = blackScreen.color;
             fadeColor.a = i;
-            GameObject.Find("BlackScreen").GetComponent<SpriteRenderer>().color = fadeColor;
+            blackScreen.color = fadeColor;
             yield return new WaitForSeconds(time);
         }
+        fadeColor.a = 0;
+        blackScreen.color = fadeColor;
     }
 
     //WARNING: Time values should be above 0.01f. Otherwise, use FastFadeOut.
-    IEnumerator SlowFadeOut(float time)
+    public IEnumerator SlowFadeOut(float time)
     {
         for (float i = 1; i >= 0; i -= 0.005f)
         {
-            fadeColor = blackScreen.GetComponent<SpriteRenderer>().color;
+            fadeColor = blackScreen.color;
             fadeColor.a = i;
-            GameObject.Find("BlackScreen").GetComponent<SpriteRenderer>().color = fadeColor;
+            blackScreen.color = fadeColor;
             yield return new WaitForSeconds(time);
         }
+        fadeColor.a = 0;
+        blackScreen.color = fadeColor;
     }
 
     public IEnumerator ShowMissionText(string missionText)
@@ -698,9 +708,28 @@ public class CutsceneManager : MonoBehaviour
         switch (DayNumber)
         {
             case 1:
-                GameObject.Find("DayText").GetComponent<TextMeshProUGUI>().text = "DAY ONE: An Uncanny Presence";
+                GameObject.Find("DayText").GetComponent<TextMeshProUGUI>().text = "DAY ONE: An Uneasy Welcome";
                 break;
             case 2:
+                GameObject.Find("DayText").GetComponent<TextMeshProUGUI>().text = "DAY TWO: The Boys Vs. The World";
+                break;
+            case 3:
+                GameObject.Find("DayText").GetComponent<TextMeshProUGUI>().text = "DAY THREE: Naomi Breaks Even";
+                break;
+            case 4:
+                GameObject.Find("DayText").GetComponent<TextMeshProUGUI>().text = "DAY FOUR: Firefly Noir";
+                break;
+            case 5:
+                GameObject.Find("DayText").GetComponent<TextMeshProUGUI>().text = "DAY FIVE: Seaweed Cracks Under Pressure";
+                break;
+            case 6:
+                GameObject.Find("DayText").GetComponent<TextMeshProUGUI>().text = "DAY SIX: Miles' Awakening";
+                break;
+            case 7:
+                GameObject.Find("DayText").GetComponent<TextMeshProUGUI>().text = "DAY SEVEN: Harrowingly Unearthed";
+                break;
+            case 8:
+                GameObject.Find("DayText").GetComponent<TextMeshProUGUI>().text = "DAY EIGHT: Forever in Their Hearts";
                 break;
         }
 

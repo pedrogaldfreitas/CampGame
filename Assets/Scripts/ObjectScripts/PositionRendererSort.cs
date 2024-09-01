@@ -55,7 +55,7 @@ public class PositionRendererSort : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        playerLegs = GameObject.Find("Player").transform.Find("PlayerLegs").gameObject;
+        playerLegs = GameObject.Find("Player").transform.Find("PlayerLegsParent").Find("PlayerLegs").gameObject;
      
         shadowRenderer = null;
 

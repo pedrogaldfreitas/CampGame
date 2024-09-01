@@ -10,10 +10,10 @@ public class showRightArm : StateMachineBehaviour
 
         Transform armTrans = animator.transform.Find("PlayerArms").transform.Find("rightArmParent");
 
-        armTrans.localPosition = new Vector3(12.2948f, -21.3718f, -0.6f);
-        armTrans.localScale = new Vector3(-1, 1, 1);
+        armTrans.localPosition = new Vector3(12.5f, -21.238f, -0.6f);
+        armTrans.localScale = new Vector3(-2.26892f, 2.26892f, 1);
 
-        armTrans.Find("RightSleeve").localPosition = new Vector3(0.1423f, 2.186f, -0.1f);
+        armTrans.Find("RightSleeveParent").localPosition = new Vector3(0.155f, 0.901f, -0.1f);
     }
 
 }

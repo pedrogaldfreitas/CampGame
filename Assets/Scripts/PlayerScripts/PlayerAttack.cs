@@ -282,7 +282,7 @@ public class PlayerAttack : MonoBehaviour
             swingNum = 0;
         }
 
-        swingNum++;
+        //swingNum++;
     }
 
     void adjustStickTransform()

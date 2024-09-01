@@ -29,7 +29,7 @@ AnimationClip:
     - time: 0
       value: {fileID: 21300000, guid: 4d4105d6a62ccb547b5d1221b9f73f33, type: 3}
     attribute: m_Sprite
-    path: PlayerArms/rightArmParent/RightSleeve
+    path: PlayerArms/rightArmParent/RightSleeveParent/RightSleeve
     classID: 212
     script: {fileID: 0}
   m_SampleRate: 60
@@ -47,7 +47,7 @@ AnimationClip:
       customType: 23
       isPPtrCurve: 1
     - serializedVersion: 2
-      path: 119789380
+      path: 1140325325
       attribute: 0
       script: {fileID: 0}
       typeID: 212

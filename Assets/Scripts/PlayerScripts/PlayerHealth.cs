@@ -14,9 +14,15 @@ public class PlayerHealth : MonoBehaviour
     public Sprite halfHeart;
     public Sprite emptyHeart;
 
+    private AudioSource audioSource;
+    public AudioClip hurtSound1;
+    public AudioClip hurtSound2;
+    public AudioClip hurtSound3;
+
     private void Start()
     {
         playerParentTransform = transform.parent;
+        audioSource = GetComponents<AudioSource>()[0];
     }
 
     private void Update()
@@ -85,6 +91,25 @@ public class PlayerHealth : MonoBehaviour
     public void DamagePlayer(int dmg, Vector2 damageOriginPoint = new Vector2(), float knockbackPower = 0)
     {
         damageHealth(dmg);
+        int rndNum = Random.Range(1, 4);
+        Debug.Log("PEDROLOG: rndNum = " + rndNum);
+        switch (rndNum)
+        {
+            case 1:
+                audioSource.clip = hurtSound1;
+                break;
+            case 2:
+                audioSource.clip = hurtSound2;
+                break;
+            case 3:
+                audioSource.clip = hurtSound3;
+                break;
+            default:
+                audioSource.clip = hurtSound1;
+                break; 
+        }
+
+        audioSource.Play();
         if (damageOriginPoint != Vector2.zero && knockbackPower != 0)
         {
             StartCoroutine(KnockbackPlayer(damageOriginPoint, knockbackPower));

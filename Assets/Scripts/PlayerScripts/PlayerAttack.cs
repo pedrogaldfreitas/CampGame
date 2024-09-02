@@ -39,6 +39,14 @@ public class PlayerAttack : MonoBehaviour
     public float finalSwingSpeedDash;
     IEnumerator currentSwingStickCoroutine;
 
+    //Audio variables
+    private AudioSource audioSource;
+    public AudioClip swingSound1;
+    public AudioClip swingSound2;
+    public AudioClip swingSound3;
+    public AudioClip swingSound4;
+    public AudioClip swingSound5;
+
     private void Start()
     {
         timeBtwAttack = 0;
@@ -52,6 +60,8 @@ public class PlayerAttack : MonoBehaviour
         currentSwingStickCoroutine = null;
         bufferedSwing = false;
         swingBufferingAllowed = false;
+
+        audioSource = GetComponents<AudioSource>()[1];
     }
 
     // Update is called once per frame
@@ -335,6 +345,35 @@ public class PlayerAttack : MonoBehaviour
         enemy.transform.parent.GetComponent<FakeHeightObject>().verticalVelocity = hitForce*30f;
 
         StartCoroutine(enemy.GetComponent<Enemy>().Whacked(hitForce));
+    }
+
+    public void PlaySwingAudio()
+    {
+        int rndNum = Random.Range(1, 6);
+        switch (rndNum)
+        {
+            case 1:
+                audioSource.clip = swingSound1;
+                break;
+            case 2:
+                audioSource.clip = swingSound2;
+                break;
+            case 3:
+                audioSource.clip = swingSound3;
+                break;
+            case 4:
+                audioSource.clip = swingSound4;
+                break;
+            case 5:
+                audioSource.clip = swingSound5;
+                break;
+            default:
+                audioSource.clip = swingSound1;
+                break;
+        }
+
+        audioSource.Play();
+        return;
     }
 
 }

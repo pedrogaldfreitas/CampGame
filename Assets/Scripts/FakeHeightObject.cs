@@ -64,7 +64,6 @@ public class FakeHeightObject : MonoBehaviour
     {
         if (grounded)
         {
-            Debug.Log("PEDROLOG: Player jump verticalvelocity = " + verticalVelocity);
             this.groundVelocity = groundVelocity;
             this.verticalVelocity = verticalVelocity;
             isGrounded = false;
@@ -76,6 +75,7 @@ public class FakeHeightObject : MonoBehaviour
     //Changes floor height of object and drops it from a proportional height. objToIgnore is to prevent collision with the "solid" object of a platform system when dropping.
     public void Drop(Vector2 groundVel, float height, GameObject objToIgnore = null)
     {
+        Debug.Log("PEDROLOG: Drop() called.");
         if (isGrounded)
         {
             this.groundVelocity = groundVel;

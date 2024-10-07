@@ -92,12 +92,14 @@ public class FakeHeightObject : MonoBehaviour
     }
 
     //Increases floor height of the object.
-    public void Rise(float height)
+    public void Rise(float newFloorHeight)
     {
+        float floorHeightToAdd = newFloorHeight - transShadow.GetComponent<newShadowScript>().floorHeight;
+
         if (!isGrounded)
         {
-            transShadow.position = new Vector2(transShadow.position.x, transShadow.position.y + height);
-            transShadow.GetComponent<newShadowScript>().floorHeight += height;
+            transShadow.position = new Vector2(transShadow.position.x, transShadow.position.y + floorHeightToAdd);
+            transShadow.GetComponent<newShadowScript>().floorHeight += floorHeightToAdd;
         }
     }
 

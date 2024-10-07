@@ -151,7 +151,6 @@ public class LandTargetScript : MonoBehaviour
                     }
                     else
                     {
-                        Debug.Log("PEDROLOG/1: Rising to floorHeight = " + currentBaseAndFloorheightPair.floorHeight + " because player is at height " + thisObjHeight);
                         parentTransform.GetComponent<FakeHeightObject>().Rise(currentBaseAndFloorheightPair.floorHeight);
                     }
                 }

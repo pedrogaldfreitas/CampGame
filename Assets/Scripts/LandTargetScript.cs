@@ -163,7 +163,7 @@ public class LandTargetScript : MonoBehaviour
 
         baseAndFloorheightPair chosenPlatform = stopFlag ? baseAndFloorHeightArray[index] : baseAndFloorHeightArray[index-1];
 
-        //I edited code from above this point. The rest is yet to be verified.
+        //I edited code from above this point. The rest can be cleaned up, because it looks like the Drop() calls never run here, they run in checkFloorHeight(...) instead.
 
         if (shadowScript.floorHeight > chosenPlatform.floorHeight && chosenPlatform.colliderHit.transform.parent != currentPlatformParent)
         {

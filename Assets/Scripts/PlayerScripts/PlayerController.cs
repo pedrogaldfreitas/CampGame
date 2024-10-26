@@ -194,8 +194,6 @@ public class PlayerController : MonoBehaviour
             }
             totalMovement = walkMovement + brakeMovement;
 
-            Debug.Log("PEDROLOG: movementDirection = " + movementDirection + ", walkingDir = " + walkingDir);
-            Debug.Log("PEDROLOG2: breakMovementVelocity = " + movementDirection);
             newPosition += totalMovement;
             rb.MovePosition(newPosition);
         }

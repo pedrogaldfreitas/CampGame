@@ -124,21 +124,35 @@ public class LandTargetScript : MonoBehaviour
 
         bool stopFlag = false;
         int index = 0;
+        int highestReachablePlatformIndex = 0;
 
         //NEW ATTEMPT START
         while (!stopFlag && index < baseAndFloorHeightArray.Count)
         {
             baseAndFloorheightPair currentBaseAndFloorheightPair = baseAndFloorHeightArray[index];
+            float platformFH;
             if (currentBaseAndFloorheightPair.isSlope)
             {
                 accurateSlopeFH = FloorheightFunctions.FindSlopeFloorh(transform, currentBaseAndFloorheightPair.colliderHit.transform.parent.Find("top"));
+                platformFH = accurateSlopeFH;
+            } else
+            {
+                platformFH = currentBaseAndFloorheightPair.floorHeight;
             }
 
-            bool objCanReachPlatform = thisObjHeight > currentBaseAndFloorheightPair.floorHeight;
-            bool objFloorheightNotSameAsCurrentBaseFloorheight = (!currentBaseAndFloorheightPair.isSlope && shadowScript.floorHeight != currentBaseAndFloorheightPair.floorHeight) || (currentBaseAndFloorheightPair.isSlope && shadowScript.floorHeight != accurateSlopeFH);
+     
+            bool objCanReachPlatform = thisObjHeight > platformFH;
+            bool objFloorheightNotSameAsCurrentBaseFloorheight = (shadowScript.floorHeight != platformFH);
+            //bool objFloorheightNotSameAsCurrentBaseFloorheight = (!currentBaseAndFloorheightPair.isSlope && shadowScript.floorHeight != currentBaseAndFloorheightPair.floorHeight) || (currentBaseAndFloorheightPair.isSlope && shadowScript.floorHeight != accurateSlopeFH);
+
+            if (currentBaseAndFloorheightPair.isSlope)
+            {
+                Debug.Log("PEDROLOG/1: can reach slope: " + objCanReachPlatform + ", is this a new height?: " + objFloorheightNotSameAsCurrentBaseFloorheight);
+            }
 
             if (objCanReachPlatform)
             {
+
                 if (objFloorheightNotSameAsCurrentBaseFloorheight)
                 {
                     //If it seems like the player has reached a higher platform than before, raise the shadow to the new platform.
@@ -154,6 +168,12 @@ public class LandTargetScript : MonoBehaviour
                         parentTransform.GetComponent<FakeHeightObject>().Rise(currentBaseAndFloorheightPair.floorHeight);
                     }
                 }
+
+                if (platformFH > baseAndFloorHeightArray[highestReachablePlatformIndex].floorHeight)
+                {
+                    highestReachablePlatformIndex = index;
+                }
+
                 index++;
             } else
             {
@@ -161,7 +181,10 @@ public class LandTargetScript : MonoBehaviour
             }
         }
 
-        baseAndFloorheightPair chosenPlatform = stopFlag ? baseAndFloorHeightArray[index] : baseAndFloorHeightArray[index-1];
+        baseAndFloorheightPair chosenPlatform = baseAndFloorHeightArray[highestReachablePlatformIndex];
+        //baseAndFloorheightPair chosenPlatform = stopFlag ? baseAndFloorHeightArray[index] : baseAndFloorHeightArray[index-1];
+
+        Debug.Log("PEDROLOG/FINAL: chosenPlatform = " + chosenPlatform.colliderHit.transform.parent.name);
 
         //I edited code from above this point. The rest can be cleaned up, because it looks like the Drop() calls never run here, they run in checkFloorHeight(...) instead.
 
@@ -181,7 +204,9 @@ public class LandTargetScript : MonoBehaviour
 
         currentPlatformParent = chosenPlatform.colliderHit.transform.parent;
 
-
+        //ISSUE: currentPlatformParent is not being set to the slope.
+        Debug.Log("PEDROLOG:currentPlatformParent = " + currentPlatformParent.name);
+    
         if (currentPlatformParent.gameObject.layer == LayerMask.NameToLayer("HorizontalSlope"))
         {
             onHorizontalSlope = true;

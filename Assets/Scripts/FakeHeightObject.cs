@@ -72,10 +72,10 @@ public class FakeHeightObject : MonoBehaviour
         }
     }
 
+
     //Changes floor height of object and drops it from a proportional height. objToIgnore is to prevent collision with the "solid" object of a platform system when dropping.
     public void Drop(Vector2 groundVel, float height, GameObject objToIgnore = null)
     {
-        Debug.Log("PEDROLOG: Drop() called.");
         if (isGrounded)
         {
             this.groundVelocity = groundVel;
@@ -86,7 +86,7 @@ public class FakeHeightObject : MonoBehaviour
             Physics2D.IgnoreCollision(transBody.GetComponent<BoxCollider2D>(), objToIgnore.GetComponent<PolygonCollider2D>(), true);
         }
 
-        transShadow.position = new Vector2(transShadow.position.x, transShadow.position.y - height);
+        transShadow.position += Vector3.down * height;
         transShadow.GetComponent<newShadowScript>().floorHeight -= height;
         isGrounded = false;
     }
@@ -98,7 +98,7 @@ public class FakeHeightObject : MonoBehaviour
 
         if (!isGrounded)
         {
-            transShadow.position = new Vector2(transShadow.position.x, transShadow.position.y + floorHeightToAdd);
+            transShadow.position += Vector3.up * floorHeightToAdd;
             transShadow.GetComponent<newShadowScript>().floorHeight += floorHeightToAdd;
         }
     }

@@ -56,6 +56,7 @@ public class BaseScript : MonoBehaviour
 
             yield return null;
         }
+
         collidersBeingIgnored.Remove(otherCollider);
         Physics2D.IgnoreCollision(baseCollider, otherCollider, false);
     }

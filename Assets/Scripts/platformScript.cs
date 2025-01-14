@@ -10,7 +10,7 @@ public class platformScript : MonoBehaviour
     public float floorHeight;
     public bool containsH2;
 
-    void Start()
+    void Awake()
     {
         floorHeight = (float)Math.Round(transform.position.y - transform.parent.Find("base").position.y, 3);
     }

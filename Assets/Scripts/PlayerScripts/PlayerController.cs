@@ -98,7 +98,6 @@ public class PlayerController : MonoBehaviour
 
             if (isRunning && ShouldStopRunning())
             {
-                Debug.Log("PEDROLOG/3: ShouldStopRunning.");
                 ToggleRun(false);
                 BrakeStart();
             }

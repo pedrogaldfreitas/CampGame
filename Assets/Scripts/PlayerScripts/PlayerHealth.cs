@@ -92,7 +92,6 @@ public class PlayerHealth : MonoBehaviour
     {
         damageHealth(dmg);
         int rndNum = Random.Range(1, 4);
-        Debug.Log("PEDROLOG: rndNum = " + rndNum);
         switch (rndNum)
         {
             case 1:

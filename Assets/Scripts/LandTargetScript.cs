@@ -163,33 +163,30 @@ public class LandTargetScript : MonoBehaviour
 
      
             bool objCanReachPlatform = thisObjHeight > platformFH;
-            bool objFloorheightNotSameAsCurrentBaseFloorheight = (shadowScript.floorHeight != platformFH);
-            //bool objFloorheightNotSameAsCurrentBaseFloorheight = (!currentBaseAndFloorheightPair.isSlope && shadowScript.floorHeight != currentBaseAndFloorheightPair.floorHeight) || (currentBaseAndFloorheightPair.isSlope && shadowScript.floorHeight != accurateSlopeFH);
 
             if (objCanReachPlatform)
             {
-
-                if (objFloorheightNotSameAsCurrentBaseFloorheight)
-                {
-                    //If it seems like the player has reached a higher platform than before, raise the shadow to the new platform.
-                    if (currentBaseAndFloorheightPair.isSlope && currentBaseAndFloorheightPair.colliderHit.transform.parent != currentPlatformParent)
-                    {
-                        if (thisObjHeight > accurateSlopeFH && shadowScript.floorHeight < accurateSlopeFH)
-                        {
-                            fakeHeightObject.Rise(accurateSlopeFH);
-                        }
-                    }
-                    else
-                    {
-                        fakeHeightObject.Rise(currentBaseAndFloorheightPair.floorHeight);
-                    }
-                }
-
                 bool prioritizeSlope = currentBaseAndFloorheightPair.floorHeight == baseAndFloorHeightArray[highestReachablePlatformIndex].floorHeight && currentBaseAndFloorheightPair.isSlope;
 
                 if (platformFH > baseAndFloorHeightArray[highestReachablePlatformIndex].floorHeight || prioritizeSlope)
                 {
                     highestReachablePlatformIndex = index;
+
+                    bool platformIsNotAlreadyCurrentPlatform = baseAndFloorHeightArray[highestReachablePlatformIndex].colliderHit.transform != currentPlatformParent;
+                    if (platformIsNotAlreadyCurrentPlatform)
+                    {
+                        if (currentBaseAndFloorheightPair.isSlope)
+                        {
+                            if (thisObjHeight > accurateSlopeFH && shadowScript.floorHeight < accurateSlopeFH)
+                            {
+                                fakeHeightObject.Rise(accurateSlopeFH);
+                            }
+                        }
+                        else
+                        {
+                            fakeHeightObject.Rise(currentBaseAndFloorheightPair.floorHeight);
+                        }
+                    }
                 }
 
                 index++;
@@ -200,7 +197,6 @@ public class LandTargetScript : MonoBehaviour
         }
 
         baseAndFloorheightPair chosenPlatform = baseAndFloorHeightArray[highestReachablePlatformIndex];
-        //baseAndFloorheightPair chosenPlatform = stopFlag ? baseAndFloorHeightArray[index] : baseAndFloorHeightArray[index-1];
 
 
         RaycastHit2D detectedHorizontalSlope = default;
@@ -302,12 +298,10 @@ public class LandTargetScript : MonoBehaviour
                             float changeAmount = (platformBeingSteppedOn - totalAmountRisenOrSunk) * floorMovementMultiplier;
                             parentTransform.position += Vector3.up * changeAmount;
                             shadowScript.floorHeight += changeAmount;
-                            Debug.Log("PEDROLOG/1: Setting shadow height to " + shadowTransform.position.y + " while LandTarget is " + transform.position.y);
                         }
                         else
                         {
                             shadowTransform.position += Vector3.up * (platformBeingSteppedOn - totalAmountRisenOrSunk);
-                            Debug.Log("PEDROLOG/2: Setting shadow height to " + shadowTransform.position.y + " while LandTarget is " + transform.position.y);
                         }
                     }
                     else
@@ -317,15 +311,12 @@ public class LandTargetScript : MonoBehaviour
                             float changeAmount = horizontalMovement * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime;
                             parentTransform.position += Vector3.up * changeAmount;
                             shadowScript.floorHeight += changeAmount;
-                            Debug.Log("PEDROLOG/3: Setting shadow height to " + shadowTransform.position.y + " while LandTarget is " + transform.position.y);
                         }
                         else
                         {
-                            Debug.Log("PEDROLOG: is not grounded. Milo should be changing his position.");
                             float changeAmount = horizontalMovement * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime;
                             shadowTransform.position += Vector3.up * changeAmount;
                             shadowScript.floorHeight += changeAmount;
-                            Debug.Log("PEDROLOG/4: Setting shadow height to " + shadowTransform.position.y + " while LandTarget is " + transform.position.y + "(changeAmount = " + changeAmount + ")");
                         }
                     }
                 }

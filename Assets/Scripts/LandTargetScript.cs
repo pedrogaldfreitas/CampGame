@@ -9,15 +9,22 @@ public class LandTargetScript : MonoBehaviour
     private newShadowScript shadowScript;
     private Transform parentTransform;
     private Transform shadowTransform;
+    private FakeHeightObject fakeHeightObject;
 
     //private float floorHeight;
     private Transform currentPlatformParent;
 
-    RaycastHit2D[] baseCheckRay;
+    RaycastHit2D[] verticalSlopeRay;
+    [SerializeField]
+    RaycastHit2D[] horizontalSlopeRay;
+    Transform chosenHorizontalSlope;
+    Transform chosenVerticalSlope;
     private BoxCollider2D boxCollider;
     public List<Collider2D> baseCollisions;
     private ContactFilter2D baseCollisionCF;
     public LayerMask baseCollisionLayerMask;
+    private float boxColliderHeight;
+    private float boxColliderWidth;
 
     [Range(0f, 3f)] public float raycastDistanceMultiplier;
     private float prevXVal;
@@ -36,22 +43,33 @@ public class LandTargetScript : MonoBehaviour
         parentTransform = transform.parent;
         shadowTransform = parentTransform.Find("Shadow");
         shadowScript = shadowTransform.GetComponent<newShadowScript>();
+        fakeHeightObject = parentTransform.GetComponent<FakeHeightObject>();
 
         boxCollider = GetComponent<BoxCollider2D>();
         baseCollisions = new List<Collider2D>();
         baseCollisionCF = new ContactFilter2D();
         baseCollisionCF.SetLayerMask(baseCollisionLayerMask);
+        boxColliderHeight = boxCollider.bounds.extents.y * 2;
+        boxColliderWidth = boxCollider.bounds.extents.x * 2;
     }
 
     private void Update()
     {
         this.transform.position = new Vector2(transform.position.x, shadowScript.transform.position.y - shadowScript.floorHeight);
-        baseCheckRay = Physics2D.RaycastAll(transform.position + Vector3.down * raycastDistanceMultiplier, Vector2.down, 0f, (1 << 17));
+
+        //Setup the ray that will scan for slopes.
+        horizontalSlopeRay = Physics2D.RaycastAll(transform.position + Vector3.up * boxColliderHeight / 2, Vector2.down, boxColliderHeight, (1 << 17));
+        verticalSlopeRay = Physics2D.RaycastAll(transform.position + Vector3.left * boxColliderWidth / 2, Vector2.right, boxColliderWidth, (1 << 17));
+        //Filter only slopes in horizontalSlopeRay and verticalSlopeRay.
+        horizontalSlopeRay = horizontalSlopeRay.Where(baseObj => baseObj.transform.parent.gameObject.layer == LayerMask.NameToLayer("HorizontalSlope")).ToArray();
+        verticalSlopeRay = verticalSlopeRay.Where(baseObj => baseObj.transform.parent.gameObject.layer == LayerMask.NameToLayer("VerticalSlope")).ToArray();
+        
+        Debug.DrawRay(transform.position + Vector3.up * boxColliderHeight/2, Vector2.down * boxColliderHeight, Color.blue);
+        Debug.DrawRay(transform.position + Vector3.left * boxColliderWidth / 2, Vector2.right * boxColliderWidth, Color.red);
+
 
         baseCollisions.Clear();
         boxCollider.OverlapCollider(baseCollisionCF, baseCollisions);
-
-        //Debug.DrawRay(transform.position + Vector3.down * raycastDistanceMultiplier, Vector2.down * 0.3f, Color.blue);
 
         //Here: Determine the most accurate floorheight to set, and if it is of a horizontal or vertical slope.
         if (baseCollisions.Count > 0)
@@ -60,12 +78,16 @@ public class LandTargetScript : MonoBehaviour
         }
         checkFloorHeight(baseCollisions);
 
+
+        //TEST: Delete this for sure.
+        //shadowTransform.position += Vector3.up * 5 * Time.deltaTime;
+
         if (onHorizontalSlope)
         {
-            SlopeCheck(currentPlatformParent.Find("top").gameObject, "horizontal");
+            SlopeCheck(chosenHorizontalSlope.Find("top").gameObject, "horizontal");
         } else if (onVerticalSlope)
         {
-            SlopeCheck(currentPlatformParent.Find("top").gameObject, "vertical");
+            SlopeCheck(chosenVerticalSlope.Find("top").gameObject, "vertical");
         }
 
         //These must be set AFTER the SlopeCheck call here on Update().
@@ -118,8 +140,7 @@ public class LandTargetScript : MonoBehaviour
         //Order the list of ALL colliders detected by in ascending order of floorHeight.
         baseAndFloorHeightArray = baseAndFloorHeightArray.OrderBy(o => o.floorHeight).ToList();
 
-        FakeHeightObject thisObjHeightInfo = parentTransform.GetComponent<FakeHeightObject>();
-        float thisObjHeight = shadowScript.floorHeight + (thisObjHeightInfo.height + thisObjHeightInfo.shadowOffset);
+        float thisObjHeight = shadowScript.floorHeight + (fakeHeightObject.height + fakeHeightObject.shadowOffset);
         float accurateSlopeFH = -1;
 
         bool stopFlag = false;
@@ -142,36 +163,30 @@ public class LandTargetScript : MonoBehaviour
 
      
             bool objCanReachPlatform = thisObjHeight > platformFH;
-            bool objFloorheightNotSameAsCurrentBaseFloorheight = (shadowScript.floorHeight != platformFH);
-            //bool objFloorheightNotSameAsCurrentBaseFloorheight = (!currentBaseAndFloorheightPair.isSlope && shadowScript.floorHeight != currentBaseAndFloorheightPair.floorHeight) || (currentBaseAndFloorheightPair.isSlope && shadowScript.floorHeight != accurateSlopeFH);
-
-            if (currentBaseAndFloorheightPair.isSlope)
-            {
-                Debug.Log("PEDROLOG/1: can reach slope: " + objCanReachPlatform + ", is this a new height?: " + objFloorheightNotSameAsCurrentBaseFloorheight);
-            }
 
             if (objCanReachPlatform)
             {
+                bool prioritizeSlope = currentBaseAndFloorheightPair.floorHeight == baseAndFloorHeightArray[highestReachablePlatformIndex].floorHeight && currentBaseAndFloorheightPair.isSlope;
 
-                if (objFloorheightNotSameAsCurrentBaseFloorheight)
-                {
-                    //If it seems like the player has reached a higher platform than before, raise the shadow to the new platform.
-                    if (currentBaseAndFloorheightPair.isSlope && currentBaseAndFloorheightPair.colliderHit.transform.parent != currentPlatformParent)
-                    {
-                        if (thisObjHeight > accurateSlopeFH && shadowScript.floorHeight < accurateSlopeFH)
-                        {
-                            parentTransform.GetComponent<FakeHeightObject>().Rise(accurateSlopeFH);
-                        }
-                    }
-                    else
-                    {
-                        parentTransform.GetComponent<FakeHeightObject>().Rise(currentBaseAndFloorheightPair.floorHeight);
-                    }
-                }
-
-                if (platformFH > baseAndFloorHeightArray[highestReachablePlatformIndex].floorHeight)
+                if (platformFH > baseAndFloorHeightArray[highestReachablePlatformIndex].floorHeight || prioritizeSlope)
                 {
                     highestReachablePlatformIndex = index;
+
+                    bool platformIsNotAlreadyCurrentPlatform = baseAndFloorHeightArray[highestReachablePlatformIndex].colliderHit.transform != currentPlatformParent;
+                    if (platformIsNotAlreadyCurrentPlatform)
+                    {
+                        if (currentBaseAndFloorheightPair.isSlope)
+                        {
+                            if (thisObjHeight > accurateSlopeFH && shadowScript.floorHeight < accurateSlopeFH)
+                            {
+                                fakeHeightObject.Rise(accurateSlopeFH);
+                            }
+                        }
+                        else
+                        {
+                            fakeHeightObject.Rise(currentBaseAndFloorheightPair.floorHeight);
+                        }
+                    }
                 }
 
                 index++;
@@ -182,9 +197,52 @@ public class LandTargetScript : MonoBehaviour
         }
 
         baseAndFloorheightPair chosenPlatform = baseAndFloorHeightArray[highestReachablePlatformIndex];
-        //baseAndFloorheightPair chosenPlatform = stopFlag ? baseAndFloorHeightArray[index] : baseAndFloorHeightArray[index-1];
 
-        Debug.Log("PEDROLOG/FINAL: chosenPlatform = " + chosenPlatform.colliderHit.transform.parent.name);
+
+        RaycastHit2D detectedHorizontalSlope = default;
+        RaycastHit2D detectedVerticalSlope = default;
+
+        //Set onHorizontalSlope or onVerticalSlope based on the current platform detected + the slope raycasts.
+        if (horizontalSlopeRay.Length > 0)
+        {
+            detectedHorizontalSlope = horizontalSlopeRay.Where(slopeBase => {
+                newSlopeScript slopeScript = slopeBase.transform.parent.Find("top").GetComponent<newSlopeScript>();
+                return chosenPlatform.colliderHit.transform == slopeScript.platform1.transform || slopeScript.platform2.transform || slopeScript.transform;
+            }).ToArray()[0];
+        }
+
+        if (verticalSlopeRay.Length > 0)
+        {
+            detectedVerticalSlope = verticalSlopeRay.Where(slopeBase =>
+            {
+                newSlopeScript slopeScript = slopeBase.transform.parent.Find("top").GetComponent<newSlopeScript>();
+                return chosenPlatform.colliderHit.transform == slopeScript.platform1.transform || slopeScript.platform2.transform || slopeScript.transform;
+            }).ToArray()[0];
+        }
+
+        if (detectedHorizontalSlope)
+        {
+            chosenPlatform = baseAndFloorHeightArray.Where(item => item.colliderHit == detectedHorizontalSlope.transform.GetComponent<Collider2D>()).First();
+            onHorizontalSlope = true;
+            onVerticalSlope = false;
+            chosenHorizontalSlope = detectedHorizontalSlope.transform.parent;
+            chosenVerticalSlope = default;
+        }
+        else if (detectedVerticalSlope)
+        {
+            chosenPlatform = baseAndFloorHeightArray.Where(item => item.colliderHit == detectedVerticalSlope.transform.GetComponent<Collider2D>()).First();
+            onHorizontalSlope = false;
+            onVerticalSlope = true;
+            chosenHorizontalSlope = default;
+            chosenVerticalSlope = detectedVerticalSlope.transform.parent;
+        }
+        else
+        {
+            onHorizontalSlope = false;
+            onVerticalSlope = false;
+            chosenHorizontalSlope = default;
+            chosenVerticalSlope = default;
+        }
 
         //I edited code from above this point. The rest can be cleaned up, because it looks like the Drop() calls never run here, they run in checkFloorHeight(...) instead.
 
@@ -192,37 +250,17 @@ public class LandTargetScript : MonoBehaviour
         {
             if (chosenPlatform.isSlope && thisObjHeight > accurateSlopeFH && Mathf.Abs(shadowScript.floorHeight - accurateSlopeFH) > 2)
             {
-                Debug.Log("PEDROLOG: This runs.");  //NOTE: This debug log never actually runs. Look into why this code is here.
-                parentTransform.GetComponent<FakeHeightObject>().Drop(((Vector2)transform.position - prevGroundVel) * 30, shadowScript.floorHeight - accurateSlopeFH);
+                //NOTE: This debug log never actually runs. Look into why this code is here.
+                fakeHeightObject.Drop(((Vector2)transform.position - prevGroundVel) * 30, shadowScript.floorHeight - accurateSlopeFH);
             }
             else if (!chosenPlatform.isSlope && thisObjHeight > chosenPlatform.floorHeight)
             {
-                parentTransform.GetComponent<FakeHeightObject>().Drop(((Vector2)transform.position - prevGroundVel) * 30, shadowScript.floorHeight - chosenPlatform.floorHeight);
+                fakeHeightObject.Drop(((Vector2)transform.position - prevGroundVel) * 30, shadowScript.floorHeight - chosenPlatform.floorHeight);
             }
 
         }
 
         currentPlatformParent = chosenPlatform.colliderHit.transform.parent;
-
-        //ISSUE: currentPlatformParent is not being set to the slope.
-        Debug.Log("PEDROLOG:currentPlatformParent = " + currentPlatformParent.name);
-    
-        if (currentPlatformParent.gameObject.layer == LayerMask.NameToLayer("HorizontalSlope"))
-        {
-            onHorizontalSlope = true;
-            onVerticalSlope = false;
-            //SlopeCheck(currentPlatformParent.Find("top").gameObject, "horizontal");
-        }
-        else if (currentPlatformParent.gameObject.layer == LayerMask.NameToLayer("VerticalSlope"))
-        {
-            onHorizontalSlope = false;
-            onVerticalSlope = true;
-        }
-        else
-        {
-            onHorizontalSlope = false;
-            onVerticalSlope = false;
-        }
         return;
     }
 
@@ -234,20 +272,28 @@ public class LandTargetScript : MonoBehaviour
         float slopeAngle = slopeScript.slopeAngle;
         float floorHeight = shadowScript.floorHeight;
 
+        PlayerController playerController = parentTransform.GetComponent<PlayerController>();
+        float hSlopeSlowdownPlayerMovement = playerController.hSlopeSlowdown;
+        float vSlopeSlowdownPlayerMovement = playerController.vSlopeSlowdown;
+        float playerMovementSpeed = playerController.speed;
+
         if (horizontalOrVertical == "horizontal" || wasPrevOnHorizontalSlope)
         {
             float slopeValue = slopeScript.horizontalFloorHeightThreshold;
             float slopeFloorH = FloorheightFunctions.FindSlopeFloorh(transform, slope.transform);
+
             if (onHorizontalSlope)
             {
                 if ((this.transform.position.x != prevXVal) && (Mathf.Abs(slopeFloorH - floorHeight) < 2))
                 {
-                    totalAmountRisenOrSunk += 35 * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime;
+                    float horizontalMovement = playerMovementSpeed * (1 - hSlopeSlowdownPlayerMovement);
+                    totalAmountRisenOrSunk += 32 * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime;
+
                     if (!onHorizontalSlope && wasPrevOnHorizontalSlope)
                     {
                         float[] twoPlatformHeights = new float[2] { slopeScript.h1, slopeScript.h2 };
                         float platformBeingSteppedOn = twoPlatformHeights.Aggregate((x, y) => Mathf.Abs(x - totalAmountRisenOrSunk) < Mathf.Abs(y - totalAmountRisenOrSunk) ? x : y);
-                        if (parentTransform.GetComponent<FakeHeightObject>().isGrounded)
+                        if (fakeHeightObject.isGrounded)
                         {
                             float changeAmount = (platformBeingSteppedOn - totalAmountRisenOrSunk) * floorMovementMultiplier;
                             parentTransform.position += Vector3.up * changeAmount;
@@ -260,15 +306,15 @@ public class LandTargetScript : MonoBehaviour
                     }
                     else
                     {
-                        if (parentTransform.GetComponent<FakeHeightObject>().isGrounded)
+                        if (fakeHeightObject.isGrounded)
                         {
-                            float changeAmount = 35 * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime;
+                            float changeAmount = horizontalMovement * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime;
                             parentTransform.position += Vector3.up * changeAmount;
                             shadowScript.floorHeight += changeAmount;
                         }
                         else
                         {
-                            float changeAmount = 35 * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime;
+                            float changeAmount = horizontalMovement * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime;
                             shadowTransform.position += Vector3.up * changeAmount;
                             shadowScript.floorHeight += changeAmount;
                         }
@@ -338,7 +384,7 @@ public class LandTargetScript : MonoBehaviour
                     }
                     else
                     {
-                        parentTransform.GetComponent<FakeHeightObject>().Drop(((Vector2)transform.position - prevGroundVel) * 30, shadowScript.floorHeight - nearestFloorHeight);
+                        fakeHeightObject.Drop(((Vector2)transform.position - prevGroundVel) * 30, shadowScript.floorHeight - nearestFloorHeight);
                     }
                 }
             }

@@ -85,7 +85,6 @@ public class RaccoonAI : MonoBehaviour
                 if (parent.GetComponent<FakeHeightObject>().isGrounded)
                 {
                     parent.gameObject.GetComponent<FakeHeightObject>().Jump(testHopDirection * 30f, 40);
-                   // Debug.Log("PEDROLOG/BUG1: X position upon landing: " + transform.position.x);
                     testHopDirection = -testHopDirection;
                 }
                 break;

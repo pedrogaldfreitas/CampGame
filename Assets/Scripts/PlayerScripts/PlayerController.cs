@@ -98,7 +98,6 @@ public class PlayerController : MonoBehaviour
 
             if (isRunning && ShouldStopRunning())
             {
-                Debug.Log("PEDROLOG/3: ShouldStopRunning.");
                 ToggleRun(false);
                 BrakeStart();
             }
@@ -263,7 +262,6 @@ public class PlayerController : MonoBehaviour
             brakeTimePassed += 0.05f;
         } else
         {
-            Debug.Log("PEDROLOG: Triggering animation bool for RunBrake.");
             playerAnimator.SetBool("RunBrake", false);
             //NOTE: When the player speed when slowing down passes the regular movement speed, allow for interruption of this process by player input.
             if (Mathf.Abs(brakeLerpedX) > 0 || Mathf.Abs(brakeLerpedY) > 0) //Subsequent lerped slowdown

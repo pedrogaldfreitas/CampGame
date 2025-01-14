@@ -70,6 +70,7 @@ public class solidScript : MonoBehaviour
             bool aboveWall = shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset > solidHeight;
             bool belowWall = solidHeightFromBase > fakeHeightObj.heightOfObject + shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset;
 
+
             if (aboveWall || belowWall)
             {
                 StartCoroutine(IgnoreCollisions(collision.GetComponent<Collider2D>()));

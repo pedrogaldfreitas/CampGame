@@ -7,14 +7,13 @@ public class BaseScript : MonoBehaviour
     //This is the "clearance" height of the object (if other object is above this height, it ignores collisions with it. SET AUTOMATICALLY VIA Start()
     private float solidHeight;
 
-    //Is this platform a slope?
-    [SerializeField]
-    private bool isSlope = false;
-
     //This is the solid's height from its base. An object can ignore collisions by passing "under" this solid.
     private float solidHeightFromBase;
 
     [Header("Setup Variables")]
+    //Is this platform a slope?
+    [SerializeField]
+    private bool isSlope = false;
     [SerializeField]
     [Tooltip("If the object is sitting on a platform (not hovering), drag the platform here to set the solidHeightFromBase variable.")]
     private Transform startingPlatform;

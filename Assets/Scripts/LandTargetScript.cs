@@ -267,64 +267,58 @@ public class LandTargetScript : MonoBehaviour
     private void SlopeCheck(GameObject slope, string horizontalOrVertical)
     {
         newSlopeScript slopeScript = slope.GetComponent<newSlopeScript>();
-
-        float floorMovementMultiplier = slopeScript.movementMultiplier;
-        float slopeAngle = slopeScript.slopeAngle;
         float floorHeight = shadowScript.floorHeight;
 
+        /* OBSOLETE: Make sure getting rid of these is bug-free before erasing lines.
         PlayerController playerController = parentTransform.GetComponent<PlayerController>();
+        float slopeAngle = slopeScript.slopeAngle;
+        float floorMovementMultiplier = slopeScript.movementMultiplier;
         float hSlopeSlowdownPlayerMovement = playerController.hSlopeSlowdown;
         float vSlopeSlowdownPlayerMovement = playerController.vSlopeSlowdown;
         float playerMovementSpeed = playerController.speed;
+        */
 
         if (horizontalOrVertical == "horizontal" || wasPrevOnHorizontalSlope)
         {
-            float slopeValue = slopeScript.horizontalFloorHeightThreshold;
             float slopeFloorH = FloorheightFunctions.FindSlopeFloorh(transform, slope.transform);
-
             if (onHorizontalSlope)
             {
-                if ((this.transform.position.x != prevXVal) && (Mathf.Abs(slopeFloorH - floorHeight) < 2))
+                if (this.transform.position.x != prevXVal)
                 {
-                    float horizontalMovement = playerMovementSpeed * (1 - hSlopeSlowdownPlayerMovement);
-                    totalAmountRisenOrSunk += 32 * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime;
+                    float changeAmount = slopeFloorH - floorHeight;
+                    shadowScript.floorHeight += changeAmount;
 
-                    if (!onHorizontalSlope && wasPrevOnHorizontalSlope)
+                    if (fakeHeightObject.isGrounded)
                     {
-                        float[] twoPlatformHeights = new float[2] { slopeScript.h1, slopeScript.h2 };
-                        float platformBeingSteppedOn = twoPlatformHeights.Aggregate((x, y) => Mathf.Abs(x - totalAmountRisenOrSunk) < Mathf.Abs(y - totalAmountRisenOrSunk) ? x : y);
-                        if (fakeHeightObject.isGrounded)
-                        {
-                            float changeAmount = (platformBeingSteppedOn - totalAmountRisenOrSunk) * floorMovementMultiplier;
-                            parentTransform.position += Vector3.up * changeAmount;
-                            shadowScript.floorHeight += changeAmount;
-                        }
-                        else
-                        {
-                            shadowTransform.position += Vector3.up * (platformBeingSteppedOn - totalAmountRisenOrSunk);
-                        }
+                        parentTransform.position += Vector3.up * changeAmount;
                     }
                     else
                     {
-                        if (fakeHeightObject.isGrounded)
-                        {
-                            float changeAmount = horizontalMovement * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime;
-                            parentTransform.position += Vector3.up * changeAmount;
-                            shadowScript.floorHeight += changeAmount;
-                        }
-                        else
-                        {
-                            float changeAmount = horizontalMovement * (transform.position.x - prevXVal) * slopeValue * Time.deltaTime;
-                            shadowTransform.position += Vector3.up * changeAmount;
-                            shadowScript.floorHeight += changeAmount;
-                        }
+                        shadowTransform.position += Vector3.up * changeAmount;
                     }
                 }
-            }
+            } /*else // Was previously on horizontal slope, but not anymore (THIS NEVER RUNS because onHorizontalSlope needs to be TRUE for SlopeCheck() to be called.
+            {
+                if (wasPrevOnHorizontalSlope)
+                {
+                    Debug.Log("PEDROLOG: This should run when getting off a horizontal slope.");
+                    float[] twoPlatformHeights = new float[2] { slopeScript.h1, slopeScript.h2 };
+                    float platformBeingSteppedOn = twoPlatformHeights.Aggregate((x, y) => Mathf.Abs(x - totalAmountRisenOrSunk) < Mathf.Abs(y - totalAmountRisenOrSunk) ? x : y);
+                    if (fakeHeightObject.isGrounded)
+                    {
+                        float changeAmount = (platformBeingSteppedOn - totalAmountRisenOrSunk) * floorMovementMultiplier;
+                        parentTransform.position += Vector3.up * changeAmount;
+                        shadowScript.floorHeight += changeAmount;
+                    }
+                    else
+                    {
+                        shadowTransform.position += Vector3.up * (platformBeingSteppedOn - totalAmountRisenOrSunk);
+                    }
+                }
+            }*/
         }
 
         wasPrevOnHorizontalSlope = onHorizontalSlope;
-
     }
 
     // Updates every frame, checks the appropriate floor height of the object.

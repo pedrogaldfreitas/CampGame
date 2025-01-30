@@ -5,17 +5,18 @@ using UnityEngine;
 public class newSlopeScript : MonoBehaviour
 {
     public enum slopeFacing { HORIZONTAL, VERTICAL };
+    [Header("Setup Variables")]
     [SerializeField]
     public slopeFacing thisSlopeState;
-
     //NEW VARS:
     public bool isHorizontalSlope;
     public bool isVerticalSlope;
-    [SerializeField]
-    float multiplier;
-
     public GameObject platform1;
     public GameObject platform2;
+    [Space(20)]
+
+    [SerializeField]
+    float multiplier;
 
     public float y1;
     public float y2;
@@ -49,6 +50,15 @@ public class newSlopeScript : MonoBehaviour
         h2 = platform2.transform.Find("top").GetComponent<platformScript>().floorHeight;
         x1 = platform1.transform.Find("base").position.x;
         x2 = platform2.transform.Find("base").position.x;
+
+        if (isHorizontalSlope)
+        {
+            horizontalFloorHeightThreshold = 1;
+        }
+        if (isVerticalSlope)
+        {
+            verticalFloorHeightThreshold = 1;
+        }
 
         //Calculate movement multiplier
         float H = Mathf.Abs(h2 - h1);

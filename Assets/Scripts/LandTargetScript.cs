@@ -34,7 +34,6 @@ public class LandTargetScript : MonoBehaviour
 
     public bool onHorizontalSlope;
     public bool onVerticalSlope;
-    private bool wasPrevOnHorizontalSlope;
 
     private void Start()
     {
@@ -112,13 +111,6 @@ public class LandTargetScript : MonoBehaviour
 
     public void baseDetect(List<Collider2D> collidersHit)
     {
-        if (wasPrevOnHorizontalSlope)
-        {
-            if (totalAmountRisenOrSunk != 0)
-            {
-            }
-            totalAmountRisenOrSunk = 0;
-        }
 
         //Goal: Raise shadow position if the object is above the platform.
         List<baseAndFloorheightPair> baseAndFloorHeightArray = new List<baseAndFloorheightPair>();
@@ -255,6 +247,7 @@ public class LandTargetScript : MonoBehaviour
             }
             else if (!chosenPlatform.isSlope && thisObjHeight > chosenPlatform.floorHeight)
             {
+                Debug.Log("PEDROLOG#1: chosenPlatform name = " + chosenPlatform.colliderHit.transform.parent.name);
                 fakeHeightObject.Drop(((Vector2)transform.position - prevGroundVel) * 30, shadowScript.floorHeight - chosenPlatform.floorHeight);
             }
 
@@ -266,59 +259,39 @@ public class LandTargetScript : MonoBehaviour
 
     private void SlopeCheck(GameObject slope, string horizontalOrVertical)
     {
-        newSlopeScript slopeScript = slope.GetComponent<newSlopeScript>();
         float floorHeight = shadowScript.floorHeight;
+        float slopeFloorH = FloorheightFunctions.FindSlopeFloorh(transform, slope.transform);
 
-        /* OBSOLETE: Make sure getting rid of these is bug-free before erasing lines.
-        PlayerController playerController = parentTransform.GetComponent<PlayerController>();
-        float slopeAngle = slopeScript.slopeAngle;
-        float floorMovementMultiplier = slopeScript.movementMultiplier;
-        float hSlopeSlowdownPlayerMovement = playerController.hSlopeSlowdown;
-        float vSlopeSlowdownPlayerMovement = playerController.vSlopeSlowdown;
-        float playerMovementSpeed = playerController.speed;
-        */
-
-        if (horizontalOrVertical == "horizontal" || wasPrevOnHorizontalSlope)
+        if (horizontalOrVertical == "horizontal")
         {
-            float slopeFloorH = FloorheightFunctions.FindSlopeFloorh(transform, slope.transform);
-            if (onHorizontalSlope)
+            if (this.transform.position.x != prevXVal)
             {
-                if (this.transform.position.x != prevXVal)
-                {
-                    float changeAmount = slopeFloorH - floorHeight;
-                    shadowScript.floorHeight += changeAmount;
-
-                    if (fakeHeightObject.isGrounded)
-                    {
-                        parentTransform.position += Vector3.up * changeAmount;
-                    }
-                    else
-                    {
-                        shadowTransform.position += Vector3.up * changeAmount;
-                    }
-                }
-            } /*else // Was previously on horizontal slope, but not anymore (THIS NEVER RUNS because onHorizontalSlope needs to be TRUE for SlopeCheck() to be called.
-            {
-                if (wasPrevOnHorizontalSlope)
-                {
-                    Debug.Log("PEDROLOG: This should run when getting off a horizontal slope.");
-                    float[] twoPlatformHeights = new float[2] { slopeScript.h1, slopeScript.h2 };
-                    float platformBeingSteppedOn = twoPlatformHeights.Aggregate((x, y) => Mathf.Abs(x - totalAmountRisenOrSunk) < Mathf.Abs(y - totalAmountRisenOrSunk) ? x : y);
-                    if (fakeHeightObject.isGrounded)
-                    {
-                        float changeAmount = (platformBeingSteppedOn - totalAmountRisenOrSunk) * floorMovementMultiplier;
-                        parentTransform.position += Vector3.up * changeAmount;
-                        shadowScript.floorHeight += changeAmount;
-                    }
-                    else
-                    {
-                        shadowTransform.position += Vector3.up * (platformBeingSteppedOn - totalAmountRisenOrSunk);
-                    }
-                }
-            }*/
+                AdjustFloorHeightFromSlope(slopeFloorH, floorHeight);
+            }
         }
+        if (horizontalOrVertical == "vertical")
+        {
+            if (this.transform.position.y != prevYVal)  //CHECK IF PREVYVAL IS PROPERLY SET WHEREVER IT IS 
+            {
+                AdjustFloorHeightFromSlope(slopeFloorH, floorHeight);
+            }
+        }
+    }
 
-        wasPrevOnHorizontalSlope = onHorizontalSlope;
+    //Only runs when the player's movement on a slope should change their floorHeight.
+    private void AdjustFloorHeightFromSlope(float slopeFloorH, float floorHeight)
+    {
+        float changeAmount = slopeFloorH - floorHeight;
+        shadowScript.floorHeight += changeAmount;
+
+        if (fakeHeightObject.isGrounded)
+        {
+            parentTransform.position += Vector3.up * changeAmount;
+        }
+        else
+        {
+            shadowTransform.position += Vector3.up * changeAmount;
+        }
     }
 
     // Updates every frame, checks the appropriate floor height of the object.

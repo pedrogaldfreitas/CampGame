@@ -88,7 +88,6 @@ public static class FloorheightFunctions
         }
 
         fh = (horizontalFH > verticalFH) ? horizontalFH : verticalFH;
-        Debug.Log("PEDROLOG#4: verticalFH = " +  verticalFH + ", fh = " + fh);
 
         fh = Mathf.Clamp(fh, smallerFH, largerFH);
 

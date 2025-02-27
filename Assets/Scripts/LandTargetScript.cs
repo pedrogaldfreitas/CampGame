@@ -70,25 +70,14 @@ public class LandTargetScript : MonoBehaviour
         {
             baseDetect(baseCollisions);
         }
-        if (currentPlatformParent.transform.name == "Vertical Slope")
-        {
-            Debug.Log("Breakpoint. Check if Miles has gone up the slope yet.");
-        }
         checkFloorHeight(baseCollisions);
-        if (currentPlatformParent.transform.name == "Vertical Slope")
-        {
-            Debug.Log("Breakpoint. Check if Miles has gone up the slope yet.");
-        }
+
         if (onHorizontalSlope)
         {
             SlopeCheck(chosenHorizontalSlope.Find("top").gameObject, "horizontal");
         } else if (onVerticalSlope)
         {
             SlopeCheck(chosenVerticalSlope.Find("top").gameObject, "vertical");
-        }
-        if (currentPlatformParent.transform.name == "Vertical Slope")
-        {
-            Debug.Log("Breakpoint. Check if Miles has gone up the slope yet.");
         }
 
         //These must be set AFTER the SlopeCheck call here on Update().
@@ -161,14 +150,6 @@ public class LandTargetScript : MonoBehaviour
 
      
             bool objCanReachPlatform = currentBaseAndFloorheightPair.isSlope ? thisObjHeight > accurateSlopeFH : thisObjHeight > platformFH;
-            if (currentBaseAndFloorheightPair.isSlope && objCanReachPlatform)
-            {
-                Debug.Log("PEDROLOG%1: isSlope = " + currentBaseAndFloorheightPair.isSlope + ", " + thisObjHeight + " > " + accurateSlopeFH);
-            }
-            if (currentBaseAndFloorheightPair.colliderHit.transform.parent.name == "Vertical Slope")
-            {
-                Debug.Log("PEDROLOG#2 hit vertical slope. Its floorheight is recorded as " + currentBaseAndFloorheightPair.floorHeight + ", but local var platformFH is " + platformFH);
-            }
 
 
             if (objCanReachPlatform)
@@ -191,12 +172,12 @@ public class LandTargetScript : MonoBehaviour
                         {
                             if (thisObjHeight > accurateSlopeFH && shadowScript.floorHeight < accurateSlopeFH)
                             {
-                                fakeHeightObject.Rise(accurateSlopeFH); //This is NOT where the problem is caused.
+                                fakeHeightObject.Rise(accurateSlopeFH);
                             }
                         }
                         else
                         {
-                            fakeHeightObject.Rise(currentBaseAndFloorheightPair.floorHeight); //This is NOT where the problem is caused.
+                            fakeHeightObject.Rise(currentBaseAndFloorheightPair.floorHeight);
                         }
                     }
                 }
@@ -275,14 +256,8 @@ public class LandTargetScript : MonoBehaviour
 
         }
 
-        if (chosenPlatform.isSlope)
-        {
-            Debug.Log("PEDROLOG: chosenPlatform name = " + chosenPlatform.colliderHit.transform.parent.name);
-            Debug.Log("Breakpoint.");
-        }
         currentPlatformParent = chosenPlatform.colliderHit.transform.parent;
 
-        Debug.Log("PEDROLOG#1: Chosen platform = " + currentPlatformParent?.name + ", chosen slope = " + chosenVerticalSlope?.name + ", chosen platform FH = " + chosenPlatform.floorHeight);
         return;
     }
 
@@ -294,6 +269,7 @@ public class LandTargetScript : MonoBehaviour
         {
             if (this.transform.position.x != prevXVal)
             {
+                Debug.Log("PEDROLOG/4: Adjusting floor height for slope.");
                 AdjustFloorHeightFromSlope(slopeFloorH, floorHeight);
             }
         }
@@ -312,8 +288,6 @@ public class LandTargetScript : MonoBehaviour
         float changeAmount = slopeFloorH - floorHeight;
         shadowScript.floorHeight += changeAmount;
 
-        Debug.Log("Breakpoint. Has Milo gone up the slope yet?"); //-> NO.
-
         if (fakeHeightObject.isGrounded)
         {
             parentTransform.position += Vector3.up * changeAmount;
@@ -322,8 +296,6 @@ public class LandTargetScript : MonoBehaviour
         {
             shadowTransform.position += Vector3.up * changeAmount;
         }
-
-        Debug.Log("Breakpoint. Has Milo gone up the slope yet?"); //-> NO. This should not be moving him up the slope.
     }
 
     // Updates every frame, checks the appropriate floor height of the object.
@@ -371,7 +343,7 @@ public class LandTargetScript : MonoBehaviour
         {
             if (highestFHisSlope)
             {
-                //shadowScript.floorHeight = slopeFH;
+                // shadowScript.floorHeight = slopeFH;
             }
             else
             {

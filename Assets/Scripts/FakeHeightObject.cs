@@ -86,8 +86,6 @@ public class FakeHeightObject : MonoBehaviour
             Physics2D.IgnoreCollision(transBody.GetComponent<BoxCollider2D>(), objToIgnore.GetComponent<PolygonCollider2D>(), true);
         }
 
-        Debug.Log("PEDROLOG: Dropping by " + height);
-
         transShadow.position += Vector3.down * height;
         transShadow.GetComponent<newShadowScript>().floorHeight -= height;
         isGrounded = false;

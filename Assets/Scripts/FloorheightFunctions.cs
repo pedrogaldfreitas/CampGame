@@ -12,10 +12,12 @@ public static class FloorheightFunctions
 
         float horizontalFH = -9999;
         float verticalFH = -9999;
+
+        Transform slopeBase = slope.parent.Find("base");
         if (slope.GetComponent<newSlopeScript>().isHorizontalSlope)
         {
-            float slopeLeftSide = slope.transform.position.x - slope.transform.GetComponent<PolygonCollider2D>().bounds.extents.x;
-            float slopeRightSide = slope.transform.position.x + slope.transform.GetComponent<PolygonCollider2D>().bounds.extents.x;
+            float slopeLeftSide = slopeBase.transform.position.x - slopeBase.transform.GetComponent<PolygonCollider2D>().bounds.extents.x;
+            float slopeRightSide = slopeBase.transform.position.x + slopeBase.transform.GetComponent<PolygonCollider2D>().bounds.extents.x;
 
             float plat1FH = slope.GetComponent<newSlopeScript>().platform1.transform.Find("top").GetComponent<platformScript>().floorHeight;
             float plat2FH = slope.GetComponent<newSlopeScript>().platform2.transform.Find("top").GetComponent<platformScript>().floorHeight;
@@ -37,7 +39,7 @@ public static class FloorheightFunctions
                 horizontalFH = (1 - horizontalFH);
             }
 
-            horizontalFH = horizontalFH * Mathf.Abs((slope.GetComponent<newSlopeScript>().platform2.transform.Find("top").GetComponent<platformScript>().floorHeight) - (slope.GetComponent<newSlopeScript>().platform1.transform.Find("top").GetComponent<platformScript>().floorHeight));
+            horizontalFH = horizontalFH * (largerFH - smallerFH);
 
             if (plat1FH < plat2FH)
             {
@@ -50,8 +52,8 @@ public static class FloorheightFunctions
         }
         if (slope.GetComponent<newSlopeScript>().isVerticalSlope)
         {
-            float slopeTopSide = slope.transform.position.y + slope.transform.GetComponent<PolygonCollider2D>().bounds.extents.y;
-            float slopeBottomSide = slope.transform.position.y - slope.transform.GetComponent<PolygonCollider2D>().bounds.extents.y;
+            float slopeTopSide = slopeBase.transform.position.y + slopeBase.transform.GetComponent<PolygonCollider2D>().bounds.extents.y;
+            float slopeBottomSide = slopeBase.transform.position.y - slopeBase.transform.GetComponent<PolygonCollider2D>().bounds.extents.y;
 
             float plat1FH = slope.GetComponent<newSlopeScript>().platform1.transform.Find("top").GetComponent<platformScript>().floorHeight;
             float plat2FH = slope.GetComponent<newSlopeScript>().platform2.transform.Find("top").GetComponent<platformScript>().floorHeight;
@@ -66,12 +68,8 @@ public static class FloorheightFunctions
             }
 
             verticalFH = ((slopeObj.position.y - slopeBottomSide) / (slopeTopSide - slopeBottomSide)); //This should be the % of the way up the slope.
-            /*if (plat1FH > plat2FH)
-            {
-                verticalFH = (1 - verticalFH);
-            }*/
 
-            verticalFH = verticalFH * Mathf.Abs(plat2FH - plat1FH);
+            verticalFH = verticalFH * (largerFH - smallerFH);
 
             if (plat1FH < plat2FH)
             {
@@ -90,6 +88,7 @@ public static class FloorheightFunctions
         }
 
         fh = (horizontalFH > verticalFH) ? horizontalFH : verticalFH;
+        Debug.Log("PEDROLOG#4: verticalFH = " +  verticalFH + ", fh = " + fh);
 
         fh = Mathf.Clamp(fh, smallerFH, largerFH);
 

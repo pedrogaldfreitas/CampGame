@@ -91,6 +91,10 @@ public class BaseScript : MonoBehaviour
                 float slopeHeightAtCollisionPoint = FloorheightFunctions.FindSlopeFloorh(shadow.transform, slopeScript.transform);
                 float lowestPlatformFH = System.Math.Min(slopeScript.h1, slopeScript.h2);
                 aboveWall = shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset >= lowestPlatformFH + slopeHeightAtCollisionPoint;
+                if (transform.parent.name == "Vertical Slope")
+                {
+                    Debug.Log("PEDROLOG/2: aboveWall = " + aboveWall);
+                }
             } else
             {
                 aboveWall = shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset >= solidHeight;

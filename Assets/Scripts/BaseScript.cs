@@ -93,7 +93,7 @@ public class BaseScript : MonoBehaviour
                 aboveWall = shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset >= lowestPlatformFH + slopeHeightAtCollisionPoint;
                 if (transform.parent.name == "Vertical Slope")
                 {
-                    Debug.Log("PEDROLOG/2: aboveWall = " + aboveWall);
+                    //Debug.Log("PEDROLOG/2: aboveWall = " + aboveWall);
                 }
             } else
             {

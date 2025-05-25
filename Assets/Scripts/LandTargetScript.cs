@@ -33,6 +33,8 @@ public class LandTargetScript : MonoBehaviour
 
     public bool onHorizontalSlope;
     public bool onVerticalSlope;
+    [SerializeField]
+    private float stepHeight;   //The higher the number, the steeper the slope the player can walk up.
 
     private void Start()
     {
@@ -72,10 +74,10 @@ public class LandTargetScript : MonoBehaviour
         }
         checkFloorHeight(baseCollisions);
 
-        if (onHorizontalSlope)
+        if (onHorizontalSlope && currentPlatformParent == chosenHorizontalSlope)
         {
             SlopeCheck(chosenHorizontalSlope.Find("top").gameObject, "horizontal");
-        } else if (onVerticalSlope)
+        } else if (onVerticalSlope && currentPlatformParent == chosenVerticalSlope)
         {
             SlopeCheck(chosenVerticalSlope.Find("top").gameObject, "vertical");
         }
@@ -113,8 +115,6 @@ public class LandTargetScript : MonoBehaviour
                 newSlopeScript slopeScript = colliderHit.transform.parent.Find("top").GetComponent<newSlopeScript>();
                 float slopeFHCalculated = FloorheightFunctions.FindSlopeFloorh(transform, colliderHit.transform.parent.Find("top"));
                 baseAndFloorHeightArray.Add(new baseAndFloorheightPair(slopeFHCalculated, colliderHit, true));
-                //float lowestPlatformFH = Math.Min(slopeScript.h1, slopeScript.h2);
-                //baseAndFloorHeightArray.Add(new baseAndFloorheightPair(lowestPlatformFH, colliderHit, true));
             }
             else
             {
@@ -132,35 +132,21 @@ public class LandTargetScript : MonoBehaviour
         int index = 0;
         int highestReachablePlatformIndex = 0;
 
-        //PROBLEM LIES IN THIS 'while' LOOP: chosenPlatform is set immediately after it, and it is set to the vertical slope when it shouldn't be.
         while (!stopFlag && index < baseAndFloorHeightArray.Count)
         {
             baseAndFloorheightPair currentBaseAndFloorheightPair = baseAndFloorHeightArray[index];
-            float platformFH;
+            float platformFH = currentBaseAndFloorheightPair.floorHeight;
             if (currentBaseAndFloorheightPair.isSlope)
             {
-                accurateSlopeFH = currentBaseAndFloorheightPair.floorHeight;
-                //accurateSlopeFH = FloorheightFunctions.FindSlopeFloorh(transform, currentBaseAndFloorheightPair.colliderHit.transform.parent.Find("top"));
-                Debug.Log("PEDROLOG#3: isSlope detected. accurateSlopeFH calculated = " + accurateSlopeFH);
-                platformFH = accurateSlopeFH;
-            } else
-            {
-                platformFH = currentBaseAndFloorheightPair.floorHeight;
+                accurateSlopeFH = platformFH;
             }
 
-     
-            bool objCanReachPlatform = currentBaseAndFloorheightPair.isSlope ? thisObjHeight > accurateSlopeFH : thisObjHeight > platformFH;
 
+            bool objCanReachPlatform = thisObjHeight > platformFH - stepHeight;
 
             if (objCanReachPlatform)
             {
                 bool prioritizeSlope = platformFH == baseAndFloorHeightArray[highestReachablePlatformIndex].floorHeight && currentBaseAndFloorheightPair.isSlope;
-                //bool prioritizeSlope = currentBaseAndFloorheightPair.floorHeight == baseAndFloorHeightArray[highestReachablePlatformIndex].floorHeight && currentBaseAndFloorheightPair.isSlope;
-
-                if (currentBaseAndFloorheightPair.isSlope)
-                {
-                    Debug.Log("Breakpoint. Check: Is prioritizeSlope true?");
-                }
 
                 if (platformFH > baseAndFloorHeightArray[highestReachablePlatformIndex].floorHeight || prioritizeSlope)
                 {
@@ -177,7 +163,11 @@ public class LandTargetScript : MonoBehaviour
                         }
                         else
                         {
-                            fakeHeightObject.Rise(currentBaseAndFloorheightPair.floorHeight);
+                            bool objCanReachPlatformWithoutStepheight = thisObjHeight > platformFH;
+                            if (objCanReachPlatformWithoutStepheight)
+                            {
+                                fakeHeightObject.Rise(currentBaseAndFloorheightPair.floorHeight);
+                            }
                         }
                     }
                 }
@@ -190,10 +180,6 @@ public class LandTargetScript : MonoBehaviour
         }
 
         baseAndFloorheightPair chosenPlatform = baseAndFloorHeightArray[highestReachablePlatformIndex];
-        if (chosenPlatform.isSlope)
-        {
-            Debug.Log("Breakpoint. Check: what is highestReachablePlatformIndex?");
-        }
 
         RaycastHit2D detectedHorizontalSlope = default;
         RaycastHit2D detectedVerticalSlope = default;
@@ -218,7 +204,6 @@ public class LandTargetScript : MonoBehaviour
 
         if (detectedHorizontalSlope)
         {
-            //chosenPlatform = baseAndFloorHeightArray.Where(item => item.colliderHit == detectedHorizontalSlope.transform.GetComponent<Collider2D>()).First();
             onHorizontalSlope = true;
             onVerticalSlope = false;
             chosenHorizontalSlope = detectedHorizontalSlope.transform.parent;
@@ -226,7 +211,6 @@ public class LandTargetScript : MonoBehaviour
         }
         else if (detectedVerticalSlope)
         {
-            //chosenPlatform = baseAndFloorHeightArray.Where(item => item.colliderHit == detectedVerticalSlope.transform.GetComponent<Collider2D>()).First();
             onHorizontalSlope = false;
             onVerticalSlope = true;
             chosenHorizontalSlope = default;
@@ -269,13 +253,12 @@ public class LandTargetScript : MonoBehaviour
         {
             if (this.transform.position.x != prevXVal)
             {
-                Debug.Log("PEDROLOG/4: Adjusting floor height for slope.");
                 AdjustFloorHeightFromSlope(slopeFloorH, floorHeight);
             }
         }
         if (horizontalOrVertical == "vertical")
         {
-            if (this.transform.position.y != prevYVal)  //CHECK IF PREVYVAL IS PROPERLY SET WHEREVER IT IS 
+            if (this.transform.position.y != prevYVal) 
             {
                 AdjustFloorHeightFromSlope(slopeFloorH, floorHeight);
             }

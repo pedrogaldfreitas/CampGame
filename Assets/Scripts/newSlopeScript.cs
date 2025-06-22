@@ -13,6 +13,8 @@ public class newSlopeScript : MonoBehaviour
     public bool isVerticalSlope;
     public GameObject platform1;
     public GameObject platform2;
+    [HideInInspector] public GameObject highestPlatform;
+
     [Space(20)]
 
     [SerializeField]
@@ -45,9 +47,19 @@ public class newSlopeScript : MonoBehaviour
 
     private void Start()
     {
+
         //Gather important values
         h1 = platform1.transform.Find("top").GetComponent<platformScript>().floorHeight;
         h2 = platform2.transform.Find("top").GetComponent<platformScript>().floorHeight;
+
+        if (h1 >= h2)
+        {
+            highestPlatform = platform1;
+        } else
+        {
+            highestPlatform = platform2;
+        }
+
         x1 = platform1.transform.Find("base").position.x;
         x2 = platform2.transform.Find("base").position.x;
 

@@ -76,10 +76,10 @@ public class LandTargetScript : MonoBehaviour
 
         if (onHorizontalSlope && currentPlatformParent == chosenHorizontalSlope)
         {
-            SlopeCheck(chosenHorizontalSlope.Find("top").gameObject, "horizontal");
+            SlopeCheck(currentPlatformParent.Find("top").gameObject, "horizontal");
         } else if (onVerticalSlope && currentPlatformParent == chosenVerticalSlope)
         {
-            SlopeCheck(chosenVerticalSlope.Find("top").gameObject, "vertical");
+            SlopeCheck(currentPlatformParent.Find("top").gameObject, "vertical");
         }
 
         //These must be set AFTER the SlopeCheck call here on Update().
@@ -146,9 +146,11 @@ public class LandTargetScript : MonoBehaviour
 
             if (objCanReachPlatform)
             {
-                bool prioritizeSlope = platformFH == baseAndFloorHeightArray[highestReachablePlatformIndex].floorHeight && currentBaseAndFloorheightPair.isSlope;
+                baseAndFloorheightPair highestReachablePlatformScannedSoFar = baseAndFloorHeightArray[highestReachablePlatformIndex];
+                bool prioritizeSlope = IgnoreTopPlatformOfSlope(highestReachablePlatformScannedSoFar, currentBaseAndFloorheightPair);
+                bool platformIsTopPartOfSlope = highestReachablePlatformScannedSoFar.isSlope && highestReachablePlatformScannedSoFar.colliderHit.transform.Find("top")?.GetComponent<newSlopeScript>().highestPlatform == currentBaseAndFloorheightPair?.colliderHit?.transform.parent;
 
-                if (platformFH > baseAndFloorHeightArray[highestReachablePlatformIndex].floorHeight || prioritizeSlope)
+                if (platformFH > baseAndFloorHeightArray[highestReachablePlatformIndex].floorHeight && !prioritizeSlope)
                 {
                     highestReachablePlatformIndex = index;
                     bool platformIsNotAlreadyCurrentPlatform = baseAndFloorHeightArray[highestReachablePlatformIndex].colliderHit.transform != currentPlatformParent;
@@ -156,7 +158,7 @@ public class LandTargetScript : MonoBehaviour
                     {
                         if (currentBaseAndFloorheightPair.isSlope)
                         {
-                            if (thisObjHeight > accurateSlopeFH && shadowScript.floorHeight < accurateSlopeFH)
+                            if (shadowScript.floorHeight < accurateSlopeFH && thisObjHeight > accurateSlopeFH)
                             {
                                 fakeHeightObject.Rise(accurateSlopeFH);
                             }
@@ -166,7 +168,10 @@ public class LandTargetScript : MonoBehaviour
                             bool objCanReachPlatformWithoutStepheight = thisObjHeight > platformFH;
                             if (objCanReachPlatformWithoutStepheight)
                             {
-                                fakeHeightObject.Rise(currentBaseAndFloorheightPair.floorHeight);
+                                if (shadowScript.floorHeight < platformFH)
+                                {
+                                    fakeHeightObject.Rise(currentBaseAndFloorheightPair.floorHeight);
+                                }
                             }
                         }
                     }
@@ -226,9 +231,10 @@ public class LandTargetScript : MonoBehaviour
 
         //I edited code from above this point. The rest can be cleaned up, because it looks like the Drop() calls never run here, they run in checkFloorHeight(...) instead.
 
+        
         if (shadowScript.floorHeight > chosenPlatform.floorHeight && chosenPlatform.colliderHit.transform.parent != currentPlatformParent)
         {
-            if (chosenPlatform.isSlope && thisObjHeight > accurateSlopeFH && Mathf.Abs(shadowScript.floorHeight - accurateSlopeFH) > 2)
+            if (chosenPlatform.isSlope && thisObjHeight > accurateSlopeFH && Mathf.Abs(shadowScript.floorHeight - accurateSlopeFH) > stepHeight)
             {
                 //NOTE: This debug log never actually runs. Look into why this code is here.
                 fakeHeightObject.Drop(((Vector2)transform.position - prevGroundVel) * 30, shadowScript.floorHeight - accurateSlopeFH);
@@ -243,6 +249,21 @@ public class LandTargetScript : MonoBehaviour
         currentPlatformParent = chosenPlatform.colliderHit.transform.parent;
 
         return;
+    }
+
+    //Goal: If touching a slope, make sure it is the selected platform instead of its top or bottom platforms.
+    private bool IgnoreTopPlatformOfSlope(baseAndFloorheightPair highestReachablePlatformScannedSoFar, baseAndFloorheightPair currentBaseAndFloorheightPair)
+    {
+        if (highestReachablePlatformScannedSoFar.isSlope)
+        {
+            Transform slopeTopPlatform = highestReachablePlatformScannedSoFar.colliderHit.transform.parent.Find("top")?.GetComponent<newSlopeScript>().highestPlatform.transform;
+            if (currentBaseAndFloorheightPair.colliderHit.transform.parent == slopeTopPlatform)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private void SlopeCheck(GameObject slope, string horizontalOrVertical)
@@ -289,11 +310,18 @@ public class LandTargetScript : MonoBehaviour
 
         bool highestFHisSlope = false;
 
+        //EVERYTHING BELOW HERE IS OLD
 
+
+        
+        //   OUTDATED? This used to calculate the appropriate floorheight (platform). However, I think this can be determined on baseDetect() once a platform is chosen.
+         
+        
         foreach (Collider2D colliderHit in colliderHits)
         {
             Transform platformParent = colliderHit.transform.parent;
             Transform platformTop = platformParent.Find("top");
+
             if (platformParent.gameObject.layer == LayerMask.NameToLayer("HorizontalSlope") || platformParent.gameObject.layer == LayerMask.NameToLayer("VerticalSlope"))
             {
                 //Goal here: Find the greatest point in the slope that's less than the current object's floor height.
@@ -317,16 +345,18 @@ public class LandTargetScript : MonoBehaviour
             }
         }
 
+        
         //Goal here: Calculate the appropriate floor height.
-        if ((!onVerticalSlope) && (!onHorizontalSlope) && (Mathf.Abs(shadowScript.floorHeight - nearestFloorHeight) < 1))
+        if ((!onVerticalSlope) && (!onHorizontalSlope) && (Mathf.Abs(shadowScript.floorHeight - nearestFloorHeight) < stepHeight))
         {
             shadowScript.floorHeight = nearestFloorHeight;
         }
+        /*
         else
         {
             if (highestFHisSlope)
             {
-                // shadowScript.floorHeight = slopeFH;
+                //shadowScript.floorHeight = slopeFH;
             }
             else
             {
@@ -342,7 +372,7 @@ public class LandTargetScript : MonoBehaviour
                     }
                 }
             }
-        }
+        }*/
 
     }
 

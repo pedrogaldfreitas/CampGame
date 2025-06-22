@@ -8672,6 +8672,7 @@ MonoBehaviour:
   isVerticalSlope: 0
   platform1: {fileID: 1649356065}
   platform2: {fileID: 2119998312}
+  highestPlatform: {fileID: 0}
   multiplier: 10
   y1: 0
   y2: 0
@@ -9420,6 +9421,7 @@ MonoBehaviour:
   isVerticalSlope: 1
   platform1: {fileID: 0}
   platform2: {fileID: 1074522585}
+  highestPlatform: {fileID: 0}
   multiplier: 10
   y1: 0
   y2: 0
@@ -10099,6 +10101,7 @@ MonoBehaviour:
   isVerticalSlope: 0
   platform1: {fileID: 262675567}
   platform2: {fileID: 29762090}
+  highestPlatform: {fileID: 0}
   multiplier: 10
   y1: 0
   y2: 0

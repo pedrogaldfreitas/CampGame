@@ -11,7 +11,7 @@ public class showLeftArm : StateMachineBehaviour
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        Transform leftArm = animator.transform.Find("PlayerArms").transform.Find("leftArmParent");
+        Transform leftArm = animator.transform.Find("Arms").transform.Find("LeftArmParent");
         armVector = new Vector3(12.295f, -21.371f, -0.6f);
 
         leftArm.localPosition = armVector;

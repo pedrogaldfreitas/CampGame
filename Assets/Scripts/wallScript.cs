@@ -15,7 +15,7 @@ public class wallScript : MonoBehaviour
         {
             if (objectToIgnore.GetComponentInChildren<newShadowScript>().floorHeight < upperPlatform.GetComponent<platformScript>().floorHeight)
             {
-                //ASSUMING objectToIgnore BELONGS TO PLAYER WITH PlayerLegs OBJECT
+                //ASSUMING objectToIgnore BELONGS TO PLAYER WITH Legs OBJECT
                 Physics2D.IgnoreCollision(objectToIgnore.GetChild(0).GetChild(6).GetComponents<BoxCollider2D>()[1], this.gameObject.GetComponent<BoxCollider2D>(), false);
             }
         }
@@ -28,7 +28,7 @@ public class wallScript : MonoBehaviour
         if (collision.gameObject.GetComponentInChildren<newShadowScript>().floorHeight >= upperPlatform.GetComponent<platformScript>().floorHeight)
         {
             objectToIgnore = collision.transform;
-            //FIRST PARAMETER EXPLANATION: Gets child with index 6 ("PlayerLegs") and takes the boxcollider2d component that is NOT a trigger (index 1). 
+            //FIRST PARAMETER EXPLANATION: Gets child with index 6 ("Legs") and takes the boxcollider2d component that is NOT a trigger (index 1). 
             Physics2D.IgnoreCollision(collision.transform.GetChild(0).GetChild(6).GetComponents<BoxCollider2D>()[1], this.gameObject.GetComponent<BoxCollider2D>(), true);
             
         }

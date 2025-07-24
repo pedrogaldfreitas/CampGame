@@ -17,7 +17,7 @@ public class AcornScript : MonoBehaviour
 
     private void Update()
     {
-        if ((GameObject.Find("Player").GetComponent<playerInventory>().firstAcornCutscenePlayed == false)&&(Vector2.Distance((GameObject.Find("Player").transform.Find("PlayerLegs").transform.position), this.transform.position) < 20))
+        if ((GameObject.Find("Player").GetComponent<playerInventory>().firstAcornCutscenePlayed == false)&&(Vector2.Distance((GameObject.Find("Player").transform.Find("Legs").transform.position), this.transform.position) < 20))
         {
             GameObject.Find("UI").GetComponent<CutsceneManager>().playCutsceneUsingID("D1ACORNSTEPWARNING()");
             GameObject.Find("Player").GetComponent<playerInventory>().firstAcornCutscenePlayed = true;

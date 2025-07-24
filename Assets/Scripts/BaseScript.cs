@@ -16,7 +16,7 @@ public class BaseScript : MonoBehaviour
     private bool isSlope = false;
     [SerializeField]
     [Tooltip("If the object is sitting on a platform (not hovering), drag the platform here to set the solidHeightFromBase variable.")]
-    private Transform startingPlatform;
+    public Transform startingPlatform;
 
     [Header("Test Variables")]
     public List<Collider2D> collidersTouchingSlope;
@@ -27,8 +27,8 @@ public class BaseScript : MonoBehaviour
         collidersTouchingSlope = new List<Collider2D>();
         collidersBeingIgnored = new List<Collider2D>();
         solidHeight = transform.parent.Find("top").GetComponent<platformScript>().floorHeight;
-        solidHeightFromBase = transform.parent.Find("solid").position.y - transform.position.y;
 
+        solidHeightFromBase = transform.parent.Find("solid").position.y - transform.position.y;
         if (startingPlatform)
         {
             solidHeightFromBase = startingPlatform.Find("top").GetComponent<platformScript>().floorHeight;
@@ -97,10 +97,16 @@ public class BaseScript : MonoBehaviour
                 }
             } else
             {
+                if (transform.parent.name == "Square Platform")
+                {
+                    Debug.Log("PEDROLOG: aboveWall? = " + aboveWall);
+                }
                 aboveWall = shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset >= solidHeight;
             }
 
             bool belowWall = solidHeightFromBase > fakeHeightObj.heightOfObject + shadow.floorHeight + fakeHeightObj.height + fakeHeightObj.shadowOffset;
+
+            Debug.Log("PEDROLOG: aboveWall? = " + aboveWall);
 
             if (aboveWall || belowWall)
             {

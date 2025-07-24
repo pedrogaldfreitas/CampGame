@@ -9,7 +9,7 @@ public class hideLeftArm : StateMachineBehaviour
 
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        Transform leftArm = animator.transform.Find("PlayerArms").transform.Find("leftArmParent");
+        Transform leftArm = animator.transform.Find("Arms").transform.Find("LeftArmParent");
         armVector = new Vector3(12.039f, -21.4548f, 0.6f);
 
         leftArm.localPosition = armVector;

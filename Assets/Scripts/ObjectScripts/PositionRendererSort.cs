@@ -55,7 +55,7 @@ public class PositionRendererSort : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        playerLegs = GameObject.Find("Player").transform.Find("PlayerLegsParent").Find("PlayerLegs").gameObject;
+        playerLegs = GameObject.Find("Player").transform.Find("LegsParent").Find("Legs").gameObject;
      
         shadowRenderer = null;
 
@@ -65,7 +65,7 @@ public class PositionRendererSort : MonoBehaviour
             if (this.tag == "bodypart")   //Shadow is in (BodyPart->Player->PlayerParent)
             {
                 parent = transform.parent.parent;
-            } else if (this.tag == "bodypart(arm)") //Shadow is in (Arm->PlayerArms->Player->PlayerParent)
+            } else if (this.tag == "bodypart(arm)") //Shadow is in (Arm->Arms->Player->PlayerParent)
             {
                 parent = transform.parent.parent.parent;
             } else  //Normal object. (Not a person, so shadow is in Object->Parent)

@@ -15,13 +15,13 @@ public class backwardCharacterSprites : StateMachineBehaviour
     //OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        rightArmTrans = animator.transform.Find("PlayerArms").transform.Find("rightArmParent");
-        leftArmTrans = animator.transform.Find("PlayerArms").transform.Find("leftArmParent");
+        rightArmTrans = animator.transform.Find("Arms").transform.Find("RightArmParent");
+        leftArmTrans = animator.transform.Find("Arms").transform.Find("LeftArmParent");
         rightSleeve = rightArmTrans.Find("RightSleeveParent");
         leftSleeve = leftArmTrans.Find("LeftSleeveParent");
-        eyes = animator.transform.Find("PlayerEyesParent").Find("PlayerEyes").gameObject;
-        nose = animator.transform.Find("PlayerNoseParent").Find("PlayerNose").gameObject;
-        mouth = animator.transform.Find("PlayerMouthParent").Find("PlayerMouth").gameObject;
+        eyes = animator.transform.Find("EyesParent").Find("Eyes").gameObject;
+        nose = animator.transform.Find("NoseParent").Find("Nose").gameObject;
+        mouth = animator.transform.Find("MouthParent").Find("Mouth").gameObject;
 
         //rightArmTrans.localPosition = new Vector3(15.02f, -17.41f, 0);
         rightArmTrans.localPosition = new Vector3(14.004f, -20.94915f, 0.6f);
@@ -44,8 +44,8 @@ public class backwardCharacterSprites : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        rightArmTrans = animator.transform.Find("PlayerArms").transform.Find("rightArmParent");
-        leftArmTrans = animator.transform.Find("PlayerArms").transform.Find("leftArmParent");
+        rightArmTrans = animator.transform.Find("Arms").transform.Find("RightArmParent");
+        leftArmTrans = animator.transform.Find("Arms").transform.Find("LeftArmParent");
  
         rightArmTrans.localPosition = new Vector3(9.51f, -17.38f, 0.6f);
         leftArmTrans.localPosition = new Vector3(14.89107f, -17.56166f, 0.6f);

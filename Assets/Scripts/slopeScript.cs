@@ -34,7 +34,7 @@ public class slopeScript : MonoBehaviour
     {
 
         m = 1;
-        playerLegs = GameObject.Find("PlayerLegs");
+        playerLegs = GameObject.Find("Legs");
         polyCollider = GetComponent<PolygonCollider2D>();
         h1 = platform1.GetComponent<platformScript>().floorHeight;
         h2 = platform2.GetComponent<platformScript>().floorHeight;

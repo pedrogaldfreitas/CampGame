@@ -5193,6 +5193,7 @@ MonoBehaviour:
   raycastDistanceMultiplier: 1.15
   onHorizontalSlope: 0
   onVerticalSlope: 0
+  stepHeight: 2
 --- !u!61 &1337454595676541788
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -5972,7 +5973,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5434936822203556451}
   m_Layer: 14
-  m_Name: rightArmParent
+  m_Name: RightArmParent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6343,7 +6344,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5997118566736393555}
   m_Layer: 14
-  m_Name: leftArmParent
+  m_Name: LeftArmParent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

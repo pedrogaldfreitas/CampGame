@@ -77,7 +77,7 @@ public class SquirrelAI : MonoBehaviour
         if (squirrelState == State.CIRCLING) 
         {
             //Hexagon Orbiting
-            playerLegsPos = GameObject.Find("PlayerLegs").transform.position;
+            playerLegsPos = GameObject.Find("Legs").transform.position;
 
             if (transform.position.y-playerLegsPos.y > 2.972) {
                 if (transform.position.x-playerLegsPos.x >= 0) //Topright
@@ -192,10 +192,10 @@ public class SquirrelAI : MonoBehaviour
             if (GetComponent<ObjectProperties>().height > 0)
             {
                 //ERROR: Squirrel's y position doesn't move while height > 0.
-                transform.position = Vector2.MoveTowards(transform.position, new Vector2(GameObject.Find("PlayerLegs").transform.position.x, GameObject.Find("PlayerLegs").transform.position.y + GetComponent<ObjectProperties>().height), speed * Time.deltaTime*3);
+                transform.position = Vector2.MoveTowards(transform.position, new Vector2(GameObject.Find("Legs").transform.position.x, GameObject.Find("Legs").transform.position.y + GetComponent<ObjectProperties>().height), speed * Time.deltaTime*3);
             } else
             {
-                transform.position = Vector2.MoveTowards(transform.position, GameObject.Find("PlayerLegs").transform.position, speed * Time.deltaTime * 3);
+                transform.position = Vector2.MoveTowards(transform.position, GameObject.Find("Legs").transform.position, speed * Time.deltaTime * 3);
             }
         }
 

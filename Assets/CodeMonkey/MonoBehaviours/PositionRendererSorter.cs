@@ -17,6 +17,7 @@ namespace CodeMonkey.MonoBehaviours {
     /*
      * Automatically sort a Renderer (SpriteRenderer, MeshRenderer) based on his Y position
      * */
+    [ExecuteInEditMode]
     public class PositionRendererSorter : MonoBehaviour {
 
         [SerializeField] private int sortingOrderBase = 5000; // This number should be higher than what any of your sprites will be on the position.y
@@ -31,7 +32,7 @@ namespace CodeMonkey.MonoBehaviours {
             myRenderer = gameObject.GetComponent<Renderer>();
         }
 
-        private void LateUpdate() {
+        private void Update() {
             timer -= Time.deltaTime;
             if (timer <= 0f) {
                 timer = timerMax;

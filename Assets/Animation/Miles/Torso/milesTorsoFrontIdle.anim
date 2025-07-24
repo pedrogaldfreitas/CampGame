@@ -24,7 +24,7 @@ AnimationClip:
     - time: 1
       value: {fileID: 21300000, guid: c66e264a0af15934e8f04dfbceb0262f, type: 3}
     attribute: m_Sprite
-    path: PlayerTorsoParent/PlayerTorso
+    path: TorsoParent/Torso
     classID: 212
     script: {fileID: 0}
   m_SampleRate: 60
@@ -35,7 +35,7 @@ AnimationClip:
   m_ClipBindingConstant:
     genericBindings:
     - serializedVersion: 2
-      path: 1468922126
+      path: 342173178
       attribute: 0
       script: {fileID: 0}
       typeID: 212

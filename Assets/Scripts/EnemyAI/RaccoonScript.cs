@@ -18,7 +18,7 @@ public class RaccoonScript : MonoBehaviour
 
     void Start()
     {
-        playerParent = GameObject.Find("PlayerParent");
+        playerParent = GameObject.Find("Player");
     }
 
     void Update()

@@ -12,7 +12,7 @@ public class bodyPartScript : MonoBehaviour
     {
         thisRenderer = GetComponent<Renderer>();
         parentTransform = transform.parent;
-        legsRenderer = GameObject.Find("PlayerParent").transform.Find("Player").Find("LegsParent").Find("Legs").gameObject.GetComponent<Renderer>();
+        legsRenderer = GameObject.Find("Player").transform.Find("Body").Find("LegsParent").Find("Legs").gameObject.GetComponent<Renderer>();
         /*
         if (this.gameObject.tag == "bodypart")
         {
@@ -26,7 +26,7 @@ public class bodyPartScript : MonoBehaviour
 
     private void Update()
     {
-        if ((this.gameObject.tag == "bodypart") || (this.gameObject.tag == "bodypart(arm)"))
+        if (this.gameObject.tag == "bodypart" || this.gameObject.tag == "bodypart(arm)")
         {
             thisRenderer.sortingOrder = legsRenderer.sortingOrder + 1;
             //FIX AND USE THIS EVENTUALLY: thisRenderer.sortingOrder = legsRenderer.sortingOrder +1 + (int)parentTransform.Find("Shadow").GetComponent<newShadowScript>().floorHeight;

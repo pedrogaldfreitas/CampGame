@@ -24,8 +24,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 462344025}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.24, y: -0.955, z: 0.100000024}
-  m_LocalScale: {x: 1, y: -1, z: -1}
+  m_LocalPosition: {x: -0.23995, y: 0.95505, z: -0.1}
+  m_LocalScale: {x: -1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1759566053}
@@ -397,9 +397,10 @@ GameObject:
   m_Component:
   - component: {fileID: 3168191267814452840}
   - component: {fileID: 8508928703032751642}
-  m_Layer: 0
+  - component: {fileID: 6830358383030206219}
+  m_Layer: 14
   m_Name: HairFront
-  m_TagString: Untagged
+  m_TagString: bodypart
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -471,6 +472,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &6830358383030206219
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1522004083841840455}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26c5cf10e242b20418dd8e78a2bb5dfd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3273046656233224508
 GameObject:
   m_ObjectHideFlags: 0
@@ -481,9 +494,10 @@ GameObject:
   m_Component:
   - component: {fileID: 8542954895102365787}
   - component: {fileID: 2483382931769472181}
-  m_Layer: 0
+  - component: {fileID: 7164393149409117773}
+  m_Layer: 14
   m_Name: HairBack
-  m_TagString: Untagged
+  m_TagString: bodypart
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -555,6 +569,18 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &7164393149409117773
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3273046656233224508}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26c5cf10e242b20418dd8e78a2bb5dfd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3449964392261597409
 GameObject:
   m_ObjectHideFlags: 0
@@ -928,7 +954,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3538021362585644527}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cb7e0bec4bf55a142a539ec04810cf18, type: 3}
   m_Name: 
@@ -1418,7 +1444,7 @@ Transform:
   m_GameObject: {fileID: 6052133455763262311}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: -1, z: -1}
+  m_LocalScale: {x: -1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 7950295934326595287}
@@ -1545,8 +1571,8 @@ Transform:
   m_GameObject: {fileID: 6749534342663044024}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 14.41465, y: -20.9424, z: 0.6}
-  m_LocalScale: {x: -2.26892, y: -2.26892, z: -1}
-  m_ConstrainProportionsScale: 1
+  m_LocalScale: {x: 2.26892, y: 2.26892, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8757070724074736980}
   - {fileID: 462344026}

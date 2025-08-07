@@ -33,8 +33,8 @@ public class Enemy : MonoBehaviour
         parent = transform.parent;
         healthBar = transform.Find("HealthBar").Find("Filled");
         parentRB = parent.GetComponent<Rigidbody2D>();
-        playerShadow = GameObject.Find("PlayerParent").transform.Find("Shadow");
-        //Physics2D.IgnoreCollision(transform.parent.Find("Shadow").GetComponent<BoxCollider2D>(), GameObject.Find("PlayerParent").transform.Find("Shadow").GetComponent<BoxCollider2D>(), true);
+        playerShadow = GameObject.Find("Player").transform.Find("Shadow");
+        //Physics2D.IgnoreCollision(transform.parent.Find("Shadow").GetComponent<BoxCollider2D>(), GameObject.Find("Player").transform.Find("Shadow").GetComponent<BoxCollider2D>(), true);
     }
 
     void Update()
@@ -69,7 +69,7 @@ public class Enemy : MonoBehaviour
     //This runs when the enemy is hit and knocked back.
     public IEnumerator GetKnockedBack(int hitForce, Vector2 direction, float groundSpeedMultiplier)
     {
-        Transform playerParentTransform = GameObject.Find("PlayerParent").transform;
+        Transform playerParentTransform = GameObject.Find("Player").transform;
 
         movementBlocked = true;
         Transform landTarget = parent.Find("LandTarget");

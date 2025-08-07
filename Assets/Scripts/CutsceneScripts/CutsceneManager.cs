@@ -28,8 +28,8 @@ public class CutsceneManager : MonoBehaviour
     {
         blackScreen = GameObject.Find("BlackScreen")?.GetComponent<Image>();
         cutsceneActive = false;
-        player = GameObject.Find("Player");
-        playerParent = GameObject.Find("PlayerParent");
+        playerParent = GameObject.Find("Player");
+        player = playerParent.transform.Find("Body").gameObject;
         dialogueManager = GameObject.Find("Dialogue Manager").GetComponent<DialogueManager>();
         allDiagOptions = GameObject.Find("AllDiagOptions").GetComponent<DialogueFeed>();
 
@@ -261,7 +261,7 @@ public class CutsceneManager : MonoBehaviour
         cutsceneActive = true;
         playerParent.GetComponent<PlayerController>().disableMovement();
 
-        firstStickParent.transform.position = GameObject.Find("PlayerParent").transform.Find("Shadow").transform.position;
+        firstStickParent.transform.position = GameObject.Find("Player").transform.Find("Shadow").transform.position;
 
         yield return StartCoroutine(wait(0.01f));
         yield return StartCoroutine(faceDirection(player, "DOWN"));

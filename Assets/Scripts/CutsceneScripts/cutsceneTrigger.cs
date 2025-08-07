@@ -27,7 +27,7 @@ public class cutsceneTrigger : MonoBehaviour
     void Start()
     {
         cutsceneTriggered = false;
-        player = GameObject.Find("PlayerParent").transform;
+        player = GameObject.Find("Player").transform;
         isNPC = transform.tag == "NPC";
     }
 

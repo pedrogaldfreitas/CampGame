@@ -179,7 +179,7 @@ public class DialogueManager : MonoBehaviour
         diagTimer.SetActive(true);
         diagTimer.GetComponent<Image>().fillAmount = 1;
 
-        GameObject.Find("PlayerParent").GetComponent<PlayerController>().enabled = false;
+        GameObject.Find("Player").GetComponent<PlayerController>().enabled = false;
         
         GameObject diagoption1 = GameObject.Find("Option1Text");
         GameObject diagoption2 = GameObject.Find("Option2Text");
@@ -335,7 +335,7 @@ public class DialogueManager : MonoBehaviour
     {
         diagChoicePickerActive = false;
         
-        GameObject.Find("PlayerParent").GetComponent<PlayerController>().enabled = true;
+        GameObject.Find("Player").GetComponent<PlayerController>().enabled = true;
         //diagOptionDivider.GetComponent<SpriteRenderer>().color -= new Color(0, 0, 0, 1f);
         //diagArrow.GetComponent<Image>().color -= new Color(0f, 0f, 0f, 1f);
         //diagTimer.GetComponent<Image>().color -= new Color(0, 0, 0, 1);

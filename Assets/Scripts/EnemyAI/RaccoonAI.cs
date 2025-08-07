@@ -32,7 +32,7 @@ public class RaccoonAI : MonoBehaviour
         enemyScript = GetComponent<Enemy>();
         CR_running = false;
         moveDirection = new Vector2(0, 0);
-        playerLandTarget = GameObject.Find("PlayerParent").transform.Find("LandTarget");
+        playerLandTarget = GameObject.Find("Player").transform.Find("LandTarget");
         parent = transform.parent;
         parentRB = parent.GetComponent<Rigidbody2D>();
         landTarget = transform.parent.Find("LandTarget");
